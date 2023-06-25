@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="header">
 			<view class="group">
-				<image class="photo" src="../../static/avatar.jpg"></image>
+				<image class="photo" src="../../static/avatar.jpg" @click="model"></image>
 				<view class="group money" style="margin: 0 50px;  height: 100%;  ">
 					<image class="" src="../../static/money.png"></image>
 					<span style="padding: 0 20px; "> 9999 </span>
@@ -56,8 +56,8 @@
 
 		</view>
 
-		<chat class="chat" v-show="chatShow"></chat>
-
+		<chat class="chat" v-show="chatShow" @receiveData="handleGetData"></chat>
+		<model class="model" v-show="modelShow" @receiveData="handlemodel"></model>
 	</view>
 </template>
 
@@ -66,6 +66,7 @@
 		data() {
 			return {
 				chatShow: false,
+				modelShow: false,
 				data: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 				image: [{
 						url: '../../static/sign (1).png',
@@ -92,6 +93,15 @@
 		methods: {
 			chat() {
 				this.chatShow = true
+			},
+			handleGetData() {
+				this.chatShow = false
+			},
+			model() {
+				this.modelShow = true
+			},
+			handlemodel() {
+				this.modelShow = false
 			}
 		}
 	}
@@ -223,6 +233,7 @@
 			bottom: 0;
 			width: 100vw;
 			height: 50px;
+			line-height: 50px;
 			background-image: linear-gradient(to bottom, rgb(252, 44, 213), rgb(67, 0, 71));
 			display: flex;
 			align-items: center;
@@ -230,11 +241,12 @@
 			padding: 0 20px;
 			color: white;
 			font-size: 15px;
-			justify-content: space-between;
+			// /justify-content: space-between;
+			margin-right: 20px;
 
 			.tag {
 				display: flex;
-				margin-right: 10px;
+				margin-right: 20px;
 				justify-content: center;
 				align-items: center;
 
@@ -250,8 +262,20 @@
 		}
 
 		.chat {
-			position: absolute;
+			position: fixed;
+			//position: absolute;
 			width: 90vw;
+			height: 90vh;
+			left: 50%;
+			top: 50%;
+			background-color: rgb(57, 6, 15);
+			transform: translate(-50%, -50%);
+		}
+
+		.model {
+			position: fixed;
+			//position: absolute;
+			width: 60vw;
 			height: 90vh;
 			left: 50%;
 			top: 50%;

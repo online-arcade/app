@@ -8,23 +8,16 @@
 
 				<view class="operate">
 
-					<input class="send" v-model="sendMess" placeholder="请输入要发送的讯息" />
-					<image src="../../static/send.png" @click="send"></image>
-					<image src="../../static/redbag.png"></image>
+					<!-- <input class="send" v-model="sendMess" placeholder="请输入要发送的讯息" />
+					<image src="../../static/send.png" @click="send"></image> -->
+					<image src="../../static/avatar.jpg"></image>
+					<span>名称 :张三</span>
+
 				</view>
 				<view class="mess" ref="scrollableDiv">
 
-					<!-- <view class="informate ">
-						<image src="../../static/boy.png"></image>
-						<view class="showMess">
 
-							<span class="title">姓名</span>
-
-							<span class="item">mess</span>
-						</view>
-					</view>
- -->
-					<view class="informate " v-for="(item,index) of mess" :style="{justifyContent: item.float}">
+					<!-- <view class="informate " v-for="(item,index) of mess" :style="{justifyContent: item.float}">
 
 						<view v-if="item.float==='left'" style="display: flex;">
 							<image src="../../static/boy.png"></image>
@@ -49,7 +42,7 @@
 
 
 					</view>
-
+ -->
 
 				</view>
 			</view>
@@ -59,7 +52,7 @@
 
 <script>
 	export default {
-		name: "chat",
+		name: "model",
 		data() {
 			return {
 				sendMess: '',
@@ -132,8 +125,13 @@
 
 				.operate {
 					display: flex;
-					justify-content: space-between;
+					color: white;
+
+					//	justify-content: space-between;
 					//height: 50px;
+					span {
+						margin-left: 10px;
+					}
 
 					image {
 						width: 50px;
