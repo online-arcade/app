@@ -12,7 +12,8 @@
 					<image src="../../static/send.png" @click="send"></image>
 					<image src="../../static/redbag.png"></image>
 				</view>
-				<view class="mess" ref="scrollableDiv">
+				<scroll-view class="mess" ref="scrollableDiv" scroll-y=true :scroll-top="scrollTop"
+					:scroll-with-animation="true">
 
 					<!-- <view class="informate ">
 						<image src="../../static/boy.png"></image>
@@ -51,7 +52,7 @@
 					</view>
 
 
-				</view>
+				</scroll-view>
 			</view>
 		</view>
 	</view>
@@ -63,6 +64,7 @@
 		data() {
 			return {
 				sendMess: '',
+				scrollTop: 0,
 				mess: [{
 						name: '张三',
 						data: '发送了一条信息',
@@ -80,13 +82,18 @@
 			close() {
 				this.$emit('receiveData')
 			},
+
 			send() {
+				this.scrollTop += 300
 				this.mess.push({
 					name: '张三',
 					data: this.sendMess,
 					float: 'left'
 				})
-				this.$refs.scrollableDiv.scrollTop = this.$refs.scrollableDiv.scrollHeight;
+
+				//this.scrollTop = this.scrollTop === 0 ? 600 : 600
+
+				//this.$refs.scrollableDiv.scrollTop = this.$refs.scrollableDiv.scrollHeight;
 			}
 		}
 	}
@@ -164,6 +171,8 @@
 					border-radius: 7px;
 					background-color: rgb(70, 13, 19);
 					overflow: scroll;
+					scroll-margin-bottom: 0;
+					//scroll-margin-top: 600px;
 					display: flex;
 					flex-direction: column;
 

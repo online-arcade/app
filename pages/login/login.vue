@@ -11,10 +11,10 @@
 
 				<uni-forms>
 					<uni-forms-item label="账号" name="account">
-						<uni-easyinput type="text" v-model="formData.account" />
+						<uni-easyinput style="min-width: 200px;" type="text" v-model="formData.account" />
 					</uni-forms-item>
 					<uni-forms-item label="密码" name="password">
-						<uni-easyinput type="text" v-model="formData.password" />
+						<uni-easyinput type="password" v-model="formData.password" />
 					</uni-forms-item>
 
 				</uni-forms>
@@ -82,20 +82,18 @@
 		align-items: center;
 
 		.login {
-			width: 50vw;
-			height: 55vh;
+			// width: 50vw;
+			// height: 55vh;
 			background-color: rgba(211, 211, 211, 0.7);
 			border-radius: 5px;
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			box-sizing: border-box;
-			padding: 10px 0;
+			padding: 10px 50px;
 
 			.form {
 				box-sizing: border-box;
-				width: 60%;
-				height: 100%;
 
 				h3 {
 					text-align: center;

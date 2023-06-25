@@ -89,7 +89,7 @@
 
 <script>
 	export default {
-		name: "model",
+		name: "account",
 		data() {
 			return {
 				sendMess: '',

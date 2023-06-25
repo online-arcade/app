@@ -9,75 +9,18 @@
 				<view class="operate">
 
 
-					<image src="../../static/avatar.jpg"></image>
-					<span>名称 :张三</span>
+
+					<view v-for="item in data" class="font">
+						{{item.name}}
+
+					</view>
+
 
 				</view>
 				<view class="mess" ref="scrollableDiv">
 
-					<form>
 
-						<uni-row class="row">
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">昵称:</view>
-							</uni-col>
-							<uni-col :span="17" :offset="1">
-								<input class="input" name="input" placeholder="apple" />
-							</uni-col>
-						</uni-row>
-
-						<uni-row class="row">
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">性别:</view>
-							</uni-col>
-							<uni-col :span="17" :offset="1">
-								<image src="../../static/radio1.png"></image>
-								<image src="../../static/boy (2).png"></image>
-								<image src="../../static/radio2.png"></image>
-								<image src="../../static/gril (2).png"></image>
-							</uni-col>
-						</uni-row>
-
-
-						<uni-row class="row">
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">点数:</view>
-							</uni-col>
-							<uni-col :span="17" :offset="1">
-								<input class="input" name="input" placeholder="apple" />
-							</uni-col>
-						</uni-row>
-
-						<uni-row class="row">
-
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">人缘:</view>
-							</uni-col>
-							<uni-col :span="3" :offset="1" style="color:rgb(254,254,61);font-size: 18px;">
-								90
-							</uni-col>
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">vip:</view>
-							</uni-col>
-							<uni-col :span="5" :offset="1" style="color:rgb(254,254,61);font-size: 18px;">
-								成为vip
-							</uni-col>
-						</uni-row>
-
-
-						<uni-row class="row">
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">签名:</view>
-							</uni-col>
-							<uni-col :span="17" :offset="1">
-								<input class="input" name="input" placeholder="apple" />
-							</uni-col>
-						</uni-row>
-
-					</form>
-
-
-
+					<image src="../../static/act.png" style="width: 100%;height: 100%;"></image>
 
 
 
@@ -89,10 +32,17 @@
 
 <script>
 	export default {
-		name: "model",
+		name: "activity",
 		data() {
 			return {
 				sendMess: '',
+				data: [{
+					name: '刮刮乐'
+				}, {
+					name: '大富翁'
+				}, {
+					name: '挖金矿'
+				}],
 				mess: [{
 						name: '张三',
 						data: '发送了一条信息',
@@ -111,13 +61,7 @@
 				this.$emit('receiveData')
 			},
 			send() {
-				this.mess.push({
-					name: '张三',
-					data: this.sendMess,
-					float: 'left'
-				})
 
-				this.$refs.scrollableDiv.scrollTop = this.$refs.scrollableDiv.scrollHeight;
 			}
 		}
 	}
@@ -157,18 +101,32 @@
 				width: 100%;
 				height: 100%;
 				display: flex;
-				flex-direction: column;
+
 				box-sizing: border-box;
 				padding: 5px;
 
 				.operate {
 					display: flex;
+					flex-direction: column;
 					color: white;
+					width: 30%;
+					box-sizing: border-box;
+					padding: 5px;
+					justify-content: center;
+					align-items: center;
 
 					//	justify-content: space-between;
 					//height: 50px;
 					span {
 						margin-left: 10px;
+					}
+
+					.font {
+						text-align: center;
+						width: 70%;
+						background-color: rgb(205, 123, 9);
+						box-sizing: border-box;
+						padding: 5px;
 					}
 
 					image {
@@ -196,21 +154,17 @@
 					padding: 10px;
 					flex: 1;
 					width: 100%;
-					height: 70%;
+					height: 100%;
 					border-radius: 7px;
 					//background-color: rgb(70, 13, 19);
-					background-color: rgb(63, 6, 18);
+					//	background-color: rgb(63, 6, 18);
+
 					overflow: scroll;
 					display: flex;
 					flex-direction: column;
 
 
-					image {
-						background-color: white;
-						border-radius: 50%;
-						width: 30px;
-						height: 30px;
-					}
+
 
 					.row {
 						display: flex;

@@ -2,11 +2,11 @@
 	<view class="content">
 		<view class="header">
 			<view class="group">
-				<image class="photo" src="../../static/avatar.jpg" @click="model"></image>
+				<image class="photo" src="../../static/avatar.jpg" @click="modelShow=true"></image>
 				<view class="group money" style="margin: 0 50px;  height: 100%;  ">
 					<image class="" src="../../static/money.png"></image>
 					<span style="padding: 0 20px; "> 9999 </span>
-					<image class=" add" src="../../static/add (1).png"></image>
+					<image class=" add" src="../../static/add (1).png" @click="rechargeShow=true"></image>
 				</view>
 				<image class="" src="../../static/start (1).png" style="z-index: 2;"></image>
 				<span class="start-bar" style=" "> 160
@@ -16,7 +16,7 @@
 
 			<view class="group">
 				<image class="" src="../../static/chat (1).png"></image>
-				<span @click="chat">聊天</span>
+				<span @click="chatShow=true">聊天</span>
 				<span style="width: 10px;"></span>
 				<image class="" src="../../static/set.png"></image>
 				<span>设置</span>
@@ -28,27 +28,25 @@
 			<uni-row class="row" :gutter="0" style="width: 100%;flex: 1;  ">
 				<uni-col class="col" :span="8" v-for="item of data">
 					<view class="box">
-
 						<view class="box-content">
 
-
-							<span style="float: right;">4人在玩</span>
-							<image src="../../static/avatar.jpg" style="width: 100%;height: 80px;position: relative;">
+							<image :src="item.url" style=" height: 130px;">
 							</image>
-							<span class="font">疯狂魔鬼城</span>
+							<span class="num">{{item.mess}}</span>
+
+							<span class="font" style="font-size: 45px;color: yellow;">demon</span>
+							<span class="font">{{item.name}}</span>
+
 						</view>
 
 					</view>
 				</uni-col>
 
-
-
-
 			</uni-row>
 		</view>
 
 		<view class="foot">
-			<view v-for="data of image" class="tag">
+			<view v-for="data of image" class="tag" @click="data.show=true">
 				<image class="" :src="data.url"></image>
 				<span>{{data.name}}</span>
 			</view>
@@ -57,7 +55,10 @@
 		</view>
 
 		<chat class="chat" v-show="chatShow" @receiveData="handleGetData"></chat>
-		<model class="model" v-show="modelShow" @receiveData="handlemodel"></model>
+		<model class="model" v-show="modelShow" @receiveData="handleModel"></model>
+		<account class="chat" v-show="image[3].show" @receiveData="handleAccount"></account>
+		<activity class="chat" v-show="image[1].show" @receiveData="handleActivity"></activity>
+		<recharge class="chat" v-show="rechargeShow" @receiveData="handleRecharge"></recharge>
 	</view>
 </template>
 
@@ -67,22 +68,60 @@
 			return {
 				chatShow: false,
 				modelShow: false,
-				data: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+				rechargeShow: false,
+				activityShow: false,
+				accountShow: false,
+				data: [{
+						url: '../../static/game1.jpg',
+						name: '疯狂魔鬼城',
+						mess: '4人在玩'
+					},
+					{
+						url: '../../static/game2.jpeg',
+						name: '疯狂魔鬼城',
+						mess: '4人在玩'
+					},
+					{
+						url: '../../static/game3.jpg',
+						name: '疯狂魔鬼城',
+						mess: '4人在玩'
+					},
+					{
+						url: '../../static/game4.png',
+						name: '疯狂魔鬼城',
+						mess: '4人在玩'
+					},
+					{
+						url: '../../static/game5.jpg',
+						name: '疯狂魔鬼城',
+						mess: '4人在玩'
+					},
+					{
+						url: '../../static/game6.jpg',
+						name: '疯狂魔鬼城',
+						mess: '4人在玩'
+					},
+
+				],
 				image: [{
 						url: '../../static/sign (1).png',
-						name: '签到'
+						name: '签到',
+						show: false
 					},
 					{
 						url: '../../static/activity.png',
-						name: '活动'
+						name: '活动',
+						show: false
 					},
 					{
 						url: '../../static/email.png',
-						name: '邮件'
+						name: '邮件',
+						show: false
 					},
 					{
 						url: '../../static/safe.png',
-						name: '账户'
+						name: '账户',
+						show: false
 					}
 				]
 			}
@@ -91,18 +130,21 @@
 
 		},
 		methods: {
-			chat() {
-				this.chatShow = true
-			},
 			handleGetData() {
 				this.chatShow = false
 			},
-			model() {
-				this.modelShow = true
-			},
-			handlemodel() {
+			handleModel() {
 				this.modelShow = false
-			}
+			},
+			handleRecharge() {
+				this.rechargeShow = false
+			},
+			handleActivity() {
+				this.image[1].show = false
+			},
+			handleAccount() {
+				this.image[3].show = false
+			},
 		}
 	}
 </script>
@@ -191,11 +233,13 @@
 			.row {
 
 				.col {
+
 					margin-bottom: 10px;
 					box-sizing: border-box;
 					padding: 0 10px;
 					display: flex;
 					justify-content: center;
+
 
 					.box {
 						display: flex;
@@ -205,19 +249,41 @@
 
 						.box-content {
 							box-sizing: border-box;
-							padding: 0 10px 15px;
-							border: 1px solid gray;
+							//padding: 0 10px 15px;
+							//border: 1px solid gray;
 							width: 100%;
 							height: 100%;
-							background-color: rgb(162, 249, 255);
+							//border: 3px solid rgb(255, 244, 38);
+							//border-radius: 7px;
+							//background-color: rgb(162, 249, 255);
 							position: relative;
 
+							.num {
+
+								position: absolute;
+								top: 0px;
+								right: 0;
+								color: white;
+								text-shadow: 0px 0px 5px black;
+								//font-size: 20px;
+							}
+
+							image {
+								width: 100%;
+								border: 3px solid rgb(255, 244, 38);
+								border-radius: 7px;
+								position: relative;
+							}
+
 							.font {
+
+								width: 100%;
+								text-align: center;
 								color: white;
 								position: absolute;
-								bottom: 0;
-								left: 10px;
-								//transform: translateX(-50%);
+								bottom: 10px;
+								left: 50%;
+								transform: translateX(-50%);
 								font-size: 22px;
 								text-shadow: 0px 0px 5px black;
 							}

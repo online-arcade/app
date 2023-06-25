@@ -15,72 +15,6 @@
 				</view>
 				<view class="mess" ref="scrollableDiv">
 
-					<form>
-
-						<uni-row class="row">
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">昵称:</view>
-							</uni-col>
-							<uni-col :span="17" :offset="1">
-								<input class="input" name="input" placeholder="apple" />
-							</uni-col>
-						</uni-row>
-
-						<uni-row class="row">
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">性别:</view>
-							</uni-col>
-							<uni-col :span="17" :offset="1">
-								<image src="../../static/radio1.png"></image>
-								<image src="../../static/boy (2).png"></image>
-								<image src="../../static/radio2.png"></image>
-								<image src="../../static/gril (2).png"></image>
-							</uni-col>
-						</uni-row>
-
-
-						<uni-row class="row">
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">点数:</view>
-							</uni-col>
-							<uni-col :span="17" :offset="1">
-								<input class="input" name="input" placeholder="apple" />
-							</uni-col>
-						</uni-row>
-
-						<uni-row class="row">
-
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">人缘:</view>
-							</uni-col>
-							<uni-col :span="3" :offset="1" style="color:rgb(254,254,61);font-size: 18px;">
-								90
-							</uni-col>
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">vip:</view>
-							</uni-col>
-							<uni-col :span="5" :offset="1" style="color:rgb(254,254,61);font-size: 18px;">
-								成为vip
-							</uni-col>
-						</uni-row>
-
-
-						<uni-row class="row">
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">签名:</view>
-							</uni-col>
-							<uni-col :span="17" :offset="1">
-								<input class="input" name="input" placeholder="apple" />
-							</uni-col>
-						</uni-row>
-
-					</form>
-
-
-
-
-
-
 				</view>
 			</view>
 		</view>
@@ -89,7 +23,7 @@
 
 <script>
 	export default {
-		name: "model",
+		name: "recharge",
 		data() {
 			return {
 				sendMess: '',
@@ -198,42 +132,16 @@
 					width: 100%;
 					height: 70%;
 					border-radius: 7px;
-					//background-color: rgb(70, 13, 19);
-					background-color: rgb(63, 6, 18);
+					background-color: rgb(70, 13, 19);
 					overflow: scroll;
 					display: flex;
 					flex-direction: column;
-
 
 					image {
 						background-color: white;
 						border-radius: 50%;
 						width: 30px;
 						height: 30px;
-					}
-
-					.row {
-						display: flex;
-						align-items: center;
-						margin-bottom: 5px;
-
-						image {
-							width: 30px;
-							height: 30px;
-							background-color: transparent;
-							border-radius: 0;
-						}
-					}
-
-					.input {
-						//	border: 3px solid rgb(117, 23, 28);
-						background-color: rgb(47, 0, 17);
-						border-radius: 5px;
-						box-shadow: 0 0 15px rgb(97, 19, 37);
-						color: rgb(245, 231, 202);
-						box-sizing: border-box;
-						padding: 20px;
-
 					}
 
 					.informate {
