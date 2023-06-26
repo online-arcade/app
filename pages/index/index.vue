@@ -2,7 +2,12 @@
 	<view class="content">
 		<view class="header">
 			<view class="group">
-				<image class="photo" src="../../static/avatar.jpg" @click="modelShow=true"></image>
+				<view class="box">
+
+					<image class="photo" src="../../static/avatar.jpg" @click="modelShow=true"></image>
+
+				</view>
+
 				<view class="group money" style="margin: 0 50px;  height: 100%;  ">
 					<image class="" src="../../static/money.png"></image>
 					<span style="padding: 0 20px; "> 9999 </span>
@@ -15,7 +20,7 @@
 
 
 			<view class="group">
-				<image class="" src="../../static/chat (1).png"></image>
+				<image class="" src="../../static/chat (3).png"></image>
 				<span @click="chatShow=true">聊天</span>
 				<span style="width: 10px;"></span>
 				<image class="" src="../../static/set.png"></image>
@@ -25,12 +30,13 @@
 		</view>
 
 		<view class="main">
-			<uni-row class="row" :gutter="0" style="width: 100%;flex: 1;  ">
-				<uni-col class="col" :span="8" v-for="item of data">
+			<uni-row class="row" :gutter="0"
+				style="width: 100%;flex: 1; height: 100%; overflow: scroll;box-sizing: border-box;">
+				<uni-col class="col" :span="8" v-for="item of data" style="height: 50%;">
 					<view class="box">
 						<view class="box-content">
 
-							<image :src="item.url" style=" height: 130px;">
+							<image :src="item.url" style=" height: 100%;">
 							</image>
 							<span class="num">{{item.mess}}</span>
 
@@ -59,6 +65,7 @@
 		<account class="chat" v-show="image[3].show" @receiveData="handleAccount"></account>
 		<activity class="chat" v-show="image[1].show" @receiveData="handleActivity"></activity>
 		<recharge class="chat" v-show="rechargeShow" @receiveData="handleRecharge"></recharge>
+		<sign class="chat" v-show="image[0].show" @receiveData="handleSign"></sign>
 	</view>
 </template>
 
@@ -122,6 +129,11 @@
 						url: '../../static/safe.png',
 						name: '账户',
 						show: false
+					},
+					{
+						url: '../../static/report (2).png',
+						name: '公告',
+						show: false
 					}
 				]
 			}
@@ -144,6 +156,9 @@
 			},
 			handleAccount() {
 				this.image[3].show = false
+			},
+			handleSign() {
+				this.image[0].show = false
 			},
 		}
 	}
@@ -198,6 +213,26 @@
 			.group {
 				display: flex;
 				align-items: center;
+
+				.box {
+					padding: 3px;
+					box-sizing: border-box;
+
+					border-radius: 25px;
+					background: linear-gradient(to bottom, rgb(146, 27, 135), rgb(193, 43, 117));
+					display: flex;
+					justify-content: center;
+					align-items: center;
+
+					.photo {
+
+						width: 37px;
+						height: 37px;
+						border-radius: 25px;
+
+					}
+				}
+
 			}
 
 			image {
@@ -212,12 +247,13 @@
 				//left: 10px;
 			}
 
-			.photo {
-				width: 40px;
-				height: 40px;
-				border-radius: 25px;
-				box-shadow: 0 0 15px white;
-			}
+			// .photo {
+			// 	width: 37px;
+			// 	height: 37px;
+			// 	border-radius: 25px;
+			// 	//box-shadow: 0 0 15px white;
+			// 	border: 10px solod gray;
+			// }
 		}
 
 		.mess {}
@@ -264,12 +300,13 @@
 								top: 0px;
 								right: 0;
 								color: white;
-								text-shadow: 0px 0px 5px black;
+								text-shadow: 1px 1px rgb(39, 15, 32), 2px 2px rgb(39, 15, 32);
 								//font-size: 20px;
 							}
 
 							image {
 								width: 100%;
+								//	height: 100%;
 								border: 3px solid rgb(255, 244, 38);
 								border-radius: 7px;
 								position: relative;
@@ -285,7 +322,8 @@
 								left: 50%;
 								transform: translateX(-50%);
 								font-size: 22px;
-								text-shadow: 0px 0px 5px black;
+								//text-shadow: 0px 0px 5px black;
+								text-shadow: 1px 1px rgb(39, 15, 32), 2px 2px rgb(39, 15, 32);
 							}
 						}
 					}
@@ -311,20 +349,27 @@
 			margin-right: 20px;
 
 			.tag {
+				//	background-color: red;
+				min-width: 83px;
+				height: 100%;
 				display: flex;
-				margin-right: 20px;
+
 				justify-content: center;
 				align-items: center;
+				box-sizing: border-box;
+				padding: 10px 0px;
+				overflow: hidden;
 
+				image {
+					width: 30px;
+					height: 30px;
+					border-radius: 50%;
+					box-shadow: 0 0 10px white;
+					margin-right: 3px;
+				}
 			}
 
-			image {
-				width: 30px;
-				height: 30px;
-				border-radius: 50%;
-				box-shadow: 0 0 10px white;
-				margin-right: 3px;
-			}
+
 		}
 
 		.chat {

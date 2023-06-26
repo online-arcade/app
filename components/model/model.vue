@@ -230,9 +230,9 @@
 						background-color: rgb(47, 0, 17);
 						border-radius: 5px;
 						box-shadow: 0 0 15px rgb(97, 19, 37);
-						color: rgb(245, 231, 202);
-						box-sizing: border-box;
-						padding: 20px;
+						// color: rgb(245, 231, 202);
+						//box-sizing: border-box;
+						padding: 10px;
 
 					}
 

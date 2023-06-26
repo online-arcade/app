@@ -9,8 +9,10 @@
 				<view class="operate">
 
 					<input class="send" v-model="sendMess" placeholder="请输入要发送的讯息" />
-					<image src="../../static/send.png" @click="send"></image>
-					<image src="../../static/redbag.png"></image>
+
+					<image src="../../static/send (2).png" @click="send" class="sendIcon">
+					</image>
+					<image src="../../static/redbag.jpg" class="redbag"></image>
 				</view>
 				<scroll-view class="mess" ref="scrollableDiv" scroll-y=true :scroll-top="scrollTop"
 					:scroll-with-animation="true">
@@ -141,10 +143,23 @@
 					display: flex;
 					justify-content: space-between;
 					//height: 50px;
+					align-items: center;
 
-					image {
-						width: 50px;
+
+
+					.redbag {
+						width: 35px;
 						height: 50px;
+						border-radius: 5px;
+						box-shadow: 0 1px rgb(70, 13, 19), 0 2px rgb(70, 13, 19);
+						//border: 2px solid rgb(70, 13, 19);
+					}
+
+					.sendIcon {
+						width: 50px;
+						height: 30px;
+						border-radius: 5px;
+						border: 2px solid rgb(70, 13, 19);
 					}
 
 					.send {

@@ -8,16 +8,14 @@
 
 				<view class="operate">
 
-
-
-					<view v-for="item in data" class="font">
+					<view v-for="item in data" :class="{'font':true,'font-click':item.click}" @click="show(item.name)">
 						{{item.name}}
 
 					</view>
 
 
 				</view>
-				<view class="mess" ref="scrollableDiv">
+				<view class="mess">
 
 
 					<image src="../../static/act.png" style="width: 100%;height: 100%;"></image>
@@ -37,11 +35,14 @@
 			return {
 				sendMess: '',
 				data: [{
-					name: '刮刮乐'
+					name: '刮刮乐',
+					click: false
 				}, {
-					name: '大富翁'
+					name: '大富翁',
+					click: false
 				}, {
-					name: '挖金矿'
+					name: '挖金矿',
+					click: false
 				}],
 				mess: [{
 						name: '张三',
@@ -60,8 +61,12 @@
 			close() {
 				this.$emit('receiveData')
 			},
-			send() {
-
+			show(mes) {
+				this.data.filter(item => {
+					if (item.name === mes) {
+						item.click = !item.click
+					} else item.click = false
+				})
 			}
 		}
 	}
@@ -112,107 +117,54 @@
 					width: 30%;
 					box-sizing: border-box;
 					padding: 5px;
-					justify-content: center;
-					align-items: center;
 
-					//	justify-content: space-between;
-					//height: 50px;
-					span {
-						margin-left: 10px;
-					}
+
 
 					.font {
 						text-align: center;
-						width: 70%;
-						background-color: rgb(205, 123, 9);
+						width: 100%;
+						border-radius: 5px;
+						background-image: linear-gradient(to bottom, rgb(248, 231, 75), rgb(205, 121, 11));
+						// background-color: rgb(205, 123, 9);
 						box-sizing: border-box;
 						padding: 5px;
+						margin-bottom: 5px;
+						position: relative;
+
+						// &::before {
+						// 	content: '';
+						// 	position: absolute;
+						// 	right: 0;
+						// 	top: 50%;
+						// 	transform: translate(100%, -50%);
+						// 	border: 10px solid;
+						// 	border-color: transparent transparent transparent rgb(221, 165, 38);
+						// 	border-left: transparent;
+						// }
 					}
 
-					image {
-						width: 50px;
-						height: 50px;
-					}
-
-					.send {
-						color: white;
-						box-sizing: border-box;
-						padding: 5px;
-						width: 80%;
-						height: 50px;
-						background-color: rgb(70, 13, 19);
-						border-radius: 7px;
+					.font-click {
+						//box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+						box-shadow: 0 0 15px rgba(205, 123, 9, 0.5);
+						// border: 1px solid rgb(205, 123, 9);
+						// box-sizing: border-box;
+						color: yellow;
 					}
 				}
 
-
-
 				.mess {
 					color: white;
-					margin-top: 10px;
+					//margin-top: 10px;
 					box-sizing: border-box;
 					padding: 10px;
 					flex: 1;
 					width: 100%;
 					height: 100%;
 					border-radius: 7px;
-					//background-color: rgb(70, 13, 19);
-					//	background-color: rgb(63, 6, 18);
-
-					overflow: scroll;
-					display: flex;
-					flex-direction: column;
-
-
-
-
-					.row {
-						display: flex;
-						align-items: center;
-						margin-bottom: 5px;
-
-						image {
-							width: 30px;
-							height: 30px;
-							background-color: transparent;
-							border-radius: 0;
-						}
-					}
-
-					.input {
-						//	border: 3px solid rgb(117, 23, 28);
-						background-color: rgb(47, 0, 17);
-						border-radius: 5px;
-						box-shadow: 0 0 15px rgb(97, 19, 37);
-						color: rgb(245, 231, 202);
-						box-sizing: border-box;
-						padding: 20px;
-
-					}
-
-					.informate {
-						display: flex;
-
-						.showMess {
-							margin-left: 5px;
-							display: flex;
-							flex-direction: column;
-
-							.title {
-								transform: scale(0.9);
-							}
-
-							.item {
-								background-color: rgb(117, 23, 28);
-								border-radius: 5px;
-								box-sizing: border-box;
-								padding: 8px;
-
-							}
-						}
-					}
 
 				}
+
+
 			}
 		}
 
