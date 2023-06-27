@@ -17,20 +17,10 @@
 				<scroll-view class="mess" ref="scrollableDiv" scroll-y=true :scroll-top="scrollTop"
 					:scroll-with-animation="true">
 
-					<!-- <view class="informate ">
-						<image src="../../static/boy.png"></image>
-						<view class="showMess">
-
-							<span class="title">姓名</span>
-
-							<span class="item">mess</span>
-						</view>
-					</view>
- -->
 					<view class="informate " v-for="(item,index) of mess" :style="{justifyContent: item.float}">
 
 						<view v-if="item.float==='left'" style="display: flex;">
-							<image src="../../static/boy.png"></image>
+							<image src="../../static/boy.png" @click="detailShow=true"></image>
 							<view class="showMess">
 
 								<span class="title" :style="{textAlign:item.float}">{{item.name}}</span>
@@ -47,17 +37,21 @@
 
 								<span class="item">{{item.data}}</span>
 							</view>
-							<image src="../../static/boy.png"></image>
+							<image src="../../static/boy.png" @click="detailShow=true"></image>
 						</view>
-
-
 					</view>
 
 
 				</scroll-view>
 			</view>
 		</view>
+
+
+
+		<detail class="chat" v-show="detailShow" @receiveData="handleDetail"></detail>
 	</view>
+
+
 </template>
 
 <script>
@@ -65,6 +59,7 @@
 		name: "chat",
 		data() {
 			return {
+				detailShow: false,
 				sendMess: '',
 				scrollTop: 0,
 				mess: [{
@@ -93,9 +88,10 @@
 					float: 'left'
 				})
 
-				//this.scrollTop = this.scrollTop === 0 ? 600 : 600
-
-				//this.$refs.scrollableDiv.scrollTop = this.$refs.scrollableDiv.scrollHeight;
+			},
+			showMess() {},
+			handleDetail() {
+				this.detailShow = false
 			}
 		}
 	}

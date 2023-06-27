@@ -8,12 +8,15 @@
 
 				<view class="operate">
 
+
+
+
+					<span>活动中心</span>
+
+
 					<view v-for="item in data" :class="{'font':true,'font-click':item.click}" @click="show(item.name)">
 						{{item.name}}
-
 					</view>
-
-
 				</view>
 				<view class="mess">
 
@@ -108,7 +111,17 @@
 				display: flex;
 
 				box-sizing: border-box;
-				padding: 5px;
+				padding: 10px 5px 5px;
+
+				span {
+					color: rgb(254, 251, 26);
+					font-size: 40px;
+					text-shadow: 0 1px rgba(185, 0, 55, 0.8), 0 2px rgba(185, 0, 55, 0.8), 0 3px rgba(185, 0, 55, 0.8), 0 4px rgba(185, 0, 55, 0.8), 0 5px rgba(185, 0, 55, 0.8), 0 6px rgba(185, 0, 55, 0.8), 0 0 7px white, 0 0 12px rgb(212, 21, 157);
+					position: absolute;
+					left: 50%;
+					top: 0;
+					transform: translate(-50%, -50%);
+				}
 
 				.operate {
 					display: flex;

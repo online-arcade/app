@@ -24,15 +24,14 @@
 				<span @click="chatShow=true">聊天</span>
 				<span style="width: 10px;"></span>
 				<image class="" src="../../static/set.png"></image>
-				<span>设置</span>
+				<span @click="setShow=true">设置</span>
 			</view>
 
 		</view>
 
 		<view class="main">
-			<uni-row class="row" :gutter="0"
-				style="width: 100%;flex: 1; height: 100%; overflow: scroll;box-sizing: border-box;">
-				<uni-col class="col" :span="8" v-for="item of data" style="height: 50%;">
+			<uni-row class="row" :gutter="0">
+				<uni-col class="col" :span="8" v-for="item of data" style="height: 45%;">
 					<view class="box">
 						<view class="box-content">
 
@@ -49,23 +48,29 @@
 				</uni-col>
 
 			</uni-row>
+
 		</view>
 
 		<view class="foot">
 			<view v-for="data of image" class="tag" @click="data.show=true">
-				<image class="" :src="data.url"></image>
+				<view class="image-border">
+					<image class="" :src="data.url"></image>
+				</view>
 				<span>{{data.name}}</span>
 			</view>
 
 
 		</view>
 
+		<setting class="chat" v-show="setShow" @receiveData="handleSet"></setting>
 		<chat class="chat" v-show="chatShow" @receiveData="handleGetData"></chat>
 		<model class="model" v-show="modelShow" @receiveData="handleModel"></model>
 		<account class="chat" v-show="image[3].show" @receiveData="handleAccount"></account>
 		<activity class="chat" v-show="image[1].show" @receiveData="handleActivity"></activity>
 		<recharge class="chat" v-show="rechargeShow" @receiveData="handleRecharge"></recharge>
 		<sign class="chat" v-show="image[0].show" @receiveData="handleSign"></sign>
+		<email class="chat" v-show="image[2].show" @receiveData="handleEmail"></email>
+		<report class="chat" v-show="image[4].show" @receiveData="handleReport"></report>
 	</view>
 </template>
 
@@ -77,14 +82,14 @@
 				modelShow: false,
 				rechargeShow: false,
 				activityShow: false,
-				accountShow: false,
+				setShow: false,
 				data: [{
 						url: '../../static/game1.jpg',
 						name: '疯狂魔鬼城',
 						mess: '4人在玩'
 					},
 					{
-						url: '../../static/game2.jpeg',
+						url: '../../static/game2.jpg',
 						name: '疯狂魔鬼城',
 						mess: '4人在玩'
 					},
@@ -94,7 +99,7 @@
 						mess: '4人在玩'
 					},
 					{
-						url: '../../static/game4.png',
+						url: '../../static/game4.jpg',
 						name: '疯狂魔鬼城',
 						mess: '4人在玩'
 					},
@@ -148,6 +153,9 @@
 			handleModel() {
 				this.modelShow = false
 			},
+			handleSet() {
+				this.setShow = false
+			},
 			handleRecharge() {
 				this.rechargeShow = false
 			},
@@ -160,13 +168,20 @@
 			handleSign() {
 				this.image[0].show = false
 			},
+			handleEmail() {
+				this.image[2].show = false
+			},
+
+			handleReport() {
+				this.image[4].show = false
+			},
 		}
 	}
 </script>
 
 <style lang="scss">
 	.content {
-
+		font-family: 汉仪正圆-75;
 		width: 100vw;
 		height: 100vh;
 		display: flex;
@@ -177,6 +192,7 @@
 			height: 50px;
 			color: white;
 			//border: 1px solid gray;
+			background-color: transparent;
 			background-image: linear-gradient(to bottom, rgb(234, 56, 202), rgb(62, 0, 72));
 			border-bottom: 2px solid rgb(99, 14, 78);
 			position: fixed;
@@ -247,13 +263,6 @@
 				//left: 10px;
 			}
 
-			// .photo {
-			// 	width: 37px;
-			// 	height: 37px;
-			// 	border-radius: 25px;
-			// 	//box-shadow: 0 0 15px white;
-			// 	border: 10px solod gray;
-			// }
 		}
 
 		.mess {}
@@ -263,10 +272,16 @@
 			//margin: 50px 0;
 			box-sizing: border-box;
 			padding: 52px 30px;
+			//background-color: red;
 			background-image: linear-gradient(to bottom, rgb(39, 15, 32), rgb(150, 59, 71));
 			flex: 1;
 
 			.row {
+				width: 100%;
+				flex: 1;
+				height: 100%;
+				//background-color: red;
+				box-sizing: border-box;
 
 				.col {
 
@@ -338,6 +353,7 @@
 			width: 100vw;
 			height: 50px;
 			line-height: 50px;
+			background-color: transparent;
 			background-image: linear-gradient(to bottom, rgb(252, 44, 213), rgb(67, 0, 71));
 			display: flex;
 			align-items: center;
@@ -353,20 +369,35 @@
 				min-width: 83px;
 				height: 100%;
 				display: flex;
-
 				justify-content: center;
 				align-items: center;
 				box-sizing: border-box;
 				padding: 10px 0px;
 				overflow: hidden;
 
-				image {
-					width: 30px;
-					height: 30px;
+				.image-border {
+					box-sizing: border-box;
+					padding: 1px;
 					border-radius: 50%;
-					box-shadow: 0 0 10px white;
 					margin-right: 3px;
+					background-image: linear-gradient(to bottom, rgb(146, 27, 135), rgb(193, 43, 117));
+					;
+
+					display: flex;
+					justify-content: center;
+					align-items: center;
+
+					image {
+						width: 30px;
+						height: 30px;
+						border-radius: 50%;
+						//box-shadow: 0 0 10px white;
+
+					}
+
 				}
+
+
 			}
 
 

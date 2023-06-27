@@ -22,7 +22,7 @@
 								<view class="demo-uni-col dark">昵称:</view>
 							</uni-col>
 							<uni-col :span="17" :offset="1">
-								<input class="input" name="input" placeholder="apple" />
+								<input class="input" name="input" placeholder="张三" />
 							</uni-col>
 						</uni-row>
 
@@ -31,9 +31,9 @@
 								<view class="demo-uni-col dark">性别:</view>
 							</uni-col>
 							<uni-col :span="17" :offset="1">
-								<image src="../../static/radio1.png"></image>
+								<image :src="radio1" @click="chooseRadio(1)"></image>
 								<image src="../../static/boy (2).png"></image>
-								<image src="../../static/radio2.png"></image>
+								<image :src="radio2" @click="chooseRadio(0)"></image>
 								<image src="../../static/gril (2).png"></image>
 							</uni-col>
 						</uni-row>
@@ -44,7 +44,7 @@
 								<view class="demo-uni-col dark">点数:</view>
 							</uni-col>
 							<uni-col :span="17" :offset="1">
-								<input class="input" name="input" placeholder="apple" />
+								<input class="input" name="input" placeholder="100" />
 							</uni-col>
 						</uni-row>
 
@@ -70,7 +70,7 @@
 								<view class="demo-uni-col dark">签名:</view>
 							</uni-col>
 							<uni-col :span="17" :offset="1">
-								<input class="input" name="input" placeholder="apple" />
+								<input class="input" name="input" placeholder="这个人很懒,什么签名也没有" />
 							</uni-col>
 						</uni-row>
 
@@ -92,6 +92,9 @@
 		name: "model",
 		data() {
 			return {
+				radio1: '../../static/radio1.png',
+				radio2: '../../static/radio2.png',
+				choose: ['../../static/radio1.png', '../../static/radio2.png'],
 				sendMess: '',
 				mess: [{
 						name: '张三',
@@ -118,6 +121,15 @@
 				})
 
 				this.$refs.scrollableDiv.scrollTop = this.$refs.scrollableDiv.scrollHeight;
+			},
+			chooseRadio(mess) {
+				if (mess) {
+					this.radio1 = this.choose[0];
+					this.radio2 = this.choose[1]
+				} else {
+					this.radio2 = this.choose[0];
+					this.radio1 = this.choose[1]
+				}
 			}
 		}
 	}

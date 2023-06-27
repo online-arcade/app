@@ -9,73 +9,22 @@
 				<view class="operate">
 
 
-					<image src="../../static/avatar.jpg"></image>
-					<span>名称 :张三</span>
+					<span>我的账户</span>
 
 				</view>
 				<view class="mess" ref="scrollableDiv">
 
-					<form>
-
-						<uni-row class="row">
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">昵称:</view>
-							</uni-col>
-							<uni-col :span="17" :offset="1">
-								<input class="input" name="input" placeholder="apple" />
-							</uni-col>
-						</uni-row>
-
-						<uni-row class="row">
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">性别:</view>
-							</uni-col>
-							<uni-col :span="17" :offset="1">
-								<image src="../../static/radio1.png"></image>
-								<image src="../../static/boy (2).png"></image>
-								<image src="../../static/radio2.png"></image>
-								<image src="../../static/gril (2).png"></image>
-							</uni-col>
-						</uni-row>
-
-
-						<uni-row class="row">
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">点数:</view>
-							</uni-col>
-							<uni-col :span="17" :offset="1">
-								<input class="input" name="input" placeholder="apple" />
-							</uni-col>
-						</uni-row>
-
-						<uni-row class="row">
-
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">人缘:</view>
-							</uni-col>
-							<uni-col :span="3" :offset="1" style="color:rgb(254,254,61);font-size: 18px;">
-								90
-							</uni-col>
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">vip:</view>
-							</uni-col>
-							<uni-col :span="5" :offset="1" style="color:rgb(254,254,61);font-size: 18px;">
-								成为vip
-							</uni-col>
-						</uni-row>
-
-
-						<uni-row class="row">
-							<uni-col :span="5" style="text-align: right;">
-								<view class="demo-uni-col dark">签名:</view>
-							</uni-col>
-							<uni-col :span="17" :offset="1">
-								<input class="input" name="input" placeholder="apple" />
-							</uni-col>
-						</uni-row>
-
-					</form>
-
+					<view class="log" v-for="item in log">
+						<view>
+							<view>{{item.title}}</view>
+							<span>{{item.note}}</span>
+						</view>
+						<view>{{item.time}}</view>
+					</view>
+					<!-- 	<uni-list style="background-color: transparent;">
+						<uni-list-item v-for="item in log" :title='item.title' :note="item.note" clickable
+							@click="goto('alarmDetail')" showArrow showExtraIcon :rightText="item.time" />
+					</uni-list> -->
 
 
 
@@ -89,9 +38,36 @@
 
 <script>
 	export default {
+
 		name: "account",
 		data() {
 			return {
+				log: [{
+						title: "充值记录",
+						note: '金额￥ 99',
+						time: '2023-6-26 12:00:00'
+					},
+					{
+						title: "充值记录",
+						note: '金额￥ 99',
+						time: '2023-6-26 12:00:00'
+					},
+					{
+						title: "充值记录",
+						note: '金额￥ 99',
+						time: '2023-6-26 12:00:00'
+					},
+					{
+						title: "充值记录",
+						note: '金额￥ 99',
+						time: '2023-6-26 12:00:00'
+					},
+					{
+						title: "充值记录",
+						note: '金额￥ 99',
+						time: '2023-6-26 12:00:00'
+					}
+				],
 				sendMess: '',
 				mess: [{
 						name: '张三',
@@ -124,6 +100,11 @@
 </script>
 
 <style lang="scss">
+	.uni-list {
+		background-color: #f2f2f2;
+		/* 设置背景颜色为浅灰色 */
+	}
+
 	.content {
 
 		border: 4px solid rgb(255, 244, 38);
@@ -165,10 +146,14 @@
 					display: flex;
 					color: white;
 
-					//	justify-content: space-between;
-					//height: 50px;
 					span {
-						margin-left: 10px;
+						color: rgb(254, 251, 26);
+						font-size: 40px;
+						text-shadow: 0 1px rgba(185, 0, 55, 0.8), 0 2px rgba(185, 0, 55, 0.8), 0 3px rgba(185, 0, 55, 0.8), 0 4px rgba(185, 0, 55, 0.8), 0 5px rgba(185, 0, 55, 0.8), 0 6px rgba(185, 0, 55, 0.8), 0 0 7px white, 0 0 12px rgb(212, 21, 157);
+						position: absolute;
+						left: 50%;
+						top: 0;
+						transform: translate(-50%, -50%);
 					}
 
 					image {
@@ -190,7 +175,7 @@
 
 
 				.mess {
-					color: white;
+					//color: white;
 					margin-top: 10px;
 					box-sizing: border-box;
 					padding: 10px;
@@ -204,59 +189,23 @@
 					display: flex;
 					flex-direction: column;
 
+					.log {
+						color: lightgray;
+						text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3);
+						box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3);
 
-					image {
-						background-color: white;
-						border-radius: 50%;
-						width: 30px;
-						height: 30px;
-					}
-
-					.row {
+						background-image: linear-gradient(to right, rgb(121, 24, 29), rgb(170, 13, 17));
+						width: 100%;
+						height: 70px;
 						display: flex;
+						justify-content: space-between;
 						align-items: center;
-						margin-bottom: 5px;
-
-						image {
-							width: 30px;
-							height: 30px;
-							background-color: transparent;
-							border-radius: 0;
-						}
-					}
-
-					.input {
-						//	border: 3px solid rgb(117, 23, 28);
-						background-color: rgb(47, 0, 17);
-						border-radius: 5px;
-						box-shadow: 0 0 15px rgb(97, 19, 37);
-						color: rgb(245, 231, 202);
 						box-sizing: border-box;
-						padding: 20px;
-
+						padding: 10px;
+						border-radius: 5px;
+						margin-bottom: 5px;
 					}
 
-					.informate {
-						display: flex;
-
-						.showMess {
-							margin-left: 5px;
-							display: flex;
-							flex-direction: column;
-
-							.title {
-								transform: scale(0.9);
-							}
-
-							.item {
-								background-color: rgb(117, 23, 28);
-								border-radius: 5px;
-								box-sizing: border-box;
-								padding: 8px;
-
-							}
-						}
-					}
 
 				}
 			}

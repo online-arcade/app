@@ -8,14 +8,37 @@
 
 				<view class="operate">
 
+					<view style="display: flex;">
+						<image src="../../static/avatar.jpg"></image>
+						<view class="infor">
+							<span>名称 :{{account.name}}</span>
+							<span>余额 :{{account.money}}</span>
+						</view>
+					</view>
 
-					<image src="../../static/avatar.jpg"></image>
-					<span>名称 :张三</span>
-
+					<view class="btn" @click="custom()">自定义充值</view>
 				</view>
-				<view class="mess" ref="scrollableDiv">
+				<view class="mess">
 
+					<uni-row :gutter="0">
+						<uni-col class="shop" :span="8" v-for="(item ,index) in shop">
+							<view class="form" @click="cost(item.spend)">
+								<span>{{item.name}}</span>
+								<image :src="item.url"></image>
+								<span>{{item.spend}}</span>
+							</view>
+						</uni-col>
+					</uni-row>
+
+
+					<uni-popup ref="alertDialog" type="dialog">
+						<uni-popup-dialog type="warn" cancelText="关闭" confirmText="同意" title="通知" :content="content"
+							@confirm="dialogConfirm" @close="dialogClose"></uni-popup-dialog>
+					</uni-popup>
 				</view>
+
+
+
 			</view>
 		</view>
 	</view>
@@ -26,16 +49,41 @@
 		name: "recharge",
 		data() {
 			return {
+				account: {
+					name: '张三',
+					money: 100
+				},
+				content: '',
 				sendMess: '',
-				mess: [{
-						name: '张三',
-						data: '发送了一条信息',
-						float: 'left'
+				shop: [{
+						name: '天降黄金',
+						url: '../../static/money (2).png',
+						spend: '￥ 19'
 					},
 					{
-						name: '李四',
-						data: '发送了一条信息',
-						float: 'right'
+						name: '大量黄金',
+						url: '../../static/money (2).png',
+						spend: '￥ 49'
+					},
+					{
+						name: '巨量黄金',
+						url: '../../static/money (2).png',
+						spend: '￥ 99'
+					},
+					{
+						name: '小福袋',
+						url: '../../static/bag.png',
+						spend: '￥ 30'
+					},
+					{
+						name: '中福袋',
+						url: '../../static/bag.png',
+						spend: '￥ 60'
+					},
+					{
+						name: '大福袋',
+						url: '../../static/bag.png',
+						spend: '￥ 120'
 					}
 				]
 			};
@@ -44,14 +92,28 @@
 			close() {
 				this.$emit('receiveData')
 			},
-			send() {
-				this.mess.push({
-					name: '张三',
-					data: this.sendMess,
-					float: 'left'
-				})
+			cost(mess) {
+				this.content = "充值" + mess
+				this.$refs.alertDialog.open()
 
-				this.$refs.scrollableDiv.scrollTop = this.$refs.scrollableDiv.scrollHeight;
+			},
+			custom() {
+				uni.showToast({
+
+					title: "自定义充值",
+
+				});
+
+			},
+			dialogClose() {},
+			dialogConfirm() {
+				//console.log(this.content.slice(4))
+				uni.showToast({
+
+					title: this.content + '成功!',
+
+				});
+				this.account.money += Number(this.content.slice(4))
 			}
 		}
 	}
@@ -94,30 +156,35 @@
 				flex-direction: column;
 				box-sizing: border-box;
 				padding: 5px;
+				position: relative;
 
 				.operate {
 					display: flex;
 					color: white;
-
-					//	justify-content: space-between;
-					//height: 50px;
-					span {
-						margin-left: 10px;
-					}
+					justify-content: space-between;
+					align-items: center;
 
 					image {
 						width: 50px;
 						height: 50px;
 					}
 
-					.send {
-						color: white;
+					.infor {
+						display: flex;
+						flex-direction: column;
+						margin-left: 10px;
+						justify-content: center;
+					}
+
+					.btn {
+
+						background-image: linear-gradient(to bottom, rgb(74, 255, 46), rgb(4, 93, 1));
 						box-sizing: border-box;
-						padding: 5px;
-						width: 80%;
-						height: 50px;
-						background-color: rgb(70, 13, 19);
-						border-radius: 7px;
+						padding: 7px 15px;
+						border-radius: 5px;
+						text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
+						;
+						border: 2px solid rgb(70, 13, 19);
 					}
 				}
 
@@ -137,35 +204,49 @@
 					display: flex;
 					flex-direction: column;
 
-					image {
-						background-color: white;
-						border-radius: 50%;
-						width: 30px;
-						height: 30px;
-					}
+					.shop {
 
-					.informate {
+						box-sizing: border-box;
+						padding: 5px;
 						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						align-items: center;
 
-						.showMess {
-							margin-left: 5px;
+
+
+						.form {
+							width: 50%;
+							align-items: center;
 							display: flex;
 							flex-direction: column;
+							background-color: rgb(121, 24, 28);
+							border-radius: 6px;
+							overflow: hidden;
+							box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3);
+							box-sizing: border-box;
+							padding: 3px 0;
 
-							.title {
-								transform: scale(0.9);
+							image {
+								width: 45px;
+								height: 45px;
+								margin: 5px 0;
+								//background-color: red;
+								border-radius: 50%;
+								box-sizing: border-box;
+								padding: 1px;
+								//box-shadow: 0 0 15px gray;
 							}
 
-							.item {
-								background-color: rgb(117, 23, 28);
-								border-radius: 5px;
-								box-sizing: border-box;
-								padding: 8px;
+							span {
+								background-color: rgb(120, 24, 28);
+								width: 100%;
+								text-align: center;
+								text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
 
 							}
 						}
 					}
-
 				}
 			}
 		}
