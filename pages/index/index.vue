@@ -11,6 +11,11 @@
 				<view class="group money" style="margin: 0 50px;  height: 100%;  ">
 					<image class="" src="../../static/money.png"></image>
 					<span style="padding: 0 20px; "> 9999 </span>
+					<!-- <view
+						style="width: 30px;height: 30px;background-image: linear-gradient(to bottom, rgb(180, 255, 30), rgb(64,178,2)); display: flex; justify-content: center;align-items: center; border-radius: 50%;">
+						<image src="../../static/add (3).png" style=" width: 20px;height: 20px;"></image>
+
+					</view> -->
 					<image class=" add" src="../../static/add (1).png" @click="rechargeShow=true"></image>
 				</view>
 				<image class="" src="../../static/start (1).png" style="z-index: 2;"></image>
@@ -30,24 +35,51 @@
 		</view>
 
 		<view class="main">
-			<uni-row class="row" :gutter="0">
-				<uni-col class="col" :span="8" v-for="item of data" style="height: 45%;">
-					<view class="box">
-						<view class="box-content">
 
+
+			<uni-transition custom-class="transition" :mode-class="modeClass" :show="show"
+				:class="{'row':!series,'row1':series}">
+
+				<!-- <view :class="{'row':!series,'row1':series}"> -->
+				<view class="col" v-for="(item,index) of data">
+					<view class="box">
+						<view class="box-content" @click="chooseSeries(index)">
 							<image :src="item.url" style=" height: 100%;">
 							</image>
 							<span class="num">{{item.mess}}</span>
 
 							<span class="font" style="font-size: 45px;color: yellow;">demon</span>
 							<span class="font">{{item.name}}</span>
-
 						</view>
-
 					</view>
-				</uni-col>
+				</view>
+				<!-- </view> -->
+			</uni-transition>
 
-			</uni-row>
+
+
+			<uni-transition custom-class="transition" :mode-class="modeClass" :show="!show"
+				:class="{'row':!series,'row1':series}">
+				<!-- <view :class="{'row':!series,'row1':series}"> -->
+				<view class="col" v-for="(item,dex) of data">
+					<view class="box">
+						<view class="box-content" @click="goto()">
+							<image :src="data[index].url" style=" height: 100%;">
+							</image>
+							<span class="num">{{item.mess}}</span>
+
+							<span class="font" style="font-size: 45px;color: yellow;">demon</span>
+							<span class="font">系列{{dex+1}}</span>
+						</view>
+					</view>
+				</view>
+				<image src="../../static/return (1).png" @click=" show = ! show"
+					style="position: absolute;right:-20px; width: 30px;height: 30px; background-color: pink;border-radius: 50%;box-sizing: border-box;padding: 5px;">
+				</image>
+				<!-- </view> -->
+			</uni-transition>
+
+			<view> </view>
 
 		</view>
 
@@ -78,11 +110,15 @@
 	export default {
 		data() {
 			return {
+				index: 0,
+				series: false,
 				chatShow: false,
 				modelShow: false,
 				rechargeShow: false,
 				activityShow: false,
 				setShow: false,
+				modeClass: '',
+				show: true,
 				data: [{
 						url: '../../static/game1.jpg',
 						name: '疯狂魔鬼城',
@@ -115,6 +151,9 @@
 					},
 
 				],
+
+				series: [],
+
 				image: [{
 						url: '../../static/sign (1).png',
 						name: '签到',
@@ -144,7 +183,7 @@
 			}
 		},
 		onLoad() {
-
+			this.series = false
 		},
 		methods: {
 			handleGetData() {
@@ -175,6 +214,20 @@
 			handleReport() {
 				this.image[4].show = false
 			},
+			chooseSeries(mess) {
+				this.index = mess
+				this.modeClass = ['fade', 'slide-left']
+				this.show = !this.show
+				//this.show = !this.show
+			},
+			goto() {
+				uni.showToast({
+
+					title: '更新中!',
+
+				});
+			}
+			//returnPage(){}
 		}
 	}
 </script>
@@ -221,7 +274,7 @@
 				border-radius: 10px;
 				position: relative;
 				left: -13px;
-				z-index: 1;
+				//z-index: 1;
 				box-sizing: border-box;
 				padding: 1px 0;
 			}
@@ -268,7 +321,7 @@
 		.mess {}
 
 		.main {
-			z-index: -1;
+			//z-index: -1;
 			//margin: 50px 0;
 			box-sizing: border-box;
 			padding: 52px 30px;
@@ -278,10 +331,17 @@
 
 			.row {
 				width: 100%;
-				flex: 1;
+
 				height: 100%;
 				//background-color: red;
 				box-sizing: border-box;
+
+				display: grid;
+				grid-template-rows: repeat(2, 1fr);
+				padding: 3px 0 7px;
+				grid-template-columns: repeat(3, 1fr);
+				//grid-row-gap: 10px;
+				grid-gap: 10px 0px;
 
 				.col {
 
@@ -290,7 +350,8 @@
 					padding: 0 10px;
 					display: flex;
 					justify-content: center;
-
+					width: 100%;
+					height: 100%;
 
 					.box {
 						display: flex;

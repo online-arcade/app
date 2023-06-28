@@ -1,54 +1,30 @@
 <template>
 	<view class="content">
+
+
 		<image src="../../static/close.png" class="close" @click="close"></image>
 		<view class="main">
 			<view class="container">
+				<span class="sum">本月已累计签到{{day}}天</span>
+				<view class="sign-box">
 
-				<view class="model" style="background-image: linear-gradient(to bottom, rgb(237,0,198), rgb(130,0,158));
-				 ">
-					<view class="free">
-						<image src="../../static/free.png" style="width:80px;
-						height: 80px;
-						 box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3);
-						"></image>
-					</view>
+					<view class="sign-back">
+						<view class="sign-model">
 
-					<view v-for="item in free" :class="{'free':true ,'card-model':true,'pass':item.pass}"
-						@click="choose(item.cost,item.pass,0)">
-						<view class="image-back">
-							<image :src="item.url"></image>
-							<span>{{item.cost}}</span>
-						</view>
+							<view v-for="(item,index) of sign" @click="choose(item,index)" :class="{'hide':item.pass}">
 
-					</view>
-				</view>
+								<image :src="item.url"></image>
+								<span> 第{{index+1}}天</span>
 
-				<view class="model"
-					style="top: 60%;background-image: linear-gradient(to bottom, rgb(248,213,10), rgb(230,183,6));">
-					<view class="vip" @click="signVip()">
-						<view class="box">
-							<image src="../../static/vip.png"></image>
-						</view>
+							</view>
 
-					</view>
-					<view v-for="item in vip" :class="{'vip':true ,'card-model':true,'pass':item.pass}"
-						@click="choose(item.cost,item.pass,1)">
-						<view class="image-back">
-							<image :src="item.url"></image>
-							<span>{{item.cost}}</span>
 						</view>
 					</view>
 				</view>
 
-			</view>
-
-			<view class="day">
-				<span style="flex:0.8;"></span> <span style="flex: 1; text-align: center;"
-					v-for="item in day">{{item}}</span>
-			</view>
-
-			<view class="mess">
-				<span>每日签到</span>
+				<view class="mess">
+					<span>每日签到</span>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -59,81 +35,68 @@
 		name: "sign",
 		data() {
 			return {
-				day: ['Day1', 'Day2', 'Day3', 'Day4', 'Day5', 'Day6', 'Day7'],
+				day: 1,
 				sendMess: '',
-				free: [{
+				sign: [{
 						url: '../../static/money (2).png',
-						cost: '1000',
 						pass: true
-					},
-					{
+					}, {
 						url: '../../static/money (2).png',
-						cost: '2000',
-						pass: true
-					},
-					{
-						url: '../../static/money (2).png',
-						cost: '3000',
-						pass: true
-					},
-					{
-						url: '../../static/money (2).png',
-						cost: '4000',
 						pass: false
 					},
 					{
 						url: '../../static/money (2).png',
-						cost: '5000',
 						pass: false
 					},
 					{
 						url: '../../static/money (2).png',
-						cost: '6000',
 						pass: false
 					},
 					{
 						url: '../../static/money (2).png',
-						cost: '7000',
-						pass: false
-					}
-				],
-				vip: [{
-						url: '../../static/money (2).png',
-						cost: '10000',
-						pass: true
-					},
-					{
-						url: '../../static/money (2).png',
-						cost: '20000',
-						pass: true
-					},
-					{
-						url: '../../static/money (2).png',
-						cost: '30000',
-						pass: true
-					},
-					{
-						url: '../../static/money (2).png',
-						cost: '40000',
 						pass: false
 					},
 					{
 						url: '../../static/money (2).png',
-						cost: '50000',
 						pass: false
 					},
 					{
 						url: '../../static/money (2).png',
-						cost: '60000',
 						pass: false
 					},
 					{
 						url: '../../static/money (2).png',
-						cost: '70000',
+						pass: false
+					},
+					{
+						url: '../../static/money (2).png',
+						pass: false
+					},
+					{
+						url: '../../static/money (2).png',
+						pass: false
+					},
+					{
+						url: '../../static/money (2).png',
+						pass: false
+					},
+					{
+						url: '../../static/money (2).png',
+						pass: false
+					},
+					{
+						url: '../../static/money (2).png',
+						pass: false
+					},
+					{
+						url: '../../static/money (2).png',
+						pass: false
+					},
+					{
+						url: '../../static/money (2).png',
 						pass: false
 					}
 				]
-
 
 			};
 		},
@@ -144,29 +107,27 @@
 			show() {
 
 			},
+
 			signVip() {
 				uni.showToast({
 
 					title: "充值VIP",
 				});
 			},
-			choose(mess, show, vip) {
-				if (vip) {
+			choose(mess, index) {
+
+				if (mess.pass) {
 					uni.showToast({
 						icon: 'error',
-						title: "你不是VIP用户",
+						title: "已过期!",
 					});
 				} else {
-					if (show) {
-						uni.showToast({
-							icon: 'error',
-							title: "已过期",
-						});
-					} else
-						uni.showToast({
-							title: "领取" + mess,
-						});
+					this.sign[index].pass = true
+					uni.showToast({
+						title: "领取成功!",
+					});
 				}
+
 
 			}
 		}
@@ -207,109 +168,100 @@
 				width: 100%;
 				height: 100%;
 				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
 				box-sizing: border-box;
-				padding: 5px;
+				padding: 13px 5px 5px;
 
-				.model {
-					position: absolute;
-					width: 105%;
-					height: 30%;
-					background-color: red;
-					top: 15%;
-					left: 50%;
-					transform: translateX(-50%);
-					box-sizing: border-box;
-					padding: 5px;
-					display: flex;
-					border-radius: 7px;
-					overflow: hidden;
-
-					.free {
-						border-radius: 5px;
-						border: 2px solid rgb(176, 0, 149);
-
-
-					}
-
-					.vip {
-						border-radius: 5px;
-						border: 2px solid rgb(166, 118, 5);
-
-						.box {
-							width: 80px;
-							height: 80px;
-
-							image {
-								width: 60px;
-								height: 60px;
-								box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3);
-							}
-						}
-					}
-
-					.pass {
-						background-color: rgba(87, 0, 107, 0.8)
-					}
-
-					.card-model {
-
-						border-left: 0px;
-						box-sizing: border-box;
-						//padding: 0 10px
-
-					}
-
-					.image-back {
-						display: flex;
-						flex-direction: column;
-						width: 70%;
-						background-image: linear-gradient(to bottom, rgb(48, 21, 48), rgb(81, 43, 84));
-						box-sizing: border-box;
-						padding: 10px 0;
-						border-radius: 5px;
-						color: white;
-						position: relative;
-						text-shadow: 1px 1px rgba(185, 0, 55, 0.8), 2px 2px rgba(185, 0, 55, 0.8), 3px 3px rgba(185, 0, 55, 0.8);
-						margin: 10px;
-
-						span {
-							position: absolute;
-							bottom: 0;
-						}
-
-						image {
-							box-shadow: 0 0 10px white;
-							border-radius: 50%;
-						}
-					}
-
-					image {
-						width: 40px;
-						height: 40px;
-
-					}
-
-					view {
-						flex: 1;
-						display: flex;
-						justify-content: center;
-						align-items: center;
-						//	background-image: linear-gradient(to bottom, rgb(234, 14, 211), rgb(105, 0, 138));
-						;
-					}
+				.sum {
+					color: rgb(254, 241, 223);
+					text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
+					font-size: 22px;
 				}
 
+				.sign-box {
+					width: 100%;
+					height: 100%;
+					background-image: linear-gradient(to bottom, rgb(226, 188, 148), rgb(156, 131, 111));
+					border-radius: 5px;
+					box-sizing: border-box;
+					padding: 4px;
+
+					.sign-back {
+						background-color: rgb(248, 225, 194);
+						width: 100%;
+						height: 100%;
+						border-radius: 5px;
+
+
+						.sign-model {
+							width: 100%;
+							height: 100%;
+							display: grid;
+							grid-template-rows: repeat(3, 1fr);
+							grid-template-columns: repeat(5, 1fr);
+							//grid-row-gap: 10px;
+							grid-gap: 10px 30px;
+							box-sizing: border-box;
+							padding: 5px 15px;
+
+
+							/* 定义网格项之间的间距 */
+
+							.hide {
+								background-color: rgb(129, 120, 112);
+
+								// &::after {
+								// 	content: '';
+								// 	position: absolute;
+								// 	width: 70px;
+								// 	height: 70px;
+
+								// 	background-image: url('../../static/bag.png');
+								// }
+							}
+
+							view {
+								border-radius: 7px;
+								background-color: rgb(238, 148, 147);
+								box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), -1px -1px rgba(0, 0, 0, 0.3), -2px -2px rgba(0, 0, 0, 0.3);
+								display: flex;
+								flex-direction: column;
+								justify-content: space-between;
+								align-items: center;
+								box-sizing: border-box;
+								padding: 6px 12px 0px;
+								color: white;
+								text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3);
+
+								//padding: 20px;
+								image {
+									width: 100%;
+									height: 100%; //height: 50px;
+									box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), -1px -1px rgba(0, 0, 0, 0.3), -2px -2px rgba(0, 0, 0, 0.3);
+									//	background-color: rgb(249, 242, 220);
+									background-color: white;
+									box-sizing: border-box;
+									padding: 5px 15px;
+									border-radius: 5px;
+									margin-bottom: 2px;
+								}
+
+								span {
+									position: relative;
+									top: 2px;
+									//background-color: red;
+									//width: 100%;
+								}
+							}
+						}
+
+					}
+
+				}
 			}
 
-			.day {
-				position: absolute;
-				color: white;
-				top: 50%;
-				display: flex;
-				width: 100%;
-				color: rgb(125, 208, 228);
-				text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3), 4px 4px rgba(0, 0, 0, 0.3), 0 0 5px rgba(0, 0, 0, 0.3);
-			}
 
 			.mess {
 				color: rgb(254, 251, 26);

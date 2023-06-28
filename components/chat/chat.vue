@@ -48,7 +48,7 @@
 
 
 
-		<detail class="chat" v-show="detailShow" @receiveData="handleDetail"></detail>
+		<!-- <detail v-show="detailShow" @receiveData="handleDetail"></detail> -->
 	</view>
 
 

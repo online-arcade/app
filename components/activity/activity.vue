@@ -8,9 +8,6 @@
 
 				<view class="operate">
 
-
-
-
 					<span>活动中心</span>
 
 
@@ -21,7 +18,7 @@
 				<view class="mess">
 
 
-					<image src="../../static/act.png" style="width: 100%;height: 100%;"></image>
+					<image :src="url" style="width: 100%;height: 100%;"></image>
 
 
 
@@ -36,15 +33,19 @@
 		name: "activity",
 		data() {
 			return {
+				url: '../../static/act.png',
 				sendMess: '',
 				data: [{
 					name: '刮刮乐',
+					url: '../../static/act.png',
 					click: false
 				}, {
 					name: '大富翁',
+					url: '../../static/game2.jpg',
 					click: false
 				}, {
 					name: '挖金矿',
+					url: '../../static/game6.jpg',
 					click: false
 				}],
 				mess: [{
@@ -68,6 +69,7 @@
 				this.data.filter(item => {
 					if (item.name === mes) {
 						item.click = !item.click
+						this.url = item.url
 					} else item.click = false
 				})
 			}
@@ -140,7 +142,7 @@
 						background-image: linear-gradient(to bottom, rgb(248, 231, 75), rgb(205, 121, 11));
 						// background-color: rgb(205, 123, 9);
 						box-sizing: border-box;
-						padding: 5px;
+						padding: 8px;
 						margin-bottom: 5px;
 						position: relative;
 
@@ -173,8 +175,12 @@
 					flex: 1;
 					width: 100%;
 					height: 100%;
-					border-radius: 7px;
 
+
+					image {
+						border-radius: 7px;
+						box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3), 4px 4px rgba(0, 0, 0, 0.3), 5px 5px rgba(0, 0, 0, 0.3);
+					}
 				}
 
 

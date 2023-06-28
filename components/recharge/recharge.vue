@@ -15,10 +15,14 @@
 							<span>余额 :{{account.money}}</span>
 						</view>
 					</view>
+					<view style="display: flex;">
 
-					<view class="btn" @click="custom()">自定义充值</view>
+						<view class="btn" @click="custom(0)">礼包充值</view>
+						<view class="btn" @click="custom(1)">自定义充值</view>
+					</view>
+
 				</view>
-				<view class="mess">
+				<view class="mess" v-if="customShow===0">
 
 					<uni-row :gutter="0">
 						<uni-col class="shop" :span="8" v-for="(item ,index) in shop">
@@ -37,6 +41,29 @@
 					</uni-popup>
 				</view>
 
+				<view class="mess" v-if="customShow===1">
+
+					<form>
+
+						<uni-row class="row">
+							<uni-col :span="5" style="text-align: right;">
+								<view class="demo-uni-col dark">自定义金额:</view>
+							</uni-col>
+							<uni-col :span="17" :offset="1">
+								<input class="input" name="input" placeholder="1000" v-model="recharge" />
+							</uni-col>
+						</uni-row>
+						<view style="display:flex;justify-content: right;">
+							<view class="confirm" @click="confirm()">确定</view>
+						</view>
+
+					</form>
+
+
+
+				</view>
+
+
 
 
 			</view>
@@ -49,6 +76,8 @@
 		name: "recharge",
 		data() {
 			return {
+				recharge: 0,
+				customShow: 0,
 				account: {
 					name: '张三',
 					money: 100
@@ -97,15 +126,32 @@
 				this.$refs.alertDialog.open()
 
 			},
-			custom() {
-				uni.showToast({
+			custom(num) {
+				// uni.showToast({
 
-					title: "自定义充值",
+				// 	title: "自定义充值",
 
-				});
-
+				// });
+				this.customShow = num
 			},
 			dialogClose() {},
+			confirm() {
+				if (this.recharge) {
+					uni.showToast({
+
+						title: '充值' + this.recharge + '成功!',
+
+					});
+					this.account.money += Number(this.recharge)
+				} else {
+					uni.showToast({
+						icon: 'error',
+
+						title: '请输入充值金额!',
+
+					});
+				}
+			},
 			dialogConfirm() {
 				//console.log(this.content.slice(4))
 				uni.showToast({
@@ -185,6 +231,7 @@
 						text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
 						;
 						border: 2px solid rgb(70, 13, 19);
+						margin-left: 5px;
 					}
 				}
 
@@ -247,6 +294,37 @@
 							}
 						}
 					}
+
+
+
+
+					.row {
+						display: flex;
+						align-items: center;
+						margin-bottom: 5px;
+
+						.input {
+							//	border: 3px solid rgb(117, 23, 28);
+							background-color: rgb(47, 0, 17);
+							border-radius: 5px;
+							box-shadow: 0 0 15px rgb(97, 19, 37);
+							// color: rgb(245, 231, 202);
+							//box-sizing: border-box;
+							padding: 10px;
+							width: 100%;
+						}
+					}
+
+					.confirm {
+						background-image: linear-gradient(to bottom, rgb(40, 175, 255), rgb(30, 133, 255));
+						box-sizing: border-box;
+						padding: 3px 15px;
+						border-radius: 6px;
+						text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
+						border: 1px solid black; //rgb(70, 13, 19)
+						box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3);
+					}
+
 				}
 			}
 		}

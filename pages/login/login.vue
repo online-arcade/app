@@ -5,7 +5,7 @@
 
 			<view class="form">
 
-				<h3 style="margin-bottom: 10px;">登录</h3>
+				<h2 style="margin-bottom: 10px;">登录</h2>
 
 
 
@@ -27,7 +27,8 @@
 				<view class="btn" style="display: flex; justify-content: space-between">
 
 					<view class="btn-form" @click="register">
-						注册</view>
+						注册
+					</view>
 
 					<view class="btn-form" @click="login">
 						登录</view>
@@ -85,6 +86,7 @@
 	page {}
 
 	.content {
+		font-family: 汉仪正圆-75;
 		height: 100vh;
 		width: 100vw;
 		background-image: url('../../static/login1.jpg');
@@ -96,9 +98,13 @@
 		align-items: center;
 
 		.login {
+			position: relative;
 			// width: 50vw;
 			// height: 55vh;
-			background-color: rgba(211, 211, 211, 0.7);
+			//	background-color: rgba(211, 211, 211, 0.7);
+			color: white;
+			background-image: linear-gradient(to bottom, rgb(125, 25, 30), rgb(82, 13, 17));
+			border: 4px solid rgb(255, 244, 38);
 			border-radius: 10px;
 			box-shadow: 1px 1px rgba(0, 0, 0, 0.2), 2px 2px rgba(0, 0, 0, 0.2), 3px 3px rgba(0, 0, 0, 0.2);
 			display: flex;
@@ -110,8 +116,10 @@
 			.form {
 				box-sizing: border-box;
 
-				h3 {
+
+				h2 {
 					text-align: center;
+					text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3), 4px 4px rgba(0, 0, 0, 0.3);
 				}
 
 				.input {
@@ -123,6 +131,7 @@
 					span {
 						margin-right: 20px;
 						font-weight: bold;
+						text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3), 4px 4px rgba(0, 0, 0, 0.3);
 						//color: gray;
 					}
 				}
@@ -132,8 +141,10 @@
 						display: flex;
 						justify-content: center;
 						align-items: center;
-						color: white;
-						text-shadow: 1px 1px black, 2px 2px black;
+
+						text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5), -2px -2px 2px rgba(0, 0, 0, 0.5);
+						;
+
 						border-radius: 6px;
 						box-sizing: border-box;
 						padding: 5px 20px;
