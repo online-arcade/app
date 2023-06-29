@@ -12,7 +12,7 @@
 
 					<image src="../../static/send (2).png" @click="send" class="sendIcon">
 					</image>
-					<image src="../../static/redbag.jpg" class="redbag"></image>
+					<image src="../../static/redbag.jpg" class="redbag" @click="redBag()"></image>
 				</view>
 				<scroll-view class="mess" ref="scrollableDiv" scroll-y=true :scroll-top="scrollTop"
 					:scroll-with-animation="true">
@@ -20,7 +20,7 @@
 					<view class="informate " v-for="(item,index) of mess" :style="{justifyContent: item.float}">
 
 						<view v-if="item.float==='left'" style="display: flex;">
-							<image src="../../static/boy.png" @click="detailShow=true"></image>
+							<image src="../../static/boy.png" @click="detail()"></image>
 							<view class="showMess">
 
 								<span class="title" :style="{textAlign:item.float}">{{item.name}}</span>
@@ -37,7 +37,7 @@
 
 								<span class="item">{{item.data}}</span>
 							</view>
-							<image src="../../static/boy.png" @click="detailShow=true"></image>
+							<image src="../../static/boy.png" @click="detail()"></image>
 						</view>
 					</view>
 
@@ -48,7 +48,10 @@
 
 
 
-		<!-- <detail v-show="detailShow" @receiveData="handleDetail"></detail> -->
+		<detail class="card-position" :message="message" v-show="detailShow" @receiveData="handleDetail"
+			@receiveMes="handleMess($event)">
+		</detail>
+		<model class="card-position" v-show="modelShow" @receiveData="handleModel"></model>
 	</view>
 
 
@@ -59,6 +62,11 @@
 		name: "chat",
 		data() {
 			return {
+				message: {
+					name: '大厅',
+					show: true
+				},
+				modelShow: false,
 				detailShow: false,
 				sendMess: '',
 				scrollTop: 0,
@@ -80,6 +88,23 @@
 				this.$emit('receiveData')
 			},
 
+			getRedbag() {
+				this.mess.push({
+					name: '张三',
+					data: '领取成功!!!',
+					float: 'left'
+				})
+
+			},
+			handleMess(mess) {
+
+				this.mess.push({
+					name: '张三',
+					data: '张三赠送了' + mess.money + '元红包,数量有限，请及时领取!!!',
+					float: 'left'
+				})
+
+			},
 			send() {
 				this.scrollTop += 300
 				this.mess.push({
@@ -89,9 +114,26 @@
 				})
 
 			},
+			redBag() {
+				this.detailShow = true;
+				this.message = {
+					name: '大厅',
+					show: true
+				}
+			},
 			showMess() {},
 			handleDetail() {
 				this.detailShow = false
+			},
+			handleModel() {
+				this.modelShow = false
+			},
+			detail() {
+				this.detailShow = true
+				this.message = {
+					name: '张三',
+					show: false
+				}
 			}
 		}
 	}
@@ -99,12 +141,22 @@
 
 <style lang="scss">
 	.content {
-
 		border: 4px solid rgb(255, 244, 38);
 		border-radius: 10px;
 		position: relative;
 		box-sizing: border-box;
 		padding: 5px;
+
+		.card-position {
+			position: fixed;
+			//position: absolute;
+			width: 90vw;
+			height: 90vh;
+			left: 50%;
+			top: 50%;
+			background-color: rgb(57, 6, 15);
+			transform: translate(-50%, -50%);
+		}
 
 		.close {
 			width: 40px;
@@ -201,6 +253,7 @@
 							margin-left: 5px;
 							display: flex;
 							flex-direction: column;
+							align-items: flex-start;
 
 							.title {
 								transform: scale(0.9);

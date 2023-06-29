@@ -1,5 +1,8 @@
 <template>
 	<view class="content">
+
+
+
 		<view class="header">
 			<view class="group">
 				<view class="box">
@@ -10,7 +13,7 @@
 
 				<view class="group money" style="margin: 0 50px;  height: 100%;  ">
 					<image class="" src="../../static/money.png"></image>
-					<span style="padding: 0 20px; "> 9999 </span>
+					<span style="padding: 0 20px;" @click='loader()'> 9999 </span>
 					<!-- <view
 						style="width: 30px;height: 30px;background-image: linear-gradient(to bottom, rgb(180, 255, 30), rgb(64,178,2)); display: flex; justify-content: center;align-items: center; border-radius: 50%;">
 						<image src="../../static/add (3).png" style=" width: 20px;height: 20px;"></image>
@@ -25,11 +28,18 @@
 
 
 			<view class="group">
-				<image class="" src="../../static/chat (3).png"></image>
-				<span @click="chatShow=true">聊天</span>
+
+				<span @click="chatShow=true" class="group-flex">
+					<image class="" src="../../static/chat (3).png"></image>
+					<span>聊天</span>
+				</span>
 				<span style="width: 10px;"></span>
-				<image class="" src="../../static/set.png"></image>
-				<span @click="setShow=true">设置</span>
+				<span @click="setShow=true" class="group-flex">
+					<image class="" src="../../static/set.png"></image>
+					<span>设置</span>
+				</span>
+
+
 			</view>
 
 		</view>
@@ -40,7 +50,7 @@
 			<uni-transition custom-class="transition" :mode-class="modeClass" :show="show"
 				:class="{'row':!series,'row1':series}">
 
-				<!-- <view :class="{'row':!series,'row1':series}"> -->
+
 				<view class="col" v-for="(item,index) of data">
 					<view class="box">
 						<view class="box-content" @click="chooseSeries(index)">
@@ -48,7 +58,7 @@
 							</image>
 							<span class="num">{{item.mess}}</span>
 
-							<span class="font" style="font-size: 45px;color: yellow;">demon</span>
+							<span class="font" style="font-size: 45px;color: yellow;">games</span>
 							<span class="font">{{item.name}}</span>
 						</view>
 					</view>
@@ -60,7 +70,7 @@
 
 			<uni-transition custom-class="transition" :mode-class="modeClass" :show="!show"
 				:class="{'row':!series,'row1':series}">
-				<!-- <view :class="{'row':!series,'row1':series}"> -->
+
 				<view class="col" v-for="(item,dex) of data">
 					<view class="box">
 						<view class="box-content" @click="goto()">
@@ -69,7 +79,7 @@
 							<span class="num">{{item.mess}}</span>
 
 							<span class="font" style="font-size: 45px;color: yellow;">demon</span>
-							<span class="font">系列{{dex+1}}</span>
+							<span class="font">游戏机{{dex+1}}</span>
 						</view>
 					</view>
 				</view>
@@ -94,6 +104,15 @@
 
 		</view>
 
+		<view class="loading" v-show="loading">
+
+			<image src="../../static/loading.png" @click='loader()'>
+			</image>
+
+		</view>
+		<view style="width: 100vw;
+			height: 100vh; background-color: rgba(0,0,0,0.3);position: absolute;" v-show="dialog"></view>
+
 		<setting class="chat" v-show="setShow" @receiveData="handleSet"></setting>
 		<chat class="chat" v-show="chatShow" @receiveData="handleGetData"></chat>
 		<model class="model" v-show="modelShow" @receiveData="handleModel"></model>
@@ -108,8 +127,12 @@
 
 <script>
 	export default {
+
 		data() {
 			return {
+				dialog: false,
+				timer: null,
+				loading: false,
 				index: 0,
 				series: false,
 				chatShow: false,
@@ -117,36 +140,36 @@
 				rechargeShow: false,
 				activityShow: false,
 				setShow: false,
-				modeClass: '',
+				modeClass: ['fade', 'slide-left'],
 				show: true,
 				data: [{
 						url: '../../static/game1.jpg',
-						name: '疯狂魔鬼城',
+						name: '系列1',
 						mess: '4人在玩'
 					},
 					{
 						url: '../../static/game2.jpg',
-						name: '疯狂魔鬼城',
+						name: '系列2',
 						mess: '4人在玩'
 					},
 					{
 						url: '../../static/game3.jpg',
-						name: '疯狂魔鬼城',
+						name: '系列3',
 						mess: '4人在玩'
 					},
 					{
 						url: '../../static/game4.jpg',
-						name: '疯狂魔鬼城',
+						name: '系列4',
 						mess: '4人在玩'
 					},
 					{
 						url: '../../static/game5.jpg',
-						name: '疯狂魔鬼城',
+						name: '系列5',
 						mess: '4人在玩'
 					},
 					{
 						url: '../../static/game6.jpg',
-						name: '疯狂魔鬼城',
+						name: '系列6',
 						mess: '4人在玩'
 					},
 
@@ -185,7 +208,19 @@
 		onLoad() {
 			this.series = false
 		},
+		onShow() {
+			// this.loading = true
+			// // console.log('onshow');
+			// this.timer = setInterval(function() {
+			// 	this.loading = false
+			// 	console.log(1)
+			// 	// clearTimeout(this.timer);
+			// 	// this.timer = null
+			// }, 3000);
+			// this.loading = false
+		},
 		methods: {
+
 			handleGetData() {
 				this.chatShow = false
 			},
@@ -216,10 +251,12 @@
 			},
 			chooseSeries(mess) {
 				this.index = mess
-				this.modeClass = ['fade', 'slide-left']
 				this.show = !this.show
-				//this.show = !this.show
 			},
+			loader() {
+				this.loading = !this.loading
+			},
+
 			goto() {
 				uni.showToast({
 
@@ -239,6 +276,7 @@
 		height: 100vh;
 		display: flex;
 		flex-direction: column;
+		position: relative;
 
 		.header {
 			width: 100%;
@@ -282,6 +320,12 @@
 			.group {
 				display: flex;
 				align-items: center;
+
+				.group-flex {
+
+					display: flex;
+					align-items: center;
+				}
 
 				.box {
 					padding: 3px;
@@ -389,13 +433,13 @@
 							}
 
 							.font {
-
 								width: 100%;
 								text-align: center;
 								color: white;
 								position: absolute;
-								bottom: 10px;
+								//bottom: 10px;
 								left: 50%;
+								bottom: 0;
 								transform: translateX(-50%);
 								font-size: 22px;
 								//text-shadow: 0px 0px 5px black;
@@ -466,13 +510,13 @@
 
 		.chat {
 			position: fixed;
-			//position: absolute;
 			width: 90vw;
 			height: 90vh;
 			left: 50%;
 			top: 50%;
 			background-color: rgb(57, 6, 15);
 			transform: translate(-50%, -50%);
+			position: fixed;
 		}
 
 		.model {
@@ -485,5 +529,35 @@
 			background-color: rgb(57, 6, 15);
 			transform: translate(-50%, -50%);
 		}
+
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
+
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+
+
+		.loading {
+
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.3);
+			position: absolute;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			image {
+				width: 30px;
+				height: 30px;
+				animation: spin 2s linear infinite;
+			}
+
+		}
+
 	}
 </style>

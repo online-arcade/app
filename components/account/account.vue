@@ -100,10 +100,11 @@
 </script>
 
 <style lang="scss">
-	.uni-list {
-		background-color: #f2f2f2;
-		/* 设置背景颜色为浅灰色 */
-	}
+	// .uni-list {
+	// 	background-color: #f2f2f2;
+	// 	/* 设置背景颜色为浅灰色 */
+	// }
+
 
 	.content {
 

@@ -11,9 +11,9 @@
 					<view class="sign-back">
 						<view class="sign-model">
 
-							<view v-for="(item,index) of sign" @click="choose(item,index)" :class="{'hide':item.pass}">
+							<view v-for="(item,index) of sign" @click="choose(item,index)">
 
-								<image :src="item.url"></image>
+								<image :src="item.url" :class="{'hide':item.pass}"></image>
 								<span> 第{{index+1}}天</span>
 
 							</view>
@@ -181,7 +181,7 @@
 				}
 
 				.sign-box {
-					width: 100%;
+					width: 95%;
 					height: 100%;
 					background-image: linear-gradient(to bottom, rgb(226, 188, 148), rgb(156, 131, 111));
 					border-radius: 5px;
@@ -204,7 +204,7 @@
 							//grid-row-gap: 10px;
 							grid-gap: 10px 30px;
 							box-sizing: border-box;
-							padding: 5px 15px;
+							padding: 5px 40px;
 
 
 							/* 定义网格项之间的间距 */
@@ -216,8 +216,7 @@
 								// 	content: '';
 								// 	position: absolute;
 								// 	width: 70px;
-								// 	height: 70px;
-
+								// 	height: 70px; 
 								// 	background-image: url('../../static/bag.png');
 								// }
 							}
@@ -231,7 +230,7 @@
 								justify-content: space-between;
 								align-items: center;
 								box-sizing: border-box;
-								padding: 6px 12px 0px;
+								padding: 6px 7px 0px;
 								color: white;
 								text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3);
 
@@ -243,8 +242,8 @@
 									//	background-color: rgb(249, 242, 220);
 									background-color: white;
 									box-sizing: border-box;
-									padding: 5px 15px;
-									border-radius: 5px;
+									padding: 5px 10px;
+									border-radius: 5px 5px 0 0;
 									margin-bottom: 2px;
 								}
 

@@ -85,35 +85,43 @@
 				content: '',
 				sendMess: '',
 				shop: [{
-						name: '天降黄金',
-						url: '../../static/money (2).png',
-						spend: '￥ 19'
+						name: '积分100',
+						url: '../../static/integral.png',
+						spend: '￥ 10'
 					},
 					{
-						name: '大量黄金',
-						url: '../../static/money (2).png',
-						spend: '￥ 49'
-					},
-					{
-						name: '巨量黄金',
-						url: '../../static/money (2).png',
-						spend: '￥ 99'
-					},
-					{
-						name: '小福袋',
-						url: '../../static/bag.png',
+						name: '积分300',
+						url: '../../static/integral.png',
 						spend: '￥ 30'
 					},
 					{
-						name: '中福袋',
-						url: '../../static/bag.png',
+						name: '积分600',
+						url: '../../static/integral.png',
 						spend: '￥ 60'
 					},
 					{
-						name: '大福袋',
-						url: '../../static/bag.png',
+						name: '积分900',
+						url: '../../static/integral.png',
+						spend: '￥ 90'
+					},
+					{
+						name: '积分1200',
+						url: '../../static/integral.png',
 						spend: '￥ 120'
-					}
+					},
+					{
+						name: '积分1500',
+						url: '../../static/integral.png',
+						spend: '￥ 150'
+					}, {
+						name: '积分1800',
+						url: '../../static/integral.png',
+						spend: '￥ 180'
+					}, {
+						name: '积分2100',
+						url: '../../static/integral.png',
+						spend: '￥ 210'
+					},
 				]
 			};
 		},
@@ -282,6 +290,7 @@
 								border-radius: 50%;
 								box-sizing: border-box;
 								padding: 1px;
+								background-image: linear-gradient(to bottom, rgb(234, 56, 202), rgb(62, 0, 72));
 								//box-shadow: 0 0 15px gray;
 							}
 
