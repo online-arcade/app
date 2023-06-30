@@ -11,18 +11,16 @@
 
 				</view>
 
-				<view class="group money" style="margin: 0 50px;  height: 100%;  ">
-					<image class="" src="../../static/money.png"></image>
-					<span style="padding: 0 20px;" @click='loader()'> 9999 </span>
-					<!-- <view
-						style="width: 30px;height: 30px;background-image: linear-gradient(to bottom, rgb(180, 255, 30), rgb(64,178,2)); display: flex; justify-content: center;align-items: center; border-radius: 50%;">
-						<image src="../../static/add (3).png" style=" width: 20px;height: 20px;"></image>
+				<view class="group money" style="   ">
+					<image src="../../static/money.png" style="transform: translateX(-25%);"></image>
+					<span> 9999 </span>
 
-					</view> -->
-					<image class=" add" src="../../static/add (1).png" @click="rechargeShow=true"></image>
+					<image class="icon" src="../../static/add (1).png" style="transform: translateX(25%);"
+						@click="rechargeShow=true"></image>
 				</view>
-				<image class="" src="../../static/start (1).png" style="z-index: 2;"></image>
-				<span class="start-bar" style=" "> 160
+				<image class="" src="../../static/start (1).png" style="z-index: 2;">
+				</image>
+				<span class="start-bar"> 160
 				</span>
 			</view>
 
@@ -30,7 +28,7 @@
 			<view class="group">
 
 				<span @click="chatShow=true" class="group-flex">
-					<image class="" src="../../static/chat (3).png"></image>
+					<image class="" src="../../static/chat (3).png" class="chat-icon"></image>
 					<span>聊天</span>
 				</span>
 				<span style="width: 10px;"></span>
@@ -105,17 +103,16 @@
 		</view>
 
 		<view class="loading" v-show="loading">
-
-			<image src="../../static/loading.png" @click='loader()'>
+			<image src="../../static/load.png" style="width: 20%; " mode="widthFix"></image>
+			<image class="progress" src="../../static/loading.png">
 			</image>
-
+			<span> 注意 : 若累计游戏时间如超过5小时 ，游戏内的收益（经验、金钱）直接为0</span>
 		</view>
-		<view style="width: 100vw;
-			height: 100vh; background-color: rgba(0,0,0,0.3);position: absolute;" v-show="dialog"></view>
+
 
 		<setting class="chat" v-show="setShow" @receiveData="handleSet"></setting>
 		<chat class="chat" v-show="chatShow" @receiveData="handleGetData"></chat>
-		<model class="model" v-show="modelShow" @receiveData="handleModel"></model>
+		<userInfo class="model" v-show="modelShow" @receiveData="handleModel"></userInfo>
 		<account class="chat" v-show="image[3].show" @receiveData="handleAccount"></account>
 		<activity class="chat" v-show="image[1].show" @receiveData="handleActivity"></activity>
 		<recharge class="chat" v-show="rechargeShow" @receiveData="handleRecharge"></recharge>
@@ -132,7 +129,7 @@
 			return {
 				dialog: false,
 				timer: null,
-				loading: false,
+				loading: true,
 				index: 0,
 				series: false,
 				chatShow: false,
@@ -208,18 +205,27 @@
 		onLoad() {
 			this.series = false
 		},
-		onShow() {
-			// this.loading = true
-			// // console.log('onshow');
-			// this.timer = setInterval(function() {
-			// 	this.loading = false
-			// 	console.log(1)
-			// 	// clearTimeout(this.timer);
-			// 	// this.timer = null
-			// }, 3000);
-			// this.loading = false
+
+		mounted() {
+			//页面加载
+			this.resourcesLoaded();
 		},
+
+
 		methods: {
+			resourcesLoaded() {
+				var time = setTimeout(() => {
+					if (document.readyState === 'complete') {
+						this.loading = false
+						//console.log('页面资源加载完毕'); 
+					} else {
+						this.resourcesLoaded()
+						//console.log('页面资源尚未加载完毕'); 
+					}
+
+				}, 5000)
+
+			},
 
 			handleGetData() {
 				this.chatShow = false
@@ -296,25 +302,56 @@
 			font-size: 13px;
 
 			.money {
-				box-shadow: 0 0 5px white;
+				margin: 0 50px;
+
+				box-shadow: 0 0 0 transparent, 0 0 8px whitesmoke inset, 0 0 0 transparent, 0 0 10px rgb(143, 0, 125);
 				color: white;
 				border-radius: 50px;
 				background-color: rgb(39, 2, 55);
+
+				span {
+					padding: 0 15px;
+				}
+
+				image {
+					width: 26px;
+					height: 26px;
+					box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
+					border-radius: 50%;
+					position: relative;
+					box-sizing: border-box;
+					padding: -1px;
+				}
 			}
 
 			.start-bar {
 				box-shadow: 0 0 3px white;
-				width: 100px;
-				// background-color: rgba(7, 131, 178);
-				background-image: linear-gradient(to right, rgb(7, 131, 178), rgba(7, 131, 178, 0.7));
+				width: 120px;
+
+				background-color: rgb(43, 0, 39);
 				text-align: center;
 				color: white;
 				border-radius: 10px;
 				position: relative;
-				left: -13px;
+				left: -20px;
 				//z-index: 1;
 				box-sizing: border-box;
-				padding: 1px 0;
+				text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
+				//padding: 1px 0;
+				position: relative;
+
+				&::before {
+					content: ''
+					;
+					border-radius: 10px;
+					position: absolute;
+					width: 40%;
+					height: 100%;
+					left: 0;
+					top: 0;
+					background-color: rebeccapurple;
+					background-image: linear-gradient(to bottom, rgb(10, 247, 251), rgb(1, 125, 173), rgb(10, 247, 251));
+				}
 			}
 
 			.group {
@@ -322,9 +359,20 @@
 				align-items: center;
 
 				.group-flex {
-
+					min-width: 56px;
+					overflow: hidden;
 					display: flex;
 					align-items: center;
+
+					.chat-icon {
+
+						width: 28px;
+						height: 28px;
+						margin-right: 3px;
+
+
+
+					}
 				}
 
 				.box {
@@ -353,11 +401,11 @@
 				height: 30px;
 			}
 
-			.add {
-				width: 30px;
-				height: 30px;
-				position: relative;
-				//left: 10px;
+			.icon {
+				// width: 30px;
+				// height: 30px;
+				// position: relative;
+
 			}
 
 		}
@@ -515,7 +563,7 @@
 			left: 50%;
 			top: 50%;
 			background-color: rgb(57, 6, 15);
-			transform: translate(-50%, -50%);
+			transform: translate(-50%, -49%);
 			position: fixed;
 		}
 
@@ -545,18 +593,37 @@
 
 			width: 100%;
 			height: 100%;
-			background-color: rgba(0, 0, 0, 0.3);
+			//background-color: rgba(0, 0, 0, 0.3);
 			position: absolute;
 			display: flex;
+			flex-direction: column;
 			justify-content: center;
 			align-items: center;
 
-			image {
+			&::before {
+				content: '';
+				width: 100%;
+				height: 100%;
+				background-image: linear-gradient(to right, rgb(44, 13, 23), rgb(74, 21, 39), rgb(44, 13, 23));
+				position: absolute;
+				left: 0;
+			}
+
+
+
+			.progress {
 				width: 30px;
 				height: 30px;
 				animation: spin 2s linear infinite;
+				margin: 20px 0;
 			}
 
+			span {
+
+				color: white;
+				width: 70%;
+				z-index: 1
+			}
 		}
 
 	}

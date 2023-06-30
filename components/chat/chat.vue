@@ -25,7 +25,8 @@
 
 								<span class="title" :style="{textAlign:item.float}">{{item.name}}</span>
 
-								<span class="item">{{item.data}}</span>
+								<span :class="{'item':true,'check':item.get}"
+									@click="getRedbag(item)">{{item.data}}</span>
 							</view>
 
 						</view>
@@ -35,7 +36,8 @@
 
 								<span class="title" :style="{textAlign:item.float}">{{item.name}}</span>
 
-								<span class="item">{{item.data}}</span>
+								<span :class="{'item':true,'check':item.get}"
+									@click="getRedbag(item)">{{item.data}}</span>
 							</view>
 							<image src="../../static/boy.png" @click="detail()"></image>
 						</view>
@@ -62,6 +64,7 @@
 		name: "chat",
 		data() {
 			return {
+
 				message: {
 					name: '大厅',
 					show: true
@@ -88,12 +91,24 @@
 				this.$emit('receiveData')
 			},
 
-			getRedbag() {
-				this.mess.push({
-					name: '张三',
-					data: '领取成功!!!',
-					float: 'left'
-				})
+			getRedbag(item) {
+
+				if (item.redBag) {
+					if (item.get)
+						this.mess.push({
+							name: '张三',
+							data: '已领取，请勿重复领取!!!',
+							float: 'left'
+						})
+					else {
+						this.mess.push({
+							name: '张三',
+							data: '领取成功!!!',
+							float: 'left'
+						})
+						item.get = true
+					}
+				}
 
 			},
 			handleMess(mess) {
@@ -101,7 +116,9 @@
 				this.mess.push({
 					name: '张三',
 					data: '张三赠送了' + mess.money + '元红包,数量有限，请及时领取!!!',
-					float: 'left'
+					float: 'left',
+					redBag: true,
+					get: false,
 				})
 
 			},
@@ -259,11 +276,31 @@
 								transform: scale(0.9);
 							}
 
+
+
 							.item {
 								background-color: rgb(117, 23, 28);
 								border-radius: 5px;
 								box-sizing: border-box;
 								padding: 8px;
+								position: relative;
+								//border: 2px solid rgba(0, 0, 0, 0.3);
+
+								&::before {
+									content: '';
+									width: 100%;
+									height: 100%;
+									position: absolute;
+									//background-color: rgba(0, 0, 0, 0.3);
+									border: 1px solid rgba(0, 0, 0, 0.3);
+									border-radius: 5px;
+									left: 0;
+									top: 0;
+								}
+							}
+
+							.check {
+								background-color: rgba(117, 23, 28, 0.5);
 
 							}
 						}
