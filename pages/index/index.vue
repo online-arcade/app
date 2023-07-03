@@ -1,14 +1,9 @@
 <template>
 	<view class="content">
-
-
-
 		<view class="header">
 			<view class="group">
 				<view class="box">
-
-					<image class="photo" src="../../static/avatar.jpg" @click="modelShow=true"></image>
-
+					<image class="photo" src="../../static/avatar.jpg" @click="handleModel(1)"></image>
 				</view>
 
 				<view class="group money" style="   ">
@@ -16,7 +11,7 @@
 					<span> 9999 </span>
 
 					<image class="icon" src="../../static/add (1).png" style="transform: translateX(25%);"
-						@click="rechargeShow=true"></image>
+						@click="handleRecharge(1)"></image>
 				</view>
 				<image class="" src="../../static/start (1).png" style="z-index: 2;">
 				</image>
@@ -27,12 +22,12 @@
 
 			<view class="group">
 
-				<span @click="chatShow=true" class="group-flex">
+				<span @click="handleGetData(1)" class="group-flex">
 					<image class="" src="../../static/chat (3).png" class="chat-icon"></image>
 					<span>聊天</span>
 				</span>
 				<span style="width: 10px;"></span>
-				<span @click="setShow=true" class="group-flex">
+				<span @click="handleSet(1)" class="group-flex">
 					<image class="" src="../../static/set.png"></image>
 					<span>设置</span>
 				</span>
@@ -81,18 +76,17 @@
 						</view>
 					</view>
 				</view>
-				<image src="../../static/return (1).png" @click=" show = ! show"
-					style="position: absolute;right:-20px; width: 30px;height: 30px; background-color: pink;border-radius: 50%;box-sizing: border-box;padding: 5px;">
+				<image src="../../static/return (1).png" @click=" show = ! show" class="returnIcon">
 				</image>
 				<!-- </view> -->
 			</uni-transition>
 
-			<view> </view>
+
 
 		</view>
 
 		<view class="foot">
-			<view v-for="data of image" class="tag" @click="data.show=true">
+			<view v-for="(data,index) of image" class="tag" @click="handleIcon(index,1)">
 				<view class="image-border">
 					<image class="" :src="data.url"></image>
 				</view>
@@ -109,16 +103,26 @@
 			<span> 注意 : 若累计游戏时间如超过5小时 ，游戏内的收益（经验、金钱）直接为0</span>
 		</view>
 
+		<!-- <view v-show="mask" class="showModel"> </view> -->
 
-		<setting class="chat" v-show="setShow" @receiveData="handleSet"></setting>
-		<chat class="chat" v-show="chatShow" @receiveData="handleGetData"></chat>
-		<userInfo class="model" v-show="modelShow" @receiveData="handleModel"></userInfo>
-		<account class="chat" v-show="image[3].show" @receiveData="handleAccount"></account>
-		<activity class="chat" v-show="image[1].show" @receiveData="handleActivity"></activity>
-		<recharge class="chat" v-show="rechargeShow" @receiveData="handleRecharge"></recharge>
-		<sign class="chat" v-show="image[0].show" @receiveData="handleSign"></sign>
-		<email class="chat" v-show="image[2].show" @receiveData="handleEmail"></email>
-		<report class="chat" v-show="image[4].show" @receiveData="handleReport"></report>
+		<uni-transition custom-class="transition" :mode-class="modeClass" :show="mask" class="showModel">
+
+			<setting class="chat" v-show="setShow" @receiveData="handleSet(0)"></setting>
+			<chat class="chat" v-show="chatShow" @receiveData="handleGetData(0)"></chat>
+			<userInfo class="model" v-show="modelShow" @receiveData="handleModel(0)"></userInfo>
+			<recharge class="chat" v-show="rechargeShow" @receiveData="handleRecharge(0)"></recharge>
+			<account class="chat" v-show="image[3].show" @receiveData="handleIcon(3,0)"></account>
+			<activity class="chat" v-show="image[1].show" @receiveData="handleIcon(1,0)"></activity>
+			<sign class="chat" v-show="image[0].show" @receiveData="handleIcon(0,0)"></sign>
+			<email class="chat" v-show="image[2].show" @receiveData="handleIcon(2,0)"></email>
+			<report class="chat" v-show="image[4].show" @receiveData="handleIcon(4,0)"></report>
+
+
+		</uni-transition>
+
+
+
+
 	</view>
 </template>
 
@@ -127,6 +131,8 @@
 
 		data() {
 			return {
+				mask: false,
+				showAll: [false, true],
 				dialog: false,
 				timer: null,
 				loading: true,
@@ -205,56 +211,36 @@
 		onLoad() {
 			this.series = false
 		},
-
 		mounted() {
-			//页面加载
 			this.resourcesLoaded();
 		},
-
 
 		methods: {
 			resourcesLoaded() {
 				var time = setTimeout(() => {
 					if (document.readyState === 'complete') {
 						this.loading = false
-						//console.log('页面资源加载完毕'); 
 					} else {
 						this.resourcesLoaded()
-						//console.log('页面资源尚未加载完毕'); 
 					}
-
 				}, 5000)
-
+			},
+			handleGetData(show) {
+				this.mask = this.chatShow = this.showAll[show];
+			},
+			handleModel(show) {
+				this.mask = this.modelShow = this.showAll[show];
+			},
+			handleSet(show) {
+				this.mask = this.setShow = this.showAll[show];
+			},
+			handleRecharge(show) {
+				this.mask = this.rechargeShow = this.showAll[show];
+			},
+			handleIcon(index, show) {
+				this.mask = this.image[index].show = this.showAll[show];
 			},
 
-			handleGetData() {
-				this.chatShow = false
-			},
-			handleModel() {
-				this.modelShow = false
-			},
-			handleSet() {
-				this.setShow = false
-			},
-			handleRecharge() {
-				this.rechargeShow = false
-			},
-			handleActivity() {
-				this.image[1].show = false
-			},
-			handleAccount() {
-				this.image[3].show = false
-			},
-			handleSign() {
-				this.image[0].show = false
-			},
-			handleEmail() {
-				this.image[2].show = false
-			},
-
-			handleReport() {
-				this.image[4].show = false
-			},
 			chooseSeries(mess) {
 				this.index = mess
 				this.show = !this.show
@@ -265,12 +251,10 @@
 
 			goto() {
 				uni.showToast({
-
 					title: '更新中!',
-
 				});
 			}
-			//returnPage(){}
+
 		}
 	}
 </script>
@@ -283,6 +267,15 @@
 		display: flex;
 		flex-direction: column;
 		position: relative;
+
+		.showModel {
+			background-color: rgba(0, 0, 0, 0.3);
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+		}
 
 		.header {
 			width: 100%;
@@ -327,7 +320,6 @@
 			.start-bar {
 				box-shadow: 0 0 3px white;
 				width: 120px;
-
 				background-color: rgb(43, 0, 39);
 				text-align: center;
 				color: white;
@@ -359,7 +351,7 @@
 				align-items: center;
 
 				.group-flex {
-					min-width: 56px;
+					//min-width: 56px;
 					overflow: hidden;
 					display: flex;
 					align-items: center;
@@ -369,9 +361,10 @@
 						width: 28px;
 						height: 28px;
 						margin-right: 3px;
+					}
 
-
-
+					span {
+						min-width: 26px;
 					}
 				}
 
@@ -390,24 +383,14 @@
 						width: 37px;
 						height: 37px;
 						border-radius: 25px;
-
 					}
 				}
-
 			}
 
 			image {
 				width: 30px;
 				height: 30px;
 			}
-
-			.icon {
-				// width: 30px;
-				// height: 30px;
-				// position: relative;
-
-			}
-
 		}
 
 		.mess {}
@@ -420,6 +403,17 @@
 			//background-color: red;
 			background-image: linear-gradient(to bottom, rgb(39, 15, 32), rgb(150, 59, 71));
 			flex: 1;
+
+			.returnIcon {
+				position: absolute;
+				right: -20px;
+				width: 30px;
+				height: 30px;
+				background-color: pink;
+				border-radius: 50%;
+				box-sizing: border-box;
+				padding: 5px;
+			}
 
 			.row {
 				width: 100%;
@@ -565,6 +559,8 @@
 			background-color: rgb(57, 6, 15);
 			transform: translate(-50%, -49%);
 			position: fixed;
+
+
 		}
 
 		.model {
@@ -619,7 +615,7 @@
 			}
 
 			span {
-
+				text-align: center;
 				color: white;
 				width: 70%;
 				z-index: 1

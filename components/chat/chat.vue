@@ -12,9 +12,16 @@
 
 					<image src="../../static/send (2).png" @click="send" class="sendIcon">
 					</image>
-					<image src="../../static/redbag.jpg" class="redbag" @click="redBag()"></image>
+					<image src="../../static/redbag.jpg" class="redbag" @click="bagShow=!bagShow">
+					</image>
+
+					<view class="bagSelect" v-show="bagShow">
+						<span v-for="item of redbag" class="bagForm" @click="redBag(item)">
+							<image :src="item.src"></image>{{item.name}}
+						</span>
+					</view>
 				</view>
-				<scroll-view class="mess" ref="scrollableDiv" scroll-y=true :scroll-top="scrollTop"
+				<scroll-view class="mess" ref="scrollableDiv" scroll-y=true :scroll-top="scrollTop" @click="closeBag"
 					:scroll-with-animation="true">
 
 					<view class="informate " v-for="(item,index) of mess" :style="{justifyContent: item.float}">
@@ -45,6 +52,10 @@
 
 
 				</scroll-view>
+
+
+
+
 			</view>
 		</view>
 
@@ -54,6 +65,45 @@
 			@receiveMes="handleMess($event)">
 		</detail>
 		<model class="card-position" v-show="modelShow" @receiveData="handleModel"></model>
+
+
+		<view class="redBag" v-show="getBag">
+			<view class="mask"> </view>
+			<view class="rectangle">
+				<view
+					style="position: absolute;left: 50%;transform: translateX(-50%); top: -100%;display: flex;flex-direction: column;align-items: center;color: white;">
+					<view>张三</view>
+					<image src="../../static/boy2.png"
+						style=" box-shadow: 0 0 10px rgb(0,0,0,0.3) ; box-sizing: border-box;padding: 5px; width: 8vw;height: 8vw;border-radius: 50%; ">
+					</image>
+
+				</view>
+
+			</view>
+
+			<view class="informate">
+				<view v-for="item of person" class="info-form">
+					<image :src="item.src" mode="" class="img"></image>
+					<view class="form-box">
+						<view>{{item.name}}</view>
+						<view class="coin">
+
+							<image :src="item.icon" mode=""></image>{{item.coin}}
+
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+
+
+		<uni-popup ref="alertDialog" type="dialog">
+			<uni-popup-dialog type="warn" cancelText="关闭" confirmText="同意" title="通知" :content="content"
+				@confirm="dialogConfirm" @close="dialogClose"></uni-popup-dialog>
+		</uni-popup>
+
+
+
 	</view>
 
 
@@ -64,15 +114,43 @@
 		name: "chat",
 		data() {
 			return {
-
+				content: '',
+				random: false,
+				getBag: false,
 				message: {
 					name: '大厅',
 					show: true
 				},
 				modelShow: false,
 				detailShow: false,
+				bagShow: false,
 				sendMess: '',
 				scrollTop: 0,
+				person: [{
+						src: '../../static/boy1.png',
+						name: '张三',
+						icon: '../../static/coin.png',
+						coin: 1100
+					},
+					{
+						src: '../../static/boy2.png',
+						name: '张三',
+						icon: '../../static/coin.png',
+						coin: 1100
+					},
+					{
+						src: '../../static/gril1.png',
+						name: '张三',
+						icon: '../../static/coin.png',
+						coin: 1100
+					},
+					{
+						src: '../../static/gril2.png',
+						name: '张三',
+						icon: '../../static/coin.png',
+						coin: 1100
+					}
+				],
 				mess: [{
 						name: '张三',
 						data: '发送了一条信息',
@@ -83,10 +161,51 @@
 						data: '发送了一条信息',
 						float: 'right'
 					}
+				],
+				redbag: [{
+						src: '../../static/coin.png',
+						name: '10',
+						num: 5
+					},
+					{
+						src: '../../static/coin.png',
+						name: '100',
+
+						num: 5
+					},
+					{
+						src: '../../static/coin.png',
+						name: '500',
+						num: 5
+					},
+					{
+						src: '../../static/coin.png',
+						name: '1000',
+						num: 10
+					}
 				]
 			};
 		},
 		methods: {
+			dialogClose() {},
+			dialogConfirm() {
+				uni.showToast({
+					title: '发送成功!',
+				});
+				this.mess.push({
+					name: '系统',
+					data: this.content,
+					float: 'left',
+					redBag: true,
+					get: false,
+				})
+				this.getBag = true
+				this.bagShow = false
+			},
+			closeBag() {
+
+				this.getBag = false
+			},
 			close() {
 				this.$emit('receiveData')
 			},
@@ -101,6 +220,7 @@
 							float: 'left'
 						})
 					else {
+						this.getBag = true
 						this.mess.push({
 							name: '张三',
 							data: '领取成功!!!',
@@ -131,12 +251,10 @@
 				})
 
 			},
-			redBag() {
-				this.detailShow = true;
-				this.message = {
-					name: '大厅',
-					show: true
-				}
+			redBag(item) {
+				this.$refs.alertDialog.open()
+				this.content = '随机红包' + item.name + '币' + item.num + '位!'
+
 			},
 			showMess() {},
 			handleDetail() {
@@ -163,6 +281,163 @@
 		position: relative;
 		box-sizing: border-box;
 		padding: 5px;
+
+
+		.redBag {
+			box-sizing: border-box;
+			padding: 10px 0px;
+			width: 40vw;
+			height: 90vh;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			border-radius: 50% 50% 5px 5px;
+			display: flex;
+			justify-content: center;
+			align-items: flex-end;
+			//box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+			&::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				width: 40vw;
+				height: 30vh;
+				background-color: rgb(210, 56, 60);
+
+				//background-image: linear-gradient(to bottom, rgb(247, 78, 73), rgb(212, 57, 61));
+				border-radius: 70%;
+
+
+
+			}
+
+			&::after {
+				content: '';
+				position: absolute;
+				top: 15vh;
+				left: 0;
+				width: 40vw;
+				height: 75vh;
+				border-radius: 0 0 5px 5px;
+				background-image: linear-gradient(to bottom, rgb(250, 66, 66), rgb(238, 54, 53), rgb(217, 37, 32));
+
+
+			}
+
+			.rectangle {
+				position: absolute;
+				left: 0;
+				top: 15vh;
+				width: 100%;
+				height: 45px;
+				background-color: rgb(247, 78, 73);
+				z-index: 2;
+				background-image: linear-gradient(to bottom, rgb(212, 57, 61), rgb(191, 46, 51));
+
+				&::before {
+					content: '';
+					position: absolute;
+					width: 0;
+					height: 0;
+					right: 0;
+					bottom: 0;
+					border-bottom: 50px solid rgb(250, 66, 66);
+					border-left: 20vw solid transparent;
+					//box-shadow: 2px 0px rgba(0, 0, 0, 0.3)
+
+				}
+
+				&::after {
+					content: '';
+					position: absolute;
+					width: 0;
+					height: 0;
+					left: 0;
+					bottom: 0;
+					border-bottom: 50px solid rgb(250, 66, 66);
+					border-right: 20vw solid transparent;
+				}
+			}
+
+			.informate {
+				box-sizing: border-box;
+				padding: 10px;
+				overflow: scroll;
+				background-color: rgba(255, 255, 255, 0.2);
+				width: 90%;
+				height: 70%;
+				position: relative;
+				bottom: 0;
+				z-index: 1;
+				border-radius: 5px;
+
+
+
+				.info-form {
+					display: flex;
+					position: relative;
+					align-items: center;
+					margin-bottom: 5px;
+					color: white;
+					text-shadow: 1px 1px rgba(0, 0, 0, 0.3), -1px -1px rgba(0, 0, 0, 0.3);
+					//overflow: hidden;
+
+					.img {
+						width: 40px;
+						height: 40px;
+						border-radius: 50%;
+						box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+						margin-right: 15px;
+						box-sizing: border-box;
+						padding: 5px;
+					}
+
+					.form-box {
+
+						image {
+							width: 20px;
+							height: 20px;
+							box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+							border-radius: 50%;
+							//background-color: blac;
+						}
+
+						.coin {
+							display: flex;
+							align-items: center;
+						}
+					}
+
+					&::before {
+						content: '';
+						position: absolute;
+						left: 50%;
+						transform: translateX(-50%);
+						bottom: 0;
+						width: 80%;
+						height: 2px;
+						background-image: linear-gradient(to right, rgba(255, 147, 143, 0.6), rgb(255, 219, 226), rgba(255, 147, 143, 0.6));
+						background-color: red;
+					}
+
+				}
+
+				//margin: 0 10px;
+			}
+
+
+		}
+
+
+
+
+
+
+
+
+
 
 		.card-position {
 			position: fixed;
@@ -203,13 +478,14 @@
 				flex-direction: column;
 				box-sizing: border-box;
 				padding: 5px;
+				//pointer-events: none;
 
 				.operate {
 					display: flex;
 					justify-content: space-between;
 					//height: 50px;
 					align-items: center;
-
+					position: relative;
 
 
 					.redbag {
@@ -218,7 +494,58 @@
 						border-radius: 5px;
 						box-shadow: 0 1px rgb(70, 13, 19), 0 2px rgb(70, 13, 19);
 						//border: 2px solid rgb(70, 13, 19);
+						//	pointer-events: none;
 					}
+
+					.bagSelect {
+						position: absolute;
+						// top: 100px;
+						// left: 200px;
+						display: grid;
+						row-gap: 10px;
+						top: 65px;
+						right: 0;
+						color: white;
+						background-image: linear-gradient(to bottom, rgb(250, 66, 78), rgb(215, 50, 46));
+						padding: 15px;
+						border-radius: 5px;
+						z-index: 1;
+
+
+						.bagForm {
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							background-image: linear-gradient(to bottom, rgb(250, 66, 62), rgb(231, 64, 62), rgb(226, 59, 51));
+							//padding: 5px 3px;
+							box-sizing: border-box;
+							border-radius: 5px;
+							width: 85px;
+							height: 40px;
+							//	border: 2px solid rgb(70, 13, 19);
+							box-shadow: 1px 1px 0 1px rgba(0, 0, 0, 0.3), 0 0 7px rgba(0, 0, 0, 0.3);
+
+							&::after {
+								content: '';
+								position: absolute;
+								top: -20px;
+								right: 7px;
+								border: 10px solid;
+								width: 5px;
+								border-color: transparent transparent rgb(250, 66, 62) transparent;
+								// width: 20px;
+								// height: 20px;
+								//z-index: 10;
+
+							}
+						}
+
+						image {
+							width: 30px;
+							height: 30px;
+						}
+					}
+
 
 					.sendIcon {
 						width: 50px;
