@@ -66,7 +66,7 @@
 
 				<view class="col" v-for="(item,dex) of data">
 					<view class="box">
-						<view class="box-content" @click="goto()">
+						<view class="box-content" @click="goto(item.series)">
 							<image :src="data[index].url" style=" height: 100%;">
 							</image>
 							<span class="num">{{item.mess}}</span>
@@ -148,32 +148,38 @@
 				data: [{
 						url: '../../static/game1.jpg',
 						name: '系列1',
-						mess: '4人在玩'
+						mess: '4人在玩',
+						series: "test"
 					},
 					{
 						url: '../../static/game2.jpg',
 						name: '系列2',
-						mess: '4人在玩'
+						mess: '4人在玩',
+						series: "test"
 					},
 					{
 						url: '../../static/game3.jpg',
 						name: '系列3',
-						mess: '4人在玩'
+						mess: '4人在玩',
+						series: "test"
 					},
 					{
 						url: '../../static/game4.jpg',
 						name: '系列4',
-						mess: '4人在玩'
+						mess: '4人在玩',
+						series: "demo"
 					},
 					{
 						url: '../../static/game5.jpg',
 						name: '系列5',
-						mess: '4人在玩'
+						mess: '4人在玩',
+						series: "demo"
 					},
 					{
 						url: '../../static/game6.jpg',
 						name: '系列6',
-						mess: '4人在玩'
+						mess: '4人在玩',
+						series: "demo"
 					},
 
 				],
@@ -249,9 +255,12 @@
 				this.loading = !this.loading
 			},
 
-			goto() {
-				uni.showToast({
-					title: '更新中!',
+			goto(name) {
+				// uni.showToast({
+				// 	title: '更新中!',
+				// });
+				uni.navigateTo({
+					url: '/pages/play/play?name=' + name
 				});
 			}
 
