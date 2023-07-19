@@ -39,62 +39,62 @@
 				day: 1,
 				sendMess: '',
 				sign: [{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: true
 					}, {
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					},
 					{
-						url: '../../static/money (2).png',
+						url: '../../static/money.png',
 						pass: false
 					}
 				]

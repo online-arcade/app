@@ -10,7 +10,7 @@
 
 					<input class="send" v-model="sendMess" placeholder="请输入要发送的讯息" />
 
-					<image src="../../static/send (2).png" @click="send" class="sendIcon">
+					<image src="../../static/send.png" @click="send" class="sendIcon">
 					</image>
 					<image src="../../static/redbag.jpg" class="redbag" @click="bagShow=!bagShow">
 					</image>

@@ -6,14 +6,14 @@
 					<image class="photo" src="../../static/avatar.jpg" @click="handleModel(1)"></image>
 				</view>
 
-				<view class="group money" style="   ">
-					<image src="../../static/money.png" style="transform: translateX(-25%);"></image>
+				<view class="group money">
+					<image src="../../static/coin.png" style="transform: translateX(-25%);"></image>
 					<span> 9999 </span>
 
-					<image class="icon" src="../../static/add (1).png" style="transform: translateX(25%);"
+					<image class="icon" src="../../static/add.png" style="transform: translateX(25%);"
 						@click="handleRecharge(1)"></image>
 				</view>
-				<image class="" src="../../static/start (1).png" style="z-index: 2;">
+				<image class="" src="../../static/start.png" style="z-index: 2;">
 				</image>
 				<span class="start-bar"> 160
 				</span>
@@ -23,7 +23,7 @@
 			<view class="group">
 
 				<span @click="handleGetData(1)" class="group-flex">
-					<image class="" src="../../static/chat (3).png" class="chat-icon"></image>
+					<image class="" src="../../static/chat.png" class="chat-icon"></image>
 					<span>聊天</span>
 				</span>
 				<span style="width: 10px;"></span>
@@ -76,7 +76,7 @@
 						</view>
 					</view>
 				</view>
-				<image src="../../static/return (1).png" @click=" show = ! show" class="returnIcon">
+				<image src="../../static/return.png" @click=" show = ! show" class="returnIcon">
 				</image>
 				<!-- </view> -->
 			</uni-transition>
@@ -131,6 +131,7 @@
 
 		data() {
 			return {
+				user: {},
 				mask: false,
 				showAll: [false, true],
 				dialog: false,
@@ -181,13 +182,42 @@
 						mess: '4人在玩',
 						series: "demo"
 					},
-
+					// {
+					// 	url: '../../static/game2.jpg',
+					// 	name: '系列2',
+					// 	mess: '4人在玩',
+					// 	series: "test"
+					// },
+					// {
+					// 	url: '../../static/game3.jpg',
+					// 	name: '系列3',
+					// 	mess: '4人在玩',
+					// 	series: "test"
+					// },
+					// {
+					// 	url: '../../static/game4.jpg',
+					// 	name: '系列4',
+					// 	mess: '4人在玩',
+					// 	series: "demo"
+					// },
+					// {
+					// 	url: '../../static/game5.jpg',
+					// 	name: '系列5',
+					// 	mess: '4人在玩',
+					// 	series: "demo"
+					// },
+					// {
+					// 	url: '../../static/game6.jpg',
+					// 	name: '系列6',
+					// 	mess: '4人在玩',
+					// 	series: "demo"
+					// },
 				],
 
 				series: [],
 
 				image: [{
-						url: '../../static/sign (1).png',
+						url: '../../static/sign.png',
 						name: '签到',
 						show: false
 					},
@@ -207,7 +237,7 @@
 						show: false
 					},
 					{
-						url: '../../static/report (2).png',
+						url: '../../static/report.png',
 						name: '公告',
 						show: false
 					}
@@ -219,9 +249,23 @@
 		},
 		mounted() {
 			this.resourcesLoaded();
+			this.load()
 		},
 
 		methods: {
+			load() {
+				uni.request({
+					url: '/api/user/list',
+					method: 'GET',
+					success: (item) => {
+						this.user = item.data.data
+						console.log(this.user)
+					}
+					// complete: (data) => {
+					// 	console.log('/demo', data)
+					// }
+				})
+			},
 			resourcesLoaded() {
 				var time = setTimeout(() => {
 					if (document.readyState === 'complete') {
@@ -270,7 +314,7 @@
 
 <style lang="scss">
 	.content {
-		font-family: 汉仪正圆-75;
+		font-family: font;
 		width: 100vw;
 		height: 100vh;
 		display: flex;
@@ -435,8 +479,19 @@
 				grid-template-rows: repeat(2, 1fr);
 				padding: 3px 0 7px;
 				grid-template-columns: repeat(3, 1fr);
-				//grid-row-gap: 10px;
 				grid-gap: 10px 0px;
+				//overflow: scroll;
+
+
+				// display: flex;
+
+				// flex-flow: column wrap;
+
+				// height: 100%;
+
+				// width: 100%;
+
+				// overflow: scroll;
 
 				.col {
 

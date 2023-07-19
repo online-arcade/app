@@ -60,6 +60,21 @@
 			};
 		},
 		methods: {
+			register() {
+				uni.request({
+					url: '/api/user/list',
+					method: 'GET',
+					data: formData,
+					success: (item) => {
+						uni.showToast({
+							title: '注册成功！'
+						});
+					}
+					// complete: (data) => {
+					// 	console.log('/demo', data)
+					// }
+				})
+			},
 			login() {
 
 				if (this.formData.account === 'admin' && this.formData.password === '123456') {
@@ -86,10 +101,10 @@
 	page {}
 
 	.content {
-		font-family: 汉仪正圆-75;
+		font-family: font;
 		height: 100vh;
 		width: 100vw;
-		background-image: url('../../static/login1.jpg');
+		background-image: url('../../static/login.jpg');
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: center center;

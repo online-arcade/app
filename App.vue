@@ -25,8 +25,8 @@
 <style>
 	/*每个页面公共css */
 	@font-face {
-		font-family: '汉仪正圆-75';
-		src: url('static/汉仪正圆-75.ttf');
+		font-family: 'font';
+		src: url('static/font.ttf');
 	}
 
 	html,

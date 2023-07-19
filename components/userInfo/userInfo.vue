@@ -32,9 +32,9 @@
 					</uni-col>
 					<uni-col :span="17" :offset="1">
 						<image :src="radio1" @click="chooseRadio(1)"></image>
-						<image src="../../static/boy (2).png"></image>
+						<image src="../../static/boy.png"></image>
 						<image :src="radio2" @click="chooseRadio(0)"></image>
-						<image src="../../static/gril (2).png"></image>
+						<image src="../../static/gril.png"></image>
 					</uni-col>
 				</uni-row>
 

@@ -80,19 +80,19 @@
 
 		<view class="seats" v-if="ready && !seated">
 			<view class="seat" @click="seat(1)">
-				<view>坐下</view>
+				<view>1P</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
 			</view>
 			<view class="seat" @click="seat(2)">
-				<view>坐下</view>
+				<view>2P</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
 			</view>
 			<view class="seat" @click="seat(3)">
-				<view>坐下</view>
+				<view>3P</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
 			</view>
 			<view class="seat" @click="seat(4)">
-				<view>坐下</view>
+				<view>4P</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
 			</view>
 		</view>

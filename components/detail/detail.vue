@@ -145,7 +145,7 @@
 					style="width: 40px;height: 40px;position: absolute;right: 8px;top: 8px;" @click="sendBag()">
 				</image>
 
-				<image src="../../static/return (2).png" class="return" @click="showMes()" v-show="costShow">
+				<image src="../../static/back.png" class="return" @click="showMes()" v-show="costShow">
 				</image>
 			</view>
 
@@ -167,18 +167,7 @@
 				radio1: '../../static/radio1.png',
 				radio2: '../../static/radio2.png',
 				choose: ['../../static/radio1.png', '../../static/radio2.png'],
-				sendMess: '',
-				mess: [{
-						name: '张三',
-						data: '发送了一条信息',
-						float: 'left'
-					},
-					{
-						name: '李四',
-						data: '发送了一条信息',
-						float: 'right'
-					}
-				]
+
 			};
 		},
 		onLoad() {
@@ -198,16 +187,7 @@
 					num: this.num
 				})
 			},
-			send() {
-				this.mess.push({
-					name: '张三',
-					data: this.sendMess,
-					float: 'left'
 
-				})
-
-				this.$refs.scrollableDiv.scrollTop = this.$refs.scrollableDiv.scrollHeight;
-			},
 			chooseRadio(mess) {
 				if (mess) {
 					this.radio1 = this.choose[0];
