@@ -43,13 +43,14 @@
 		padding: 5px;
 
 		.close {
-			width: 40px;
-			height: 40px;
+			width: 32px;
+			height: 32px;
 			position: absolute;
 			right: -20px;
 			top: -16px;
 			background-color: rgb(134, 57, 5);
 			border-radius: 50%;
+			border: 3px solid rgb(235, 220, 38);
 		}
 
 		.main {

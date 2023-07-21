@@ -8,7 +8,7 @@
 
 				<view class="group money">
 					<image src="../../static/coin.png" style="transform: translateX(-25%);"></image>
-					<span> 9999 </span>
+					<span> {{user.balance}} </span>
 
 					<image class="icon" src="../../static/add.png" style="transform: translateX(25%);"
 						@click="handleRecharge(1)"></image>
@@ -37,14 +37,13 @@
 
 		</view>
 
-		<view class="main">
+		<view :class="{'main':true,'main-pad':!show}">
 
-
-			<uni-transition custom-class="transition" :mode-class="modeClass" :show="show"
-				:class="{'row':!series,'row1':series}">
-
-
-				<view class="col" v-for="(item,index) of data">
+			<!-- <view
+				style="width: 50px;height: 50%;background-color:transparent;box-sizing: border-box; border: 2px solid rgba(39,8,94,0.6); position: absolute;left: 5px;top:50%;  transform: translateY(-50%);  border-radius: 30px;">
+			</view> -->
+			<uni-transition custom-class="transition" :mode-class="modeClass" :show="show" :class="{'row':!series }">
+				<view :class="{'col':true,'col-wid1':true}" v-for="(item,index) of data">
 					<view class="box">
 						<view class="box-content" @click="chooseSeries(index)">
 							<image :src="item.url" style=" height: 100%;">
@@ -56,28 +55,31 @@
 						</view>
 					</view>
 				</view>
-				<!-- </view> -->
+
 			</uni-transition>
 
 
 
-			<uni-transition custom-class="transition" :mode-class="modeClass" :show="!show"
-				:class="{'row':!series,'row1':series}">
 
-				<view class="col" v-for="(item,dex) of data">
+
+			<image src="../../static/return.png" v-show="!show" @click=" show = ! show" class="returnIcon">
+			</image>
+
+			<uni-transition custom-class="transition" :mode-class="modeClass" :show="!show" :class="{'row':!series }">
+
+				<view :class="{'col':true,'col-wid2':true}" v-for="(item,dex) of data">
 					<view class="box">
 						<view class="box-content" @click="goto(item.series)">
-							<image :src="data[index].url" style=" height: 100%;">
+							<image src="../../static/gamebox.jpg" style=" height: 100%;">
 							</image>
 							<span class="num">{{item.mess}}</span>
 
-							<span class="font" style="font-size: 45px;color: yellow;">demon</span>
+							<!-- <span class="font" style="font-size: 45px;color: yellow;">demon</span> -->
 							<span class="font">游戏机{{dex+1}}</span>
 						</view>
 					</view>
 				</view>
-				<image src="../../static/return.png" @click=" show = ! show" class="returnIcon">
-				</image>
+
 				<!-- </view> -->
 			</uni-transition>
 
@@ -94,6 +96,14 @@
 			</view>
 
 
+			<!-- 	<view class="tag" @click=" show = ! show" v-show="!show">
+				<view class="image-border" style="background-color: aqua;">
+					<image class="" src="../../static/return.png"></image>
+				</view>
+				<span>{{data.name}}</span>
+			</view> -->
+			<!-- <image src="../../static/return.png" v-show="!show" @click=" show = ! show">
+			</image> -->
 		</view>
 
 		<view class="loading" v-show="loading">
@@ -146,6 +156,8 @@
 				setShow: false,
 				modeClass: ['fade', 'slide-left'],
 				show: true,
+				row1: [],
+				row2: [],
 				data: [{
 						url: '../../static/game1.jpg',
 						name: '系列1',
@@ -182,36 +194,39 @@
 						mess: '4人在玩',
 						series: "demo"
 					},
-					// {
-					// 	url: '../../static/game2.jpg',
-					// 	name: '系列2',
-					// 	mess: '4人在玩',
-					// 	series: "test"
-					// },
-					// {
-					// 	url: '../../static/game3.jpg',
-					// 	name: '系列3',
-					// 	mess: '4人在玩',
-					// 	series: "test"
-					// },
-					// {
-					// 	url: '../../static/game4.jpg',
-					// 	name: '系列4',
-					// 	mess: '4人在玩',
-					// 	series: "demo"
-					// },
-					// {
-					// 	url: '../../static/game5.jpg',
-					// 	name: '系列5',
-					// 	mess: '4人在玩',
-					// 	series: "demo"
-					// },
-					// {
-					// 	url: '../../static/game6.jpg',
-					// 	name: '系列6',
-					// 	mess: '4人在玩',
-					// 	series: "demo"
-					// },
+					{
+						url: '../../static/game6.jpg',
+						name: '系列7',
+						mess: '4人在玩',
+						series: "demo"
+					},
+
+
+					{
+						url: '../../static/game4.jpg',
+						name: '系列8',
+						mess: '4人在玩',
+						series: "demo"
+					},
+					{
+						url: '../../static/game5.jpg',
+						name: '系列9',
+						mess: '4人在玩',
+						series: "demo"
+					},
+
+					{
+						url: '../../static/game4.jpg',
+						name: '系列10',
+						mess: '4人在玩',
+						series: "demo"
+					},
+					{
+						url: '../../static/game5.jpg',
+						name: '系列11',
+						mess: '4人在玩',
+						series: "demo"
+					},
 				],
 
 				series: [],
@@ -250,20 +265,67 @@
 		mounted() {
 			this.resourcesLoaded();
 			this.load()
+			this.row1 = this.data.slice(0, (this.data.length + 1) / 2)
+			this.row2 = this.data.slice((this.data.length + 1) / 2)
 		},
 
 		methods: {
 			load() {
-				uni.request({
+				uni.request({ //用户
 					url: '/api/user/list',
 					method: 'GET',
 					success: (item) => {
-						this.user = item.data.data
+						this.user = item.data.data[0]
 						console.log(this.user)
 					}
 					// complete: (data) => {
 					// 	console.log('/demo', data)
 					// }
+				});
+				uni.request({ //充值
+					url: '/api/recharge/list',
+					method: 'GET',
+					success: (item) => {
+
+					}
+				});
+				uni.request({ //游戏厅
+					url: '/api/game/list',
+					method: 'GET',
+					success: (item) => {
+
+					}
+				});
+				uni.request({ //游戏厅
+					url: '/api/box/list',
+					method: 'GET',
+					success: (item) => {
+
+					}
+				});
+				// uni.request({ //签到
+				// 	url: '/api/signin/list',
+				// 	method: 'GET',
+				// 	success: (item) => {
+				// 		console.log(item)
+				// 	}
+				// });
+				uni.request({ //邮件
+					url: '/api/email/list',
+					method: 'GET',
+					success: (item) => {
+						console.log(item)
+					}
+				})
+			},
+			searchGamebox(id) { //游戏机
+				uni.request({
+					url: `/api/box/${id}`,
+					method: 'POST',
+					success: (item) => {
+						// this.user = item.data.data
+						// console.log(this.user)
+					}
 				})
 			},
 			resourcesLoaded() {
@@ -273,7 +335,7 @@
 					} else {
 						this.resourcesLoaded()
 					}
-				}, 5000)
+				}, 1000)
 			},
 			handleGetData(show) {
 				this.mask = this.chatShow = this.showAll[show];
@@ -424,7 +486,6 @@
 				.box {
 					padding: 3px;
 					box-sizing: border-box;
-
 					border-radius: 25px;
 					background: linear-gradient(to bottom, rgb(146, 27, 135), rgb(193, 43, 117));
 					display: flex;
@@ -448,20 +509,29 @@
 
 		.mess {}
 
+
+
 		.main {
 			//z-index: -1;
 			//margin: 50px 0;
 			box-sizing: border-box;
-			padding: 52px 30px;
+			padding-left: 10px;
+			padding-top: 52px;
+			padding-bottom: 52px;
 			//background-color: red;
 			background-image: linear-gradient(to bottom, rgb(39, 15, 32), rgb(150, 59, 71));
 			flex: 1;
+			width: 100%;
+			height: 100%;
 
 			.returnIcon {
-				position: absolute;
-				right: -20px;
-				width: 30px;
-				height: 30px;
+				position: fixed;
+				left: 7px;
+				//top: 55px;
+				top: 50%;
+				transform: translateY(-50%);
+				width: 25px;
+				height: 25px;
 				background-color: pink;
 				border-radius: 50%;
 				box-sizing: border-box;
@@ -470,54 +540,72 @@
 
 			.row {
 				width: 100%;
-
 				height: 100%;
-				//background-color: red;
 				box-sizing: border-box;
+				// display: grid;
+				// grid-template-rows: repeat(2, 1fr);
+				// padding: 3px 0 7px;
+				// grid-template-columns: repeat(3, 1fr);
+				// grid-auto-flow: row;
+				// grid-gap: 10px 0px;
+				//overflow: scroll; 
+				overflow-x: scroll;
+				display: flex;
+				flex-flow: column wrap;
+				box-shadow: inset 4px 0px 5px rgba(172, 36, 155, 0.2);
+				padding-right: 10px;
+				position: relative;
+				border-radius: 5px;
 
-				display: grid;
-				grid-template-rows: repeat(2, 1fr);
-				padding: 3px 0 7px;
-				grid-template-columns: repeat(3, 1fr);
-				grid-gap: 10px 0px;
-				//overflow: scroll;
+				&::after {
+					content: '';
+					position: absolute;
+					width: 5px;
+					height: 96%;
+					top: 50%;
+					transform: translateY(-50%);
+					//background-image: linear-gradient(to bottom, rgb(68, 26, 42), rgba(193, 43, 171, 0.7));
+					//box-shadow: 0 0 100px purple;
 
+					//background-color: #f1f1f1;
 
-				// display: flex;
+				}
 
-				// flex-flow: column wrap;
+				.col-wid1 {
+					width: 30%;
+					padding: 5px 0px 8px;
+				}
 
-				// height: 100%;
-
-				// width: 100%;
-
-				// overflow: scroll;
+				.col-wid2 {
+					width: 22%;
+					margin-right: 10px;
+					padding: 15px 5px;
+				}
 
 				.col {
 
-					margin-bottom: 10px;
 					box-sizing: border-box;
-					padding: 0 10px;
+
 					display: flex;
 					justify-content: center;
-					width: 100%;
-					height: 100%;
+					//width: 22%;
+					height: 50%;
+					//flex-direction: row;
+					//flex-wrap: nowrap;
+					//overflow: hidden;
+
 
 					.box {
 						display: flex;
 						justify-content: center;
 						align-items: center;
 						width: 90%;
+						box-sizing: border-box;
 
 						.box-content {
 							box-sizing: border-box;
-							//padding: 0 10px 15px;
-							//border: 1px solid gray;
 							width: 100%;
 							height: 100%;
-							//border: 3px solid rgb(255, 244, 38);
-							//border-radius: 7px;
-							//background-color: rgb(162, 249, 255);
 							position: relative;
 
 							.num {
@@ -558,13 +646,17 @@
 			}
 		}
 
+		.main-pad {
+			padding-left: 40px
+		}
+
 		.foot {
 			position: fixed;
 			bottom: 0;
 			width: 100vw;
 			height: 50px;
 			line-height: 50px;
-			background-color: transparent;
+			//background-color: transparent;
 			background-image: linear-gradient(to bottom, rgb(252, 44, 213), rgb(67, 0, 71));
 			display: flex;
 			align-items: center;
@@ -576,7 +668,6 @@
 			margin-right: 20px;
 
 			.tag {
-				//	background-color: red;
 				min-width: 83px;
 				height: 100%;
 				display: flex;

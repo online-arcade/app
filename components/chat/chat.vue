@@ -110,10 +110,13 @@
 </template>
 
 <script>
+	import io from 'socket.io-client';
 	export default {
 		name: "chat",
 		data() {
 			return {
+				socket: null,
+				messes: [],
 				content: '',
 				random: false,
 				getBag: false,
@@ -186,6 +189,18 @@
 				]
 			};
 		},
+		mounted() {
+			//this.socket = io('http://demo.iot-master.com:60321/'); // 这里的地址要改成你的服务器地址
+
+			// this.socket.on('connect', () => {
+			// 	console.log('Connected to server');
+			// });
+
+			// this.socket.on('notice', (data) => {
+			// 	console.log('Received message:', data);
+			// 	this.talk.push(data);
+			// });
+		},
 		methods: {
 			dialogClose() {},
 			dialogConfirm() {
@@ -243,12 +258,22 @@
 
 			},
 			send() {
-				this.scrollTop += 300
-				this.mess.push({
-					name: '张三',
-					data: this.sendMess,
-					float: 'left'
-				})
+				if (this.sendMess) {
+					this.socket.emit('msg', {
+						content: this.sendMess
+					});
+
+
+					this.scrollTop += 300
+					this.mess.push({
+						name: '张三',
+						data: this.sendMess,
+						float: 'left'
+					})
+
+					this.sendMess = '';
+				}
+
 
 			},
 			redBag(item) {
@@ -431,14 +456,6 @@
 		}
 
 
-
-
-
-
-
-
-
-
 		.card-position {
 			position: fixed;
 			//position: absolute;
@@ -451,13 +468,15 @@
 		}
 
 		.close {
-			width: 40px;
-			height: 40px;
+			width: 32px;
+			height: 32px;
 			position: absolute;
 			right: -20px;
 			top: -16px;
 			background-color: rgb(134, 57, 5);
 			border-radius: 50%;
+			border: 3px solid rgb(235, 220, 38);
+			padding: 0
 		}
 
 		.main {

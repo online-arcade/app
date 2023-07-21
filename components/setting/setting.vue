@@ -16,8 +16,36 @@
 
 			</view>
 			<view class="mess">
+				<view v-for="item in data" v-if="item.click">
+					<view v-if="item.name==='操作设置'">{{item.mess}}</view>
+					<view v-if="item.name==='分辨率'">{{item.mess}}</view>
+					<view v-if="item.name==='更多'">{{item.mess}}</view>
+					<view style="display: flex;flex-direction: column;" v-if="item.name==='音量'">
+						<span style="border-bottom: 2px solid rgb(93,16,21);margin-bottom: 5px;">声音</span>
+						<span>静音模式</span>
+						<span style="display: flex; justify-content: center;align-items: center;">
+							<span style="width: 30%; "> 音效</span>
+							<image src="../../static/volume-dowm.png" style="width: 30px;height: 30px;"
+								@click="volume--">
+							</image>
+							<progress :percent="volume" show-info stroke-width="3" style="flex: 1;" />
+							<image src="../../static/volume-up.png" style="width: 30px;height: 30px;" @click="volume++">
+							</image>
+						</span>
+						<span style="display: flex; justify-content: center;align-items: center;">
+							<span style="width: 30%; "> 音量</span>
+							<image src="../../static/volume-dowm.png" style="width: 30px;height: 30px;"
+								@click="sound--">
+							</image>
+							<progress :percent="sound" show-info stroke-width="3" style="flex: 1;" />
+							<image src="../../static/volume-up.png" style="width: 30px;height: 30px;" @click="sound++">
+							</image>
+						</span>
+					</view>
+				</view>
 
-				<span v-for="item in data" v-if="item.click">{{item.mess}}</span>
+
+
 
 			</view>
 		</view>
@@ -55,7 +83,9 @@
 					'操作设置',
 					'分辨率设置',
 					'更多'
-				]
+				],
+				volume: 0,
+				sound: 0
 			};
 		},
 		methods: {
@@ -68,6 +98,9 @@
 						item.click = !item.click
 					} else item.click = false
 				})
+			},
+			cs() {
+				this.volume++
 			}
 		}
 	}

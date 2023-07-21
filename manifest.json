@@ -12,7 +12,7 @@
 			"disableHostCheck": true,
 			"proxy": {
 				"/api": {
-					"target": "http://demo.iot-master.com:8088/",
+					"target": "http://demo.iot-master.com:8082/",
 					"changeOrigin": true,
 					"secure": false
 				}
