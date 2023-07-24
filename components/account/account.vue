@@ -13,14 +13,18 @@
 		</view>
 		<view class="mess" ref="scrollableDiv">
 
-			<view :class="{'log':true,'read':item.read}" v-for="item in log" @click="read(item)">
+			<view :class="{'log':true,'read':item.read}" v-for="item in recharge" @click="read(item)">
 				<view>
-					<view>{{item.title}}</view>
-					<span>{{item.note}}</span>
+					<view>充值记录</view>
+					<span>金额￥ {{item.amount}}</span>
 				</view>
-				<view>{{item.time}}</view>
+				<view>{{item.created}}</view>
 			</view>
 
+			<view v-if="!recharge" class="noRecharge" style="  ">
+				<image src="../../static/noAccount.png" style="width: 50px;height: 50px;"></image>
+				您目前没有消费记录！
+			</view>
 
 
 		</view>
@@ -31,6 +35,7 @@
 	export default {
 
 		name: "account",
+		props: ['recharge'],
 		data() {
 			return {
 				log: [{
@@ -162,6 +167,15 @@
 				background-image: linear-gradient(to right, rgba(121, 24, 29, 0.3), rgba(170, 13, 17, 0.3));
 			}
 
+			.noRecharge {
+				align-items: center;
+				color: rgb(195, 41, 61);
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				font-size: 20px;
+				height: 100%;
+			}
 		}
 
 

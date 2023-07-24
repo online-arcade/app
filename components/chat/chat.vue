@@ -27,7 +27,7 @@
 					<view class="informate " v-for="(item,index) of mess" :style="{justifyContent: item.float}">
 
 						<view v-if="item.float==='left'" style="display: flex;">
-							<image src="../../static/boy.png" @click="detail()"></image>
+							<image src="../../static/boy3.png" @click="detail()"></image>
 							<view class="showMess">
 
 								<span class="title" :style="{textAlign:item.float}">{{item.name}}</span>
@@ -46,7 +46,7 @@
 								<span :class="{'item':true,'check':item.get}"
 									@click="getRedbag(item)">{{item.data}}</span>
 							</view>
-							<image src="../../static/boy.png" @click="detail()"></image>
+							<image src="../../static/boy3.png" @click="detail()"></image>
 						</view>
 					</view>
 

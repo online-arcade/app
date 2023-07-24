@@ -1,28 +1,19 @@
 <template>
-
-
 	<model class="model" @receiveData="handleModel">
-
-
 		<view class="operate">
-
-
 			<image src="../../static/avatar.jpg" class="photo"></image>
 			<image src="../../static/edit.png" class="edit" @click="edit()">
 			</image>
-			<span>名称 :张三</span>
-
+			<span>名称 :{{user.name}}</span>
 		</view>
 		<view class="mess" ref="scrollableDiv">
-
 			<form>
-
 				<uni-row class="row">
 					<uni-col :span="5" style="text-align: right;">
 						<view class="demo-uni-col dark">昵称:</view>
 					</uni-col>
 					<uni-col :span="17" :offset="1">
-						<input class="input" name="input" placeholder="张三" />
+						<input class="input" name="input" :placeholder="user.name" v-model="user.name" />
 					</uni-col>
 				</uni-row>
 
@@ -41,10 +32,10 @@
 
 				<uni-row class="row">
 					<uni-col :span="5" style="text-align: right;">
-						<view class="demo-uni-col dark">点数:</view>
+						<view class="demo-uni-col dark">积分:</view>
 					</uni-col>
 					<uni-col :span="17" :offset="1">
-						<input class="input" name="input" placeholder="100" />
+						<input class="input" name="input" :placeholder="user.integral+' '" />
 					</uni-col>
 				</uni-row>
 
@@ -76,13 +67,7 @@
 
 			</form>
 
-
-
-
-
-
 		</view>
-
 
 	</model>
 
@@ -96,6 +81,7 @@
 <script>
 	export default {
 		name: "userInfo",
+		props: ['user'],
 		data() {
 			return {
 				radio1: '../../static/radio1.png',
@@ -123,11 +109,23 @@
 
 			},
 			edit() {
-				uni.showToast({
 
-					title: "提交!",
-
+				uni.request({
+					url: '/api/user/0',
+					method: 'POST',
+					data: this.user,
+					// {
+					// 	name: this.user.name
+					// },
+					success: (item) => {
+						uni.showToast({
+							title: "提交成功!",
+						});
+					}
 				});
+
+
+
 			},
 			close() {
 				this.$emit('receiveData')
@@ -150,6 +148,12 @@
 					this.radio1 = this.choose[1]
 				}
 			}
+		},
+		mounted() {
+			// console.log(this.user)
+		},
+		onShow() {
+
 		}
 	}
 </script>

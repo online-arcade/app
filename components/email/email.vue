@@ -14,14 +14,17 @@
 			</view>
 			<view class="mess" ref="scrollableDiv">
 
-				<view :class="{'log':true,'read':item.read}" v-for="item in log" @click="read(item)">
+				<view :class="{'log':true,'read':item.read}" v-for="item in email" @click="read(item)">
 					<view>
-						<view>{{item.title}}</view>
-						<span>{{item.note}}</span>
+						<view>邮件主题:{{item.title}}</view>
+						<span>{{item.content}}</span>
 					</view>
-					<view>{{item.time}}</view>
+					<view>{{item.created}}</view>
 				</view>
-
+				<view v-if="!email" class="noEmail">
+					<image src="../../static/noEmail.png" style="width: 50px;height: 50px;"></image>
+					您目前没有邮件！
+				</view>
 			</view>
 		</view>
 	</model>
@@ -31,6 +34,7 @@
 	export default {
 
 		name: "email",
+		props: ['email'],
 		data() {
 			return {
 				log: [{
@@ -68,6 +72,10 @@
 
 			};
 		},
+
+		mounted() {
+			//this.load()
+		},
 		methods: {
 			handleEmail() {
 				this.$emit('receiveData')
@@ -78,6 +86,16 @@
 					title: '已读!',
 				});
 
+			},
+			load() {
+
+				uni.request({ //邮件
+					url: '/api/email/list',
+					method: 'GET',
+					success: (item) => {
+						console.log(item)
+					}
+				})
 			}
 		}
 	}
@@ -164,6 +182,16 @@
 
 			.read {
 				background-image: linear-gradient(to right, rgba(121, 24, 29, 0.3), rgba(170, 13, 17, 0.3));
+			}
+
+			.noEmail {
+				align-items: center;
+				color: rgb(195, 41, 61);
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				font-size: 20px;
+				height: 100%;
 			}
 		}
 	}

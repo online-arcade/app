@@ -15,7 +15,7 @@
 				</view>
 				<image class="" src="../../static/start.png" style="z-index: 2;">
 				</image>
-				<span class="start-bar"> 160
+				<span class="start-bar"> {{user.integral}}
 				</span>
 			</view>
 
@@ -43,12 +43,12 @@
 				style="width: 50px;height: 50%;background-color:transparent;box-sizing: border-box; border: 2px solid rgba(39,8,94,0.6); position: absolute;left: 5px;top:50%;  transform: translateY(-50%);  border-radius: 30px;">
 			</view> -->
 			<uni-transition custom-class="transition" :mode-class="modeClass" :show="show" :class="{'row':!series }">
-				<view :class="{'col':true,'col-wid1':true}" v-for="(item,index) of data">
+				<view :class="{'col':true,'col-wid1':true}" v-for="(item,index) of game">
 					<view class="box">
-						<view class="box-content" @click="chooseSeries(index)">
-							<image :src="item.url" style=" height: 100%;">
+						<view class="box-content" @click="chooseSeries(item.id)">
+							<image :src="'../../static/'+item.icon" style=" height: 100%;">
 							</image>
-							<span class="num">{{item.mess}}</span>
+							<span class="num">{{item.desc}}</span>
 
 							<span class="font" style="font-size: 45px;color: yellow;">games</span>
 							<span class="font">{{item.name}}</span>
@@ -59,20 +59,17 @@
 			</uni-transition>
 
 
-
-
-
 			<image src="../../static/return.png" v-show="!show" @click=" show = ! show" class="returnIcon">
 			</image>
 
 			<uni-transition custom-class="transition" :mode-class="modeClass" :show="!show" :class="{'row':!series }">
 
-				<view :class="{'col':true,'col-wid2':true}" v-for="(item,dex) of data">
+				<view :class="{'col':true,'col-wid2':true}" v-for="(item,dex) of box">
 					<view class="box">
 						<view class="box-content" @click="goto(item.series)">
 							<image src="../../static/gamebox.jpg" style=" height: 100%;">
 							</image>
-							<span class="num">{{item.mess}}</span>
+							<span class="num">{{item.desc}}</span>
 
 							<!-- <span class="font" style="font-size: 45px;color: yellow;">demon</span> -->
 							<span class="font">游戏机{{dex+1}}</span>
@@ -80,6 +77,9 @@
 					</view>
 				</view>
 
+				<view v-if="!box"
+					style="color: rgb(255,244,38) ;font-size: 30px;display: flex;justify-content: center;align-items: center;height: 100%;">
+					请上传游戏数据！</view>
 				<!-- </view> -->
 			</uni-transition>
 
@@ -119,9 +119,9 @@
 
 			<setting class="chat" v-show="setShow" @receiveData="handleSet(0)"></setting>
 			<chat class="chat" v-show="chatShow" @receiveData="handleGetData(0)"></chat>
-			<userInfo class="model" v-show="modelShow" @receiveData="handleModel(0)"></userInfo>
-			<recharge class="chat" v-show="rechargeShow" @receiveData="handleRecharge(0)"></recharge>
-			<account class="chat" v-show="image[3].show" @receiveData="handleIcon(3,0)"></account>
+			<userInfo class="model" v-show="modelShow" :user="user" @receiveData="handleModel(0)"></userInfo>
+			<recharge class="chat" v-show="rechargeShow" :user="user" @receiveData="handleRecharge(0)"></recharge>
+			<account class="chat" v-show="image[3].show" :recharge="recharge" @receiveData="handleIcon(3,0)"></account>
 			<activity class="chat" v-show="image[1].show" @receiveData="handleIcon(1,0)"></activity>
 			<sign class="chat" v-show="image[0].show" @receiveData="handleIcon(0,0)"></sign>
 			<email class="chat" v-show="image[2].show" @receiveData="handleIcon(2,0)"></email>
@@ -230,7 +230,11 @@
 				],
 
 				series: [],
-
+				game: [],
+				box: [],
+				recharge: [],
+				signin: [],
+				email: [],
 				image: [{
 						url: '../../static/sign.png',
 						name: '签到',
@@ -272,37 +276,22 @@
 		methods: {
 			load() {
 				uni.request({ //用户
-					url: '/api/user/list',
+					url: '/api/user/0',
 					method: 'GET',
 					success: (item) => {
-						this.user = item.data.data[0]
-						console.log(this.user)
+						item.data ? this.user = item.data.data : ''
 					}
-					// complete: (data) => {
-					// 	console.log('/demo', data)
-					// }
 				});
-				uni.request({ //充值
-					url: '/api/recharge/list',
-					method: 'GET',
-					success: (item) => {
 
-					}
-				});
 				uni.request({ //游戏厅
 					url: '/api/game/list',
 					method: 'GET',
 					success: (item) => {
-
+						this.game = item.data.data
 					}
 				});
-				uni.request({ //游戏厅
-					url: '/api/box/list',
-					method: 'GET',
-					success: (item) => {
 
-					}
-				});
+
 				// uni.request({ //签到
 				// 	url: '/api/signin/list',
 				// 	method: 'GET',
@@ -310,24 +299,9 @@
 				// 		console.log(item)
 				// 	}
 				// });
-				uni.request({ //邮件
-					url: '/api/email/list',
-					method: 'GET',
-					success: (item) => {
-						console.log(item)
-					}
-				})
+
 			},
-			searchGamebox(id) { //游戏机
-				uni.request({
-					url: `/api/box/${id}`,
-					method: 'POST',
-					success: (item) => {
-						// this.user = item.data.data
-						// console.log(this.user)
-					}
-				})
-			},
+
 			resourcesLoaded() {
 				var time = setTimeout(() => {
 					if (document.readyState === 'complete') {
@@ -348,12 +322,64 @@
 			},
 			handleRecharge(show) {
 				this.mask = this.rechargeShow = this.showAll[show];
+
 			},
 			handleIcon(index, show) {
 				this.mask = this.image[index].show = this.showAll[show];
+				if (show)
+					switch (index) {
+						case 0:
+							uni.request({ //充值
+								url: '/api/signin/search',
+								method: 'POST',
+								data: {
+									filter: {
+										user_id: 0
+									}
+								},
+								success: (item) => {
+									this.signin = item.data.data
+								}
+							});
+							break;
+						case 2:
+							uni.request({
+								url: '/api/email/list',
+								method: 'GET',
+								success: (item) => {
+									this.email = item.data.data
+								}
+							});
+							break;
+						case 3:
+							uni.request({
+								url: '/api/recharge/search',
+								method: 'POST',
+								data: {
+									filter: {
+										id: 0
+									}
+								},
+								success: (item) => {
+									this.recharge = item.data.data
+								}
+							});
+							break;
+						default:
+							break;
+					}
 			},
 
 			chooseSeries(mess) {
+
+				uni.request({ //游戏厅
+					url: `/api/box/${mess}`,
+					method: 'GET',
+					success: (item) => {
+						this.box = item.data.data
+					}
+				});
+
 				this.index = mess
 				this.show = !this.show
 			},

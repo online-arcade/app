@@ -9,8 +9,8 @@
 				<view style="display: flex;">
 					<image src="../../static/avatar.jpg"></image>
 					<view class="infor">
-						<span>名称 :{{account.name}}</span>
-						<span>余额 :{{account.money}}</span>
+						<span>名称 :{{user.name}}</span>
+						<span>余额 :{{user.balance}}</span>
 					</view>
 				</view>
 				<view style="display: flex;">
@@ -56,13 +56,7 @@
 					</view>
 
 				</form>
-
-
-
 			</view>
-
-
-
 
 		</view>
 	</model>
@@ -71,14 +65,11 @@
 <script>
 	export default {
 		name: "recharge",
+		props: ['user'],
 		data() {
 			return {
 				recharge: 0,
 				customShow: 0,
-				account: {
-					name: '张三',
-					money: 100
-				},
 				content: '',
 				sendMess: '',
 				shop: [{
@@ -142,12 +133,11 @@
 			dialogClose() {},
 			confirm() {
 				if (this.recharge) {
-					uni.showToast({
 
-						title: '充值' + this.recharge + '成功!',
+					this.user.balance += Number(this.recharge)
 
-					});
-					this.account.money += Number(this.recharge)
+					this.load()
+
 				} else {
 					uni.showToast({
 						icon: 'error',
@@ -158,13 +148,33 @@
 				}
 			},
 			dialogConfirm() {
-				//console.log(this.content.slice(4))
-				uni.showToast({
 
-					title: this.content + '成功!',
+				this.user.balance += Number(this.content.slice(4))
+				this.load()
+			},
 
+			load() {
+
+				uni.request({
+					url: '/api/recharge/create',
+					method: 'POST',
+					data: {
+						user_id: this.user.id,
+						amount: Number(this.recharge)
+					},
+					success: (item) => {}
 				});
-				this.account.money += Number(this.content.slice(4))
+
+				uni.request({
+					url: '/api/user/0',
+					method: 'POST',
+					data: this.user,
+					success: (item) => {
+						uni.showToast({
+							title: "充值成功!",
+						});
+					}
+				});
 			}
 		}
 	}

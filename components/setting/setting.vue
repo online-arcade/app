@@ -18,7 +18,13 @@
 			<view class="mess">
 				<view v-for="item in data" v-if="item.click">
 					<view v-if="item.name==='操作设置'">{{item.mess}}</view>
-					<view v-if="item.name==='分辨率'">{{item.mess}}</view>
+					<view v-if="item.name==='渲染'" style="display: flex;flex-direction: column;">
+						<span style="border-bottom: 2px solid rgb(93,16,21);margin-bottom: 5px;">渲染</span>
+						<span style="display: flex;justify-content: center;align-items: center;text-shadow:0 0 0">分辨率:
+							<uni-data-select :localdata="select" @change="change"
+								style="box-sizing: border-box;padding: 10px;color: black;">
+							</uni-data-select></span>
+					</view>
 					<view v-if="item.name==='更多'">{{item.mess}}</view>
 					<view style="display: flex;flex-direction: column;" v-if="item.name==='音量'">
 						<span style="border-bottom: 2px solid rgb(93,16,21);margin-bottom: 5px;">声音</span>
@@ -37,6 +43,14 @@
 							<image src="../../static/volume-dowm.png" style="width: 30px;height: 30px;"
 								@click="sound--">
 							</image>
+
+							<!-- <view style="   flex: 1; display: flex; ">
+								<slider :value="sound" activeColor="#FFCC33" backgroundColor="white"
+									block-color="#8A6DE9" block-size="16" style="width: 100%;color: white;"
+									show-value />
+
+
+							</view> -->
 							<progress :percent="sound" show-info stroke-width="3" style="flex: 1;" />
 							<image src="../../static/volume-up.png" style="width: 30px;height: 30px;" @click="sound++">
 							</image>
@@ -58,6 +72,19 @@
 		data() {
 			return {
 				sendMess: '',
+				select: [{
+						value: 0,
+						text: "1920×1080(推荐)"
+					},
+					{
+						value: 1,
+						text: "1680×1050"
+					},
+					{
+						value: 2,
+						text: "1600×500"
+					},
+				],
 				data: [{
 						name: '音量',
 						click: true,
@@ -69,9 +96,9 @@
 						mess: '操作设置'
 					},
 					{
-						name: '分辨率',
+						name: '渲染',
 						click: false,
-						mess: '分辨率设置'
+						mess: '渲染设置'
 					},
 					{
 						name: '更多',
