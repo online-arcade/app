@@ -9,7 +9,7 @@
 				<view style="display: flex;">
 					<image src="../../static/avatar.jpg"></image>
 					<view class="infor">
-						<span>名称 :{{user.name}}</span>
+						<span>名称 :{{user.nick_name}}</span>
 						<span>余额 :{{user.balance}}</span>
 					</view>
 				</view>

@@ -11,13 +11,13 @@
 		},
 		created() {
 			// 禁止竖屏显示
-			window.addEventListener('resize', () => {
-				if (window.innerHeight > window.innerWidth) {
-					document.documentElement.style.transform = 'rotate(90deg)';
-				} else {
-					document.documentElement.style.transform = 'rotate(0deg)';
-				}
-			});
+			// window.addEventListener('resize', () => {
+			// 	if (window.innerHeight > window.innerWidth) {
+			// 		document.documentElement.style.transform = 'rotate(90deg)';
+			// 	} else {
+			// 		document.documentElement.style.transform = 'rotate(0deg)';
+			// 	}
+			// });
 		}
 	}
 </script>

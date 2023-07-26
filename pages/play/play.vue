@@ -365,7 +365,16 @@
 			},
 
 			onPlay($event) {
-				this.ready = true
+
+				var time = setTimeout(() => {
+					if (document.readyState === 'complete') {
+						this.ready = true
+					} else {
+						this.resourcesLoaded()
+					}
+				}, 1000)
+
+				//	this.ready = true
 
 				console.log('onPlay', $event)
 				const v = document.getElementsByTagName('video')[0]

@@ -66,19 +66,17 @@
 
 				<view :class="{'col':true,'col-wid2':true}" v-for="(item,dex) of box">
 					<view class="box">
-						<view class="box-content" @click="goto(item.series)">
+						<view class="box-content" @click="goto(item.type)">
 							<image src="../../static/gamebox.jpg" style=" height: 100%;">
 							</image>
 							<span class="num">{{item.desc}}</span>
-
-							<!-- <span class="font" style="font-size: 45px;color: yellow;">demon</span> -->
 							<span class="font">游戏机{{dex+1}}</span>
 						</view>
 					</view>
 				</view>
 
 				<view v-if="!box"
-					style="color: rgb(255,244,38) ;font-size: 30px;display: flex;justify-content: center;align-items: center;height: 100%;">
+					style="color: rgb(255,244,38) ;font-size: 30px;display: flex;justify-content: center;align-items: center;width: 100%;height: 100%;">
 					请上传游戏数据！</view>
 				<!-- </view> -->
 			</uni-transition>
@@ -94,16 +92,6 @@
 				</view>
 				<span>{{data.name}}</span>
 			</view>
-
-
-			<!-- 	<view class="tag" @click=" show = ! show" v-show="!show">
-				<view class="image-border" style="background-color: aqua;">
-					<image class="" src="../../static/return.png"></image>
-				</view>
-				<span>{{data.name}}</span>
-			</view> -->
-			<!-- <image src="../../static/return.png" v-show="!show" @click=" show = ! show">
-			</image> -->
 		</view>
 
 		<view class="loading" v-show="loading">
@@ -275,25 +263,55 @@
 
 		methods: {
 			load() {
-				uni.request({ //用户
-					url: '/api/user/0',
-					method: 'GET',
-					success: (item) => {
-						item.data ? this.user = item.data.data : ''
-					}
-				});
+				// uni.request({ //用户
+				// 	url: 'http://demo.iot-master.com:8082/api/user/0',
+				// 	method: 'GET',
+				// 	success: (item) => {
+				// 		item.data ? this.user = item.data.data : ''
+				// 	}
+				// });
 
-				uni.request({ //游戏厅
-					url: '/api/game/list',
-					method: 'GET',
-					success: (item) => {
-						this.game = item.data.data
-					}
-				});
+				this.user = {
+					"id": 0,
+					username: "admin",
+					nick_name: "张三",
+					email: "cs",
+					cellphone: "13754212553",
+					balance: 770,
+					integral: 3000,
+					created: "2023-07-21T18:07:22+08:00"
+				}
+
+
+				// uni.request({ //游戏厅
+				// 	url: 'http://demo.iot-master.com:8082/api/game/list',
+				// 	method: 'GET',
+				// 	success: (item) => {
+				// 		this.game = item.data.data
+				// 	}
+				// });
+
+				this.game = [{
+					id: 2,
+					name: "疯狂魔鬼城",
+					desc: "2人在玩",
+					icon: "fkmgc.png",
+					type: "fkmgc",
+					disabled: true,
+					created: "2023-07-26T09:55:42+08:00"
+				}, {
+					id: 1,
+					name: "捕鱼达人",
+					desc: "1人在玩",
+					icon: "bydr.png",
+					type: "bydr",
+					disabled: true,
+					created: "2023-07-26T09:55:41+08:00"
+				}]
 
 
 				// uni.request({ //签到
-				// 	url: '/api/signin/list',
+				// 	url: 'http://demo.iot-master.com:8082/api/signin/list',
 				// 	method: 'GET',
 				// 	success: (item) => {
 				// 		console.log(item)
@@ -303,13 +321,14 @@
 			},
 
 			resourcesLoaded() {
+
 				var time = setTimeout(() => {
 					if (document.readyState === 'complete') {
 						this.loading = false
 					} else {
 						this.resourcesLoaded()
 					}
-				}, 1000)
+				}, 2000)
 			},
 			handleGetData(show) {
 				this.mask = this.chatShow = this.showAll[show];
@@ -330,7 +349,7 @@
 					switch (index) {
 						case 0:
 							uni.request({ //充值
-								url: '/api/signin/search',
+								url: 'http://demo.iot-master.com:8082/api/signin/search',
 								method: 'POST',
 								data: {
 									filter: {
@@ -344,7 +363,7 @@
 							break;
 						case 2:
 							uni.request({
-								url: '/api/email/list',
+								url: 'http://demo.iot-master.com:8082/api/email/list',
 								method: 'GET',
 								success: (item) => {
 									this.email = item.data.data
@@ -353,7 +372,7 @@
 							break;
 						case 3:
 							uni.request({
-								url: '/api/recharge/search',
+								url: 'http://demo.iot-master.com:8082/api/recharge/search',
 								method: 'POST',
 								data: {
 									filter: {
@@ -371,14 +390,172 @@
 			},
 
 			chooseSeries(mess) {
+				let box = []
+				const mes = [{
+					id: 16,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "test",
+					disabled: true,
+					game_id: 2,
+					created: "2023-07-26T10:47:52+08:00"
+				}, {
+					id: 15,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "test",
+					disabled: true,
+					game_id: 2,
+					created: "2023-07-26T10:47:49+08:00"
+				}, {
+					id: 14,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "test",
+					disabled: true,
+					game_id: 2,
+					created: "2023-07-26T10:47:47+08:00"
+				}, {
+					id: 13,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "test",
+					disabled: true,
+					game_id: 2,
+					created: "2023-07-26T10:47:44+08:00"
+				}, {
+					id: 12,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "test",
+					disabled: true,
+					game_id: 2,
+					created: "2023-07-26T10:47:42+08:00"
+				}, {
+					id: 11,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "test",
+					disabled: true,
+					game_id: 2,
+					created: "2023-07-26T10:47:39+08:00"
+				}, {
+					id: 10,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "test",
+					disabled: true,
+					game_id: 2,
+					created: "2023-07-26T10:47:34+08:00"
+				}, {
+					id: 9,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "demo",
+					disabled: true,
+					game_id: 1,
+					created: "2023-07-26T10:46:36+08:00"
+				}, {
+					id: 8,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "demo",
+					disabled: true,
+					game_id: 1,
+					created: "2023-07-26T10:46:30+08:00"
+				}, {
+					id: 7,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "demo",
+					disabled: true,
+					game_id: 1,
+					created: "2023-07-26T10:46:26+08:00"
+				}, {
+					id: 6,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "demo",
+					disabled: true,
+					game_id: 1,
+					created: "2023-07-26T10:46:20+08:00"
+				}, {
+					id: 5,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "demo",
+					disabled: true,
+					game_id: 1,
+					created: "2023-07-26T10:46:13+08:00"
+				}, {
+					id: 4,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "demo",
+					disabled: true,
+					game_id: 1,
+					created: "2023-07-26T10:46:04+08:00"
+				}, {
+					id: 3,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "demo",
+					disabled: true,
+					game_id: 1,
+					created: "2023-07-26T10:44:38+08:00"
+				}, {
+					id: 2,
+					name: "游戏机",
+					desc: "0人在玩",
+					icon: "string",
+					type: "demo",
+					disabled: true,
+					game_id: 1,
+					created: "2023-07-26T10:43:38+08:00"
+				}, {
+					id: 1,
+					name: "游戏机1",
+					desc: "0人在玩",
+					icon: "string",
+					type: "demo",
+					disabled: true,
+					game_id: 1,
+					created: "2023-07-26T10:43:37+08:00"
+				}]
+				mes.filter((item) => {
+					if (item.game_id === mess) {
+						box.push(item);
 
-				uni.request({ //游戏厅
-					url: `/api/box/${mess}`,
-					method: 'GET',
-					success: (item) => {
-						this.box = item.data.data
 					}
-				});
+				})
+				this.box = box
+
+				// uni.request({ //游戏厅
+				// 	url: `http://demo.iot-master.com:8082/api/box/search`,
+				// 	method: 'POST',
+				// 	data: {
+				// 		filter: {
+				// 			game_id: mess
+				// 		}
+				// 	},
+				// 	success: (item) => {
+				// 		this.box = item.data.data
+				// 	}
+				// });
 
 				this.index = mess
 				this.show = !this.show
@@ -388,6 +565,7 @@
 			},
 
 			goto(name) {
+				console.log(name)
 				// uni.showToast({
 				// 	title: '更新中!',
 				// });
@@ -408,6 +586,17 @@
 		display: flex;
 		flex-direction: column;
 		position: relative;
+
+
+		// width: 100vh;
+		// height: 100vw;
+		// margin-left: 100vw;
+		// transform: rotate(90deg);
+		// transform-origin: left top;
+
+
+
+
 
 		.showModel {
 			background-color: rgba(0, 0, 0, 0.3);
@@ -541,9 +730,9 @@
 			//z-index: -1;
 			//margin: 50px 0;
 			box-sizing: border-box;
-			padding-left: 10px;
-			padding-top: 52px;
-			padding-bottom: 52px;
+			padding: 52px 10px;
+			// padding-top: 52px;
+			// padding-bottom: 52px;
 			//background-color: red;
 			background-image: linear-gradient(to bottom, rgb(39, 15, 32), rgb(150, 59, 71));
 			flex: 1;
@@ -552,7 +741,7 @@
 
 			.returnIcon {
 				position: fixed;
-				left: 7px;
+				left: 12px;
 				//top: 55px;
 				top: 50%;
 				transform: translateY(-50%);
@@ -565,6 +754,8 @@
 			}
 
 			.row {
+
+				//background-color: red;
 				width: 100%;
 				height: 100%;
 				box-sizing: border-box;
@@ -575,11 +766,11 @@
 				// grid-auto-flow: row;
 				// grid-gap: 10px 0px;
 				//overflow: scroll; 
-				overflow-x: scroll;
+				overflow-y: scroll;
 				display: flex;
-				flex-flow: column wrap;
-				box-shadow: inset 4px 0px 5px rgba(172, 36, 155, 0.2);
-				padding-right: 10px;
+				flex-flow: row wrap;
+				//box-shadow: inset 4px 0px 5px rgba(172, 36, 155, 0.2);
+				//padding-right: 10px;
 				position: relative;
 				border-radius: 5px;
 
@@ -590,22 +781,19 @@
 					height: 96%;
 					top: 50%;
 					transform: translateY(-50%);
-					//background-image: linear-gradient(to bottom, rgb(68, 26, 42), rgba(193, 43, 171, 0.7));
-					//box-shadow: 0 0 100px purple;
-
-					//background-color: #f1f1f1;
 
 				}
 
 				.col-wid1 {
-					width: 30%;
+					width: 33%;
 					padding: 5px 0px 8px;
 				}
 
 				.col-wid2 {
-					width: 22%;
-					margin-right: 10px;
+					width: 24%;
+					//margin-right: 10px;
 					padding: 15px 5px;
+
 				}
 
 				.col {

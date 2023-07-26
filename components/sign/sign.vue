@@ -34,6 +34,7 @@
 <script>
 	export default {
 		name: "sign",
+		props: ['signin'],
 		data() {
 			return {
 				day: 1,

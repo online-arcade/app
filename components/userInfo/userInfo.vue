@@ -4,7 +4,7 @@
 			<image src="../../static/avatar.jpg" class="photo"></image>
 			<image src="../../static/edit.png" class="edit" @click="edit()">
 			</image>
-			<span>名称 :{{user.name}}</span>
+			<span>名称 :{{user.nick_name}}</span>
 		</view>
 		<view class="mess" ref="scrollableDiv">
 			<form>
@@ -13,7 +13,7 @@
 						<view class="demo-uni-col dark">昵称:</view>
 					</uni-col>
 					<uni-col :span="17" :offset="1">
-						<input class="input" name="input" :placeholder="user.name" v-model="user.name" />
+						<input class="input" name="input" :placeholder="user.nick_name" v-model="user.nick_name" />
 					</uni-col>
 				</uni-row>
 
