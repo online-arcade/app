@@ -12,7 +12,7 @@
 				<uni-forms>
 					<view class="input">
 						<span>账号</span>
-						<uni-easyinput style="min-width: 200px;" type="text" v-model="formData.account" />
+						<uni-easyinput style="min-width: 200px;" type="text" v-model="formData.username" />
 					</view>
 
 					<view class="input">
@@ -54,7 +54,7 @@
 		data() {
 			return {
 				formData: {
-					account: '',
+					username: '',
 					password: ''
 				},
 			};
@@ -77,20 +77,35 @@
 			},
 			login() {
 
-				if (this.formData.account === 'admin' && this.formData.password === '123456') {
-					uni.showToast({
-						title: '登陆成功！'
-					});
-					uni.navigateTo({
-						url: '/pages/index/index'
+				uni.request({
+					url: 'http://demo.iot-master.com:8082/api/auth',
+					method: 'GET',
+					data: {
+						username: this.formData.username,
+						password: this.$md5(this.formData.password)
+					},
+					success: (item) => {
 
-					});
 
-				} else {
-					uni.showToast({
-						title: '校验错误...'
-					});
-				}
+						uni.setStorageSync('token', item.data.data);
+						uni.showToast({
+							title: '登陆成功！'
+						});
+						uni.navigateTo({
+							url: '/pages/index/index'
+
+						});
+					},
+					fail: () => {
+
+						uni.showToast({
+							title: '校验错误...'
+						});
+
+					}
+
+				})
+
 			},
 			register() {}
 		}
@@ -102,8 +117,15 @@
 
 	.content {
 		font-family: font;
-		height: 100vh;
-		width: 100vw;
+		// height: 100vh;
+		// width: 100vw;
+
+		width: 100vh;
+		height: 100vw;
+		margin-left: 100vw;
+		transform: rotate(90deg);
+		transform-origin: left top;
+
 		background-image: url('../../static/login.jpg');
 		background-repeat: no-repeat;
 		background-size: cover;

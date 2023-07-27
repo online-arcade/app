@@ -74,7 +74,7 @@
 					style="position: absolute;left: 50%;transform: translateX(-50%); top: -100%;display: flex;flex-direction: column;align-items: center;color: white;">
 					<view>张三</view>
 					<image src="../../static/boy2.png"
-						style=" box-shadow: 0 0 10px rgb(0,0,0,0.3) ; box-sizing: border-box;padding: 5px; width: 8vw;height: 8vw;border-radius: 50%; ">
+						style=" box-shadow: 0 0 10px rgb(0,0,0,0.3) ; box-sizing: border-box;padding: 5px; width: 8vh;height: 8vh;border-radius: 50%; ">
 					</image>
 
 				</view>
@@ -259,9 +259,9 @@
 			},
 			send() {
 				if (this.sendMess) {
-					this.socket.emit('msg', {
-						content: this.sendMess
-					});
+					// this.socket.emit('msg', {
+					// 	content: this.sendMess
+					// });
 
 
 					this.scrollTop += 300
@@ -311,8 +311,10 @@
 		.redBag {
 			box-sizing: border-box;
 			padding: 10px 0px;
-			width: 40vw;
-			height: 90vh;
+			// width: 40vw;
+			// height: 90vh;
+			width: 40vh;
+			height: 90vw;
 			position: absolute;
 			left: 50%;
 			top: 50%;
@@ -327,8 +329,10 @@
 				content: '';
 				position: absolute;
 				top: 0;
-				width: 40vw;
-				height: 30vh;
+				// width: 40vw;
+				// height: 30vh;
+				width: 40vh;
+				height: 30vw;
 				background-color: rgb(210, 56, 60);
 
 				//background-image: linear-gradient(to bottom, rgb(247, 78, 73), rgb(212, 57, 61));
@@ -341,10 +345,13 @@
 			&::after {
 				content: '';
 				position: absolute;
-				top: 15vh;
+				//top: 15vh;
+				top: 15vw;
 				left: 0;
-				width: 40vw;
-				height: 75vh;
+				// width: 40vw;
+				// height: 75vh;
+				width: 40vh;
+				height: 75vw;
 				border-radius: 0 0 5px 5px;
 				background-image: linear-gradient(to bottom, rgb(250, 66, 66), rgb(238, 54, 53), rgb(217, 37, 32));
 
@@ -354,7 +361,8 @@
 			.rectangle {
 				position: absolute;
 				left: 0;
-				top: 15vh;
+				//top: 15vh;
+				top: 15vw;
 				width: 100%;
 				height: 45px;
 				background-color: rgb(247, 78, 73);

@@ -26,6 +26,7 @@
     // }
     /* 5+App特有相关 */
     "app-plus" : {
+        "orientation" : "landscape",
         "usingComponents" : true,
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
@@ -88,5 +89,25 @@
     "uniStatistics" : {
         "enable" : false
     },
-    "vueVersion" : "2"
+    "vueVersion" : "2",
+    "webview" : {
+        "plusrequire" : "none",
+        "titleNView" : {
+            "autoBackButton" : true,
+            "backgroundColor" : "#000",
+            "titleColor" : "#fff",
+            "splitLine" : {
+                "color" : "#000"
+            }
+        },
+        "config" : {
+            "disableDragBounce" : true,
+            "bounce" : "vertical",
+            "scrollIndicator" : "none",
+            "background" : "#000000",
+            "popGesture" : "none",
+            "softinputMode" : "adjustPan",
+            "screenOrientation" : "landscape"
+        }
+    }
 }

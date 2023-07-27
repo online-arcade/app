@@ -85,14 +85,14 @@
 
 		</view>
 
-		<view class="foot">
+		<!-- 	<view class="foot">
 			<view v-for="(data,index) of image" class="tag" @click="handleIcon(index,1)">
 				<view class="image-border">
 					<image class="" :src="data.url"></image>
 				</view>
 				<span>{{data.name}}</span>
 			</view>
-		</view>
+		</view> -->
 
 		<view class="loading" v-show="loading">
 			<image src="../../static/load.png" style="width: 20%; " mode="widthFix"></image>
@@ -102,19 +102,22 @@
 		</view>
 
 		<!-- <view v-show="mask" class="showModel"> </view> -->
-
+		<!-- v-show="chatShow" -->
+		<!-- <chat class="chat" v-show="true" @receiveData="handleGetData(0)"></chat> -->
 		<uni-transition custom-class="transition" :mode-class="modeClass" :show="mask" class="showModel">
-
-			<setting class="chat" v-show="setShow" @receiveData="handleSet(0)"></setting>
 			<chat class="chat" v-show="chatShow" @receiveData="handleGetData(0)"></chat>
+			<setting class="chat" v-show="setShow" @receiveData="handleSet(0)"></setting>
 			<userInfo class="model" v-show="modelShow" :user="user" @receiveData="handleModel(0)"></userInfo>
 			<recharge class="chat" v-show="rechargeShow" :user="user" @receiveData="handleRecharge(0)"></recharge>
+			<!-- 			 
+			 
+		 
 			<account class="chat" v-show="image[3].show" :recharge="recharge" @receiveData="handleIcon(3,0)"></account>
 			<activity class="chat" v-show="image[1].show" @receiveData="handleIcon(1,0)"></activity>
 			<sign class="chat" v-show="image[0].show" @receiveData="handleIcon(0,0)"></sign>
 			<email class="chat" v-show="image[2].show" @receiveData="handleIcon(2,0)"></email>
 			<report class="chat" v-show="image[4].show" @receiveData="handleIcon(4,0)"></report>
-
+-->
 
 		</uni-transition>
 
@@ -125,6 +128,7 @@
 </template>
 
 <script>
+	import screenfull from "screenfull";
 	export default {
 
 		data() {
@@ -255,13 +259,34 @@
 			this.series = false
 		},
 		mounted() {
+
 			this.resourcesLoaded();
 			this.load()
 			this.row1 = this.data.slice(0, (this.data.length + 1) / 2)
 			this.row2 = this.data.slice((this.data.length + 1) / 2)
+
+
+			window.addEventListener('orientationchange', this.handleOrientationChange)
+			// if (!screenfull.isEnabled) {
+			// 	// 如果不支持进入全屏，发出不支持提示
+			// 	console.log('err')
+			// 	return false;
+			// }
+			// //此处填入需要全屏的ref属性值即可
+			// screenfull.toggle(this.$refs.content);
+			// this.$nextTick(() => {
+			// 	this.rotateBox();
+			// });
+
 		},
 
 		methods: {
+			handleOrientationChange() {
+				console.log('rot')
+				if (typeof plus !== 'undefined' && typeof plus.screen !== 'undefined')
+					plus.screen.lockOrientation('landscape')
+
+			},
 			load() {
 				// uni.request({ //用户
 				// 	url: 'http://demo.iot-master.com:8082/api/user/0',
@@ -281,15 +306,22 @@
 					integral: 3000,
 					created: "2023-07-21T18:07:22+08:00"
 				}
-
-
-				// uni.request({ //游戏厅
-				// 	url: 'http://demo.iot-master.com:8082/api/game/list',
-				// 	method: 'GET',
-				// 	success: (item) => {
-				// 		this.game = item.data.data
-				// 	}
-				// });
+				const mes =
+					'"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAiLCJleHAiOjE2OTMxMjYwNDR9.zupJ5jc2zvKW4soIQlPqpgWyUN_qR9lEOVmGLEXPQMQ": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAiLCJleHAiOjE2OTMxMjYwNDR9.zupJ5jc2zvKW4soIQlPqpgWyUN_qR9lEOVmGLEXPQMQ"'
+				console.log(mes)
+				uni.request({ //游戏厅
+					url: 'http://demo.iot-master.com:8082/api/game/list',
+					method: 'GET',
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': mes
+					},
+					//withCredentials: true, // 设置为 true
+					success: (item) => {
+						this.game = item.data.data
+						console.log(item.data.data)
+					}
+				});
 
 				this.game = [{
 					id: 2,
@@ -321,7 +353,6 @@
 			},
 
 			resourcesLoaded() {
-
 				var time = setTimeout(() => {
 					if (document.readyState === 'complete') {
 						this.loading = false
@@ -581,18 +612,18 @@
 <style lang="scss">
 	.content {
 		font-family: font;
-		width: 100vw;
-		height: 100vh;
+		// width: 100vw;
+		// height: 100vh;
 		display: flex;
 		flex-direction: column;
 		position: relative;
 
 
-		// width: 100vh;
-		// height: 100vw;
-		// margin-left: 100vw;
-		// transform: rotate(90deg);
-		// transform-origin: left top;
+		width: 100vh;
+		height: 100vw;
+		margin-left: 100vw;
+		transform: rotate(90deg);
+		transform-origin: left top;
 
 
 
@@ -727,10 +758,11 @@
 
 
 		.main {
+
 			//z-index: -1;
 			//margin: 50px 0;
 			box-sizing: border-box;
-			padding: 52px 10px;
+			padding: 52px 10px 0px;
 			// padding-top: 52px;
 			// padding-bottom: 52px;
 			//background-color: red;
@@ -920,27 +952,44 @@
 		}
 
 		.chat {
-			position: fixed;
-			width: 90vw;
-			height: 90vh;
+			// position: fixed;
+			// width: 90vw;
+			// height: 90vh;
+			// left: 50%;
+			// top: 50%;
+			// background-color: rgb(57, 6, 15);
+			// transform: translate(-50%, -49%);
+
+			position: absolute;
+			transform: rotate(0deg);
+			width: 90vh;
+			height: 90vw;
 			left: 50%;
 			top: 50%;
 			background-color: rgb(57, 6, 15);
+			margin-left: 0vw;
 			transform: translate(-50%, -49%);
-			position: fixed;
-
-
 		}
 
 		.model {
-			position: fixed;
-			//position: absolute;
-			width: 60vw;
-			height: 90vh;
+			// position: fixed;
+			// //position: absolute;
+			// width: 60vw;
+			// height: 90vh;
+			// left: 50%;
+			// top: 50%;
+			// background-color: rgb(57, 6, 15);
+			// transform: translate(-50%, -50%);
+
+			position: absolute;
+			transform: rotate(0deg);
+			width: 60vh;
+			height: 90vw;
 			left: 50%;
 			top: 50%;
 			background-color: rgb(57, 6, 15);
-			transform: translate(-50%, -50%);
+			margin-left: 0vw;
+			transform: translate(-50%, -49%);
 		}
 
 		@keyframes spin {
