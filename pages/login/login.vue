@@ -62,13 +62,19 @@
 		methods: {
 			register() {
 				uni.request({
-					url: '/api/user/list',
-					method: 'GET',
+					url: 'http://demo.iot-master.com:8082/api/user/create',
+					method: 'POST',
 					data: formData,
 					success: (item) => {
 						uni.showToast({
 							title: '注册成功！'
 						});
+					},
+					fail: () => {
+						uni.showToast({
+							title: '注册失败...'
+						});
+
 					}
 					// complete: (data) => {
 					// 	console.log('/demo', data)
@@ -76,28 +82,32 @@
 				})
 			},
 			login() {
-
+				const mess = {
+					username: this.formData.username,
+					password: this.$md5(this.formData.password)
+				}
 				uni.request({
 					url: 'http://demo.iot-master.com:8082/api/auth',
 					method: 'GET',
-					data: {
-						username: this.formData.username,
-						password: this.$md5(this.formData.password)
-					},
+					data: mess,
 					success: (item) => {
-
-
 						uni.setStorageSync('token', item.data.data);
 						uni.showToast({
 							title: '登陆成功！'
 						});
+						uni.request({
+							url: 'http://demo.iot-master.com:8082/api/login',
+							method: 'POST',
+							data: mess,
+							success: (item) => {
+								uni.setStorageSync('id', item.data.data.id);
+							},
+						})
 						uni.navigateTo({
 							url: '/pages/index/index'
-
 						});
 					},
 					fail: () => {
-
 						uni.showToast({
 							title: '校验错误...'
 						});

@@ -133,6 +133,7 @@
 
 		data() {
 			return {
+				token: '',
 				user: {},
 				mask: false,
 				showAll: [false, true],
@@ -259,7 +260,8 @@
 			this.series = false
 		},
 		mounted() {
-
+			this.token = JSON.stringify(uni.getStorageSync('token')).replace('{', '').replace('}',
+				'');
 			this.resourcesLoaded();
 			this.load()
 			this.row1 = this.data.slice(0, (this.data.length + 1) / 2)
@@ -288,67 +290,32 @@
 
 			},
 			load() {
-				// uni.request({ //用户
-				// 	url: 'http://demo.iot-master.com:8082/api/user/0',
-				// 	method: 'GET',
-				// 	success: (item) => {
-				// 		item.data ? this.user = item.data.data : ''
-				// 	}
-				// });
 
-				this.user = {
-					"id": 0,
-					username: "admin",
-					nick_name: "张三",
-					email: "cs",
-					cellphone: "13754212553",
-					balance: 770,
-					integral: 3000,
-					created: "2023-07-21T18:07:22+08:00"
-				}
-				const mes =
-					'"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAiLCJleHAiOjE2OTMxMjYwNDR9.zupJ5jc2zvKW4soIQlPqpgWyUN_qR9lEOVmGLEXPQMQ": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjAiLCJleHAiOjE2OTMxMjYwNDR9.zupJ5jc2zvKW4soIQlPqpgWyUN_qR9lEOVmGLEXPQMQ"'
-				console.log(mes)
+				uni.request({ //用户
+					url: `http://demo.iot-master.com:8082/api/user/${uni.getStorageSync('id')}`,
+					method: 'GET',
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': this.token
+					},
+					success: (item) => {
+						item.data ? this.user = JSON.parse('{' + item.data.split('}{')[1]).data : ''
+					}
+				});
+
 				uni.request({ //游戏厅
 					url: 'http://demo.iot-master.com:8082/api/game/list',
 					method: 'GET',
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
-						'Authorization': mes
+						'Authorization': this.token
 					},
-					//withCredentials: true, // 设置为 true
 					success: (item) => {
-						this.game = item.data.data
-						console.log(item.data.data)
+						this.game = JSON.parse('{' + item.data.split('}{')[1]).data
 					}
 				});
 
-				this.game = [{
-					id: 2,
-					name: "疯狂魔鬼城",
-					desc: "2人在玩",
-					icon: "fkmgc.png",
-					type: "fkmgc",
-					disabled: true,
-					created: "2023-07-26T09:55:42+08:00"
-				}, {
-					id: 1,
-					name: "捕鱼达人",
-					desc: "1人在玩",
-					icon: "bydr.png",
-					type: "bydr",
-					disabled: true,
-					created: "2023-07-26T09:55:41+08:00"
-				}]
 
-
-				// uni.request({ //签到
-				// 	url: 'http://demo.iot-master.com:8082/api/signin/list',
-				// 	method: 'GET',
-				// 	success: (item) => {
-				// 		console.log(item)
-				// 	}
-				// });
 
 			},
 
@@ -376,217 +343,68 @@
 			},
 			handleIcon(index, show) {
 				this.mask = this.image[index].show = this.showAll[show];
-				if (show)
-					switch (index) {
-						case 0:
-							uni.request({ //充值
-								url: 'http://demo.iot-master.com:8082/api/signin/search',
-								method: 'POST',
-								data: {
-									filter: {
-										user_id: 0
-									}
-								},
-								success: (item) => {
-									this.signin = item.data.data
-								}
-							});
-							break;
-						case 2:
-							uni.request({
-								url: 'http://demo.iot-master.com:8082/api/email/list',
-								method: 'GET',
-								success: (item) => {
-									this.email = item.data.data
-								}
-							});
-							break;
-						case 3:
-							uni.request({
-								url: 'http://demo.iot-master.com:8082/api/recharge/search',
-								method: 'POST',
-								data: {
-									filter: {
-										id: 0
-									}
-								},
-								success: (item) => {
-									this.recharge = item.data.data
-								}
-							});
-							break;
-						default:
-							break;
-					}
+				// if (show)
+				// 	switch (index) {
+				// 		case 0:
+				// 			uni.request({ //充值
+				// 				url: 'http://demo.iot-master.com:8082/api/signin/search',
+				// 				method: 'POST',
+				// 				data: {
+				// 					filter: {
+				// 						user_id: 0
+				// 					}
+				// 				},
+				// 				success: (item) => {
+				// 					this.signin = item.data.data
+				// 				}
+				// 			});
+				// 			break;
+				// 		case 2:
+				// 			uni.request({
+				// 				url: 'http://demo.iot-master.com:8082/api/email/list',
+				// 				method: 'GET',
+				// 				success: (item) => {
+				// 					this.email = item.data.data
+				// 				}
+				// 			});
+				// 			break;
+				// 		case 3:
+				// 			uni.request({
+				// 				url: 'http://demo.iot-master.com:8082/api/recharge/search',
+				// 				method: 'POST',
+				// 				data: {
+				// 					filter: {
+				// 						id: 0
+				// 					}
+				// 				},
+				// 				success: (item) => {
+				// 					this.recharge = item.data.data
+				// 				}
+				// 			});
+				// 			break;
+				// 		default:
+				// 			break;
+				// 	}
 			},
 
 			chooseSeries(mess) {
-				let box = []
-				const mes = [{
-					id: 16,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "test",
-					disabled: true,
-					game_id: 2,
-					created: "2023-07-26T10:47:52+08:00"
-				}, {
-					id: 15,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "test",
-					disabled: true,
-					game_id: 2,
-					created: "2023-07-26T10:47:49+08:00"
-				}, {
-					id: 14,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "test",
-					disabled: true,
-					game_id: 2,
-					created: "2023-07-26T10:47:47+08:00"
-				}, {
-					id: 13,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "test",
-					disabled: true,
-					game_id: 2,
-					created: "2023-07-26T10:47:44+08:00"
-				}, {
-					id: 12,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "test",
-					disabled: true,
-					game_id: 2,
-					created: "2023-07-26T10:47:42+08:00"
-				}, {
-					id: 11,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "test",
-					disabled: true,
-					game_id: 2,
-					created: "2023-07-26T10:47:39+08:00"
-				}, {
-					id: 10,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "test",
-					disabled: true,
-					game_id: 2,
-					created: "2023-07-26T10:47:34+08:00"
-				}, {
-					id: 9,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "demo",
-					disabled: true,
-					game_id: 1,
-					created: "2023-07-26T10:46:36+08:00"
-				}, {
-					id: 8,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "demo",
-					disabled: true,
-					game_id: 1,
-					created: "2023-07-26T10:46:30+08:00"
-				}, {
-					id: 7,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "demo",
-					disabled: true,
-					game_id: 1,
-					created: "2023-07-26T10:46:26+08:00"
-				}, {
-					id: 6,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "demo",
-					disabled: true,
-					game_id: 1,
-					created: "2023-07-26T10:46:20+08:00"
-				}, {
-					id: 5,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "demo",
-					disabled: true,
-					game_id: 1,
-					created: "2023-07-26T10:46:13+08:00"
-				}, {
-					id: 4,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "demo",
-					disabled: true,
-					game_id: 1,
-					created: "2023-07-26T10:46:04+08:00"
-				}, {
-					id: 3,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "demo",
-					disabled: true,
-					game_id: 1,
-					created: "2023-07-26T10:44:38+08:00"
-				}, {
-					id: 2,
-					name: "游戏机",
-					desc: "0人在玩",
-					icon: "string",
-					type: "demo",
-					disabled: true,
-					game_id: 1,
-					created: "2023-07-26T10:43:38+08:00"
-				}, {
-					id: 1,
-					name: "游戏机1",
-					desc: "0人在玩",
-					icon: "string",
-					type: "demo",
-					disabled: true,
-					game_id: 1,
-					created: "2023-07-26T10:43:37+08:00"
-				}]
-				mes.filter((item) => {
-					if (item.game_id === mess) {
-						box.push(item);
 
+				uni.request({ //游戏厅
+					url: `http://demo.iot-master.com:8082/api/box/search`,
+					method: 'POST',
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': this.token
+					},
+					data: {
+						filter: {
+							game_id: mess
+						}
+					},
+					success: (item) => {
+						this.box = JSON.parse('{' + item.data.split('}{')[1]).data
 					}
-				})
-				this.box = box
-
-				// uni.request({ //游戏厅
-				// 	url: `http://demo.iot-master.com:8082/api/box/search`,
-				// 	method: 'POST',
-				// 	data: {
-				// 		filter: {
-				// 			game_id: mess
-				// 		}
-				// 	},
-				// 	success: (item) => {
-				// 		this.box = item.data.data
-				// 	}
-				// });
+				});
 
 				this.index = mess
 				this.show = !this.show
@@ -596,7 +414,7 @@
 			},
 
 			goto(name) {
-				console.log(name)
+
 				// uni.showToast({
 				// 	title: '更新中!',
 				// });
