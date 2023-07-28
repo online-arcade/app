@@ -68,6 +68,7 @@
 		props: ['user'],
 		data() {
 			return {
+				token: '',
 				recharge: 0,
 				customShow: 0,
 				content: '',
@@ -113,6 +114,10 @@
 				]
 			};
 		},
+		mounted() {
+			this.token = JSON.stringify(uni.getStorageSync('token')).replace('{', '').replace('}',
+				'');
+		},
 		methods: {
 			handleRecharge() {
 				this.$emit('receiveData')
@@ -156,8 +161,12 @@
 			load() {
 
 				uni.request({
-					url: '/api/recharge/create',
+					url: 'http://demo.iot-master.com:8082/api/recharge/create',
 					method: 'POST',
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': this.token
+					},
 					data: {
 						user_id: this.user.id,
 						amount: Number(this.recharge)
@@ -166,8 +175,12 @@
 				});
 
 				uni.request({
-					url: '/api/user/0',
+					url: `http://demo.iot-master.com:8082/api/user/${uni.getStorageSync('id')}`,
 					method: 'POST',
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': this.token
+					},
 					data: this.user,
 					success: (item) => {
 						uni.showToast({

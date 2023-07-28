@@ -38,12 +38,7 @@
 				<button type="primary" size="mini" @click="register">注册</button>
 				<button type="primary" size="mini" @click="login" style="float: right;">登录</button> -->
 
-
-
 			</view>
-
-
-
 
 		</view>
 	</view>
