@@ -3,7 +3,8 @@
 		<view class="header">
 			<view class="group">
 				<view class="box">
-					<image class="photo" src="../../static/avatar.jpg" @click="handleModel(1)"></image>
+					<image class="photo" :src="url" @click="handleModel(1)"></image>
+
 				</view>
 
 				<view class="group money">
@@ -32,20 +33,16 @@
 					<span>设置</span>
 				</span>
 
-
 			</view>
 
 		</view>
 
 		<view :class="{'main':true,'main-pad':!show}">
 
-			<!-- <view
-				style="width: 50px;height: 50%;background-color:transparent;box-sizing: border-box; border: 2px solid rgba(39,8,94,0.6); position: absolute;left: 5px;top:50%;  transform: translateY(-50%);  border-radius: 30px;">
-			</view> -->
 			<uni-transition custom-class="transition" :mode-class="modeClass" :show="show" :class="{'row':!series }">
 				<view :class="{'col':true,'col-wid1':true}" v-for="(item,index) of game">
 					<view class="box">
-						<view class="box-content" @click="chooseSeries(item.id)">
+						<view class="box-content" @click="toggle('center',item.type)">
 							<image :src="'../../static/'+item.icon" style=" height: 100%;">
 							</image>
 							<span class="num">{{item.desc}}</span>
@@ -57,12 +54,59 @@
 				</view>
 
 			</uni-transition>
+			<uni-popup ref="popup">
+				<view class="modal">
+					<view class="modal-title">{{modal.title}}</view>
+					<view class="modal-content">
+						<view v-for="(item,index) of modal.content">
+							({{index+1}}) {{item}}
+						</view>
+
+					</view>
+					<view class="modal-foot">
+
+						<view class="modal-foot-btn " @click="handleOk()">
+							接受
+						</view>
+						<!-- 	<text style="position: absolute;color: black">
+
+							<uni-countdown :show-day="false" :second="5"   />
+						</text> -->
+						<image class=" progress" src="../../static/loading.png">
+							<view class="modal-foot-btn red" @click="handleClose">
+								拒绝</view>
+
+					</view>
+				</view>
+			</uni-popup>
+
+			<uni-popup ref="report">
+				<view class="report">
+					<view class="report-title">{{report.title}}</view>
+					<view class="report-content">
+						<view>
+							{{report.msg}}
+						</view>
+
+						<view v-for="(item,index) of report.content">
+							({{index+1}}) {{item}}
+						</view>
+
+					</view>
+					<view class="report-foot">
+						<view class="report-foot-btn " @click="handleReportOk()">
+							确认
+						</view>
 
 
-			<image src="../../static/return.png" v-show="!show" @click=" show = ! show" class="returnIcon">
-			</image>
 
-			<uni-transition custom-class="transition" :mode-class="modeClass" :show="!show" :class="{'row':!series }">
+					</view>
+				</view>
+			</uni-popup>
+			<!-- <image src="../../static/return.png" v-show="!show" @click=" show = ! show" class="returnIcon">
+			</image> -->
+
+			<!-- 	<uni-transition custom-class="transition" :mode-class="modeClass" :show="!show" :class="{'row':!series }">
 
 				<view :class="{'col':true,'col-wid2':true}" v-for="(item,dex) of box">
 					<view class="box">
@@ -78,28 +122,24 @@
 				<view v-if="!box"
 					style="color: rgb(255,244,38) ;font-size: 30px;display: flex;justify-content: center;align-items: center;width: 100%;height: 100%;">
 					请上传游戏数据！</view>
-				<!-- </view> -->
-			</uni-transition>
+
+			</uni-transition> -->
 
 
 
 		</view>
 
-		<!-- 	<view class="foot">
-			<view v-for="(data,index) of image" class="tag" @click="handleIcon(index,1)">
-				<view class="image-border">
-					<image class="" :src="data.url"></image>
-				</view>
-				<span>{{data.name}}</span>
-			</view>
-		</view> -->
 
-		<view class="loading" v-show="loading">
+
+		<!-- <view class="loading" v-show="loading">
 			<image src="../../static/load.png" style="width: 20%; " mode="widthFix"></image>
 			<image class="progress" src="../../static/loading.png">
 			</image>
 			<span> 注意 : 若累计游戏时间如超过5小时 ，游戏内的收益（经验、金钱）直接为0</span>
-		</view>
+		</view> -->
+
+
+
 
 		<!-- <view v-show="mask" class="showModel"> </view> -->
 		<!-- v-show="chatShow" -->
@@ -109,15 +149,6 @@
 			<setting class="chat" v-show="setShow" @receiveData="handleSet(0)"></setting>
 			<userInfo class="model" v-show="modelShow" :user="user" @receiveData="handleModel(0)"></userInfo>
 			<recharge class="chat" v-show="rechargeShow" :user="user" @receiveData="handleRecharge(0)"></recharge>
-			<!-- 			 
-			 
-		 
-			<account class="chat" v-show="image[3].show" :recharge="recharge" @receiveData="handleIcon(3,0)"></account>
-			<activity class="chat" v-show="image[1].show" @receiveData="handleIcon(1,0)"></activity>
-			<sign class="chat" v-show="image[0].show" @receiveData="handleIcon(0,0)"></sign>
-			<email class="chat" v-show="image[2].show" @receiveData="handleIcon(2,0)"></email>
-			<report class="chat" v-show="image[4].show" @receiveData="handleIcon(4,0)"></report>
--->
 
 		</uni-transition>
 
@@ -129,10 +160,14 @@
 
 <script>
 	import screenfull from "screenfull";
+	// import Peer from 'peerjs';
 	export default {
 
 		data() {
 			return {
+				time: '',
+				gotoGame: '',
+				url: '1',
 				token: '',
 				user: {},
 				mask: false,
@@ -221,6 +256,18 @@
 						series: "demo"
 					},
 				],
+				modal: {
+					title: "游戏须知",
+					content: ['机台1币=200分，开始游戏即自动投10币=2000分;',
+						'系统总分上限100万分，超过上限后的投币与打中boss的加分不计数，游玩时请注意台面分数，避免无效上分;',
+						'有任何问题，请加客服微信咨询!'
+					]
+				},
+				report: {
+					title: '平台公告',
+					msg: '欢迎来到物联网游戏体验中心，为响应文市发[2016]26号文件，鼓励游戏游艺场所积极应用合法合规的新设备、改造服务环境、创新经营模式，支持其增设上网服务项目成为多种经营业务的城市文化娱乐综合体。顺应“互联网+”发展趋势，鼓励娱乐场所与互联网结合发展，实现场内场外、线上线下互动，增强娱乐场所体验式服务,不断拓展新型文化产业业态健康的娱乐理念。特此声明:',
+					content: ['游戏内金币仅为游戏所用，游戏内不能交易不能转让', '游戏内钻石为奖励道具，不能兑换金币等有价证券', '本电玩体验中心对用户拥有的虚拟货币和票均不提供任何形式的回购']
+				},
 
 				series: [],
 				game: [],
@@ -258,60 +305,98 @@
 		},
 		onLoad() {
 			this.series = false
+
+		},
+		onShow() {
+			this.screenFull()
 		},
 		mounted() {
-			this.token = JSON.stringify(uni.getStorageSync('token')).replace('{', '').replace('}',
-				'');
+			this.$refs.report.open('center');
+			this.token = uni.getStorageSync('token')
 			this.resourcesLoaded();
 			this.load()
 			this.row1 = this.data.slice(0, (this.data.length + 1) / 2)
 			this.row2 = this.data.slice((this.data.length + 1) / 2)
 
 
-			window.addEventListener('orientationchange', this.handleOrientationChange)
-			// if (!screenfull.isEnabled) {
-			// 	// 如果不支持进入全屏，发出不支持提示
-			// 	console.log('err')
-			// 	return false;
-			// }
-			// //此处填入需要全屏的ref属性值即可
-			// screenfull.toggle(this.$refs.content);
-			// this.$nextTick(() => {
-			// 	this.rotateBox();
-			// });
-
+			window.addEventListener('resize', this.handleResize);
 		},
 
 		methods: {
-			handleOrientationChange() {
-				console.log('rot')
-				if (typeof plus !== 'undefined' && typeof plus.screen !== 'undefined')
-					plus.screen.lockOrientation('landscape')
+
+			handleResize() {
+				const {
+					innerWidth,
+					innerHeight
+				} = window;
+				const aspectRatio = innerWidth / innerHeight;
+
+				if (aspectRatio < 1) {
+					// 竖屏显示
+					document.body.classList.add('landscape');
+					document.body.classList.remove('portrait');
+				} else {
+					// 横屏显示
+					document.body.classList.add('landscape');
+					document.body.classList.remove('portrait');
+				}
+			},
+			toggle(type, msg) {
+
+				// open 方法传入参数 等同在 uni-popup 组件上绑定 type属性
+				this.$refs.popup.open('center');
+				this.gotoGame = msg
+
+				this.time = setInterval(() => {
+					this.$refs.popup.close()
+					this.goto(this.gotoGame)
+					clearInterval(this.time)
+				}, 5000)
+			},
+			screenFull() {
+
+				const element = document.documentElement;
+
+				// 根据不同的浏览器获取全屏方法
+				const requestFullScreen =
+					element.requestFullscreen ||
+					element.webkitRequestFullscreen ||
+					element.mozRequestFullScreen ||
+					element.msRequestFullscreen;
+
+				// 请求全屏
+				if (requestFullScreen) {
+					requestFullScreen.call(element);
+				}
+				this.textShow = false
 
 			},
 			load() {
 
 				uni.request({ //用户
-					url: `http://demo.iot-master.com:8082/api/user/${uni.getStorageSync('id')}`,
+					url: `http://gamebox.zgwit.cn:8082/api/user/${uni.getStorageSync('id')}`,
 					method: 'GET',
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
-						'Authorization': this.token
+						'Authorization': 'Bearer ' + this.token
 					},
 					success: (item) => {
-						item.data ? this.user = JSON.parse('{' + item.data.split('}{')[1]).data : ''
+
+						this.user = item.data.data || ''
+						this.url = 'http://gamebox.zgwit.cn:8082' + this.user.avatar
+						console.log(this.url)
 					}
 				});
 
 				uni.request({ //游戏厅
-					url: 'http://demo.iot-master.com:8082/api/game/list',
+					url: 'http://gamebox.zgwit.cn:8082/api/game/list',
 					method: 'GET',
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
-						'Authorization': this.token
+						'Authorization': 'Bearer ' + this.token
 					},
 					success: (item) => {
-						this.game = JSON.parse('{' + item.data.split('}{')[1]).data
+						this.game = item.data.data
 					}
 				});
 
@@ -333,6 +418,9 @@
 			},
 			handleModel(show) {
 				this.mask = this.modelShow = this.showAll[show];
+				if (!show) {
+					this.load()
+				}
 			},
 			handleSet(show) {
 				this.mask = this.setShow = this.showAll[show];
@@ -343,58 +431,28 @@
 			},
 			handleIcon(index, show) {
 				this.mask = this.image[index].show = this.showAll[show];
-				// if (show)
-				// 	switch (index) {
-				// 		case 0:
-				// 			uni.request({ //充值
-				// 				url: 'http://demo.iot-master.com:8082/api/signin/search',
-				// 				method: 'POST',
-				// 				data: {
-				// 					filter: {
-				// 						user_id: 0
-				// 					}
-				// 				},
-				// 				success: (item) => {
-				// 					this.signin = item.data.data
-				// 				}
-				// 			});
-				// 			break;
-				// 		case 2:
-				// 			uni.request({
-				// 				url: 'http://demo.iot-master.com:8082/api/email/list',
-				// 				method: 'GET',
-				// 				success: (item) => {
-				// 					this.email = item.data.data
-				// 				}
-				// 			});
-				// 			break;
-				// 		case 3:
-				// 			uni.request({
-				// 				url: 'http://demo.iot-master.com:8082/api/recharge/search',
-				// 				method: 'POST',
-				// 				data: {
-				// 					filter: {
-				// 						id: 0
-				// 					}
-				// 				},
-				// 				success: (item) => {
-				// 					this.recharge = item.data.data
-				// 				}
-				// 			});
-				// 			break;
-				// 		default:
-				// 			break;
-				// 	}
-			},
 
+			},
+			handleOk() {
+				uni.showToast({
+					title: '游戏加载中!',
+				});
+				// this.$refs.popup.close()
+				// this.goto(this.gotoGame)
+
+			},
+			handleClose() {
+				clearInterval(this.time)
+				this.$refs.popup.close()
+			},
 			chooseSeries(mess) {
 
 				uni.request({ //游戏厅
-					url: `http://demo.iot-master.com:8082/api/box/search`,
+					url: `http://gamebox.zgwit.cn:8082/api/box/search`,
 					method: 'POST',
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
-						'Authorization': this.token
+						'Authorization': 'Bearer ' + this.token
 					},
 					data: {
 						filter: {
@@ -402,7 +460,7 @@
 						}
 					},
 					success: (item) => {
-						this.box = JSON.parse('{' + item.data.split('}{')[1]).data
+						this.box = item.data.data
 					}
 				});
 
@@ -412,7 +470,9 @@
 			loader() {
 				this.loading = !this.loading
 			},
-
+			handleReportOk() {
+				this.$refs.report.close()
+			},
 			goto(name) {
 
 				// uni.showToast({
@@ -430,21 +490,18 @@
 <style lang="scss">
 	.content {
 		font-family: font;
-		// width: 100vw;
-		// height: 100vh;
+		width: 100vw;
+		height: 100vh;
 		display: flex;
 		flex-direction: column;
 		position: relative;
 
 
-		width: 100vh;
-		height: 100vw;
-		margin-left: 100vw;
-		transform: rotate(90deg);
-		transform-origin: left top;
-
-
-
+		// width: 100vh;
+		// height: 100vw;
+		// margin-left: 100vw;
+		// transform: rotate(90deg);
+		// transform-origin: left top;
 
 
 		.showModel {
@@ -708,6 +765,106 @@
 
 				}
 			}
+
+			.report {
+				box-sizing: border-box;
+				padding: 10px;
+				//改
+				width: 70vw;
+				border-radius: 5px;
+				background: white;
+
+				.report-title {
+					font-weight: bold;
+					font-size: 20px;
+					padding: 5px;
+					text-align: center
+				}
+
+				.report-content {
+					background: rgb(202, 223, 254);
+
+					margin-bottom: 10px;
+					padding: 5px 5px 20px
+				}
+
+				.report-foot {
+					display: flex;
+					justify-content: center;
+					color: white;
+
+					.report-foot-btn {
+
+						display: flex;
+						justify-content: center;
+						border-radius: 20px;
+						box-sizing: border-box;
+						padding: 5px 40px;
+						background: rgb(54, 120, 233);
+						box-shadow: 1px 1px rgba(0, 0, 0, 0.6), 0 2px rgba(0, 0, 0, 0.6);
+
+					}
+				}
+			}
+
+			.modal {
+				box-sizing: border-box;
+				padding: 10px;
+				//改
+				width: 50vw;
+				border-radius: 5px;
+				background: white;
+
+				.modal-title {
+					font-weight: bold;
+					font-size: 18px;
+					padding: 5px;
+					text-align: center
+				}
+
+				.modal-content {
+					background: rgb(242, 242, 242);
+
+					margin-bottom: 10px;
+					padding: 5px 5px 20px
+				}
+
+				.modal-foot {
+					display: flex;
+					justify-content: space-around;
+					color: white;
+					align-items: center;
+
+					.progress {
+						width: 25px;
+						height: 25px;
+						animation: spin 2s linear infinite;
+					}
+
+
+					.modal-foot-btn {
+
+						display: flex;
+						justify-content: center;
+						align-items: center;
+
+						// text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5), -2px -2px 2px rgba(0, 0, 0, 0.5);
+						// ;
+
+						border-radius: 6px;
+						box-sizing: border-box;
+						padding: 5px 20px;
+						background-image: linear-gradient(to bottom, rgb(40, 175, 255), rgb(29, 111, 255));
+						box-shadow: 1px 1px rgba(0, 0, 0, 0.6), 0 2px rgba(0, 0, 0, 0.6);
+
+					}
+
+					.red {
+						color: rgb(173, 52, 77)
+					}
+				}
+			}
+
 		}
 
 		.main-pad {
@@ -769,19 +926,14 @@
 
 		}
 
+
 		.chat {
-			// position: fixed;
-			// width: 90vw;
-			// height: 90vh;
-			// left: 50%;
-			// top: 50%;
-			// background-color: rgb(57, 6, 15);
-			// transform: translate(-50%, -49%);
 
 			position: absolute;
 			transform: rotate(0deg);
-			width: 90vh;
-			height: 90vw;
+			//改
+			width: 90vw;
+			height: 90vh;
 			left: 50%;
 			top: 50%;
 			background-color: rgb(57, 6, 15);
@@ -790,19 +942,12 @@
 		}
 
 		.model {
-			// position: fixed;
-			// //position: absolute;
-			// width: 60vw;
-			// height: 90vh;
-			// left: 50%;
-			// top: 50%;
-			// background-color: rgb(57, 6, 15);
-			// transform: translate(-50%, -50%);
 
 			position: absolute;
 			transform: rotate(0deg);
-			width: 60vh;
-			height: 90vw;
+			//改 
+			width: 60vw;
+			height: 90vh;
 			left: 50%;
 			top: 50%;
 			background-color: rgb(57, 6, 15);

@@ -7,14 +7,13 @@
 			<view class="operate">
 
 				<view style="display: flex;">
-					<image src="../../static/avatar.jpg"></image>
+					<image :src="'http://gamebox.zgwit.cn:8082' + user.avatar"></image>
 					<view class="infor">
-						<span>名称 :{{user.nick_name}}</span>
+						<span>名称 :{{user.nickname}}</span>
 						<span>余额 :{{user.balance}}</span>
 					</view>
 				</view>
 				<view style="display: flex;">
-
 					<view class="btn" @click="custom(0)">礼包充值</view>
 					<view class="btn" @click="custom(1)">自定义充值</view>
 				</view>
@@ -115,8 +114,7 @@
 			};
 		},
 		mounted() {
-			this.token = JSON.stringify(uni.getStorageSync('token')).replace('{', '').replace('}',
-				'');
+			this.token = uni.getStorageSync('token')
 		},
 		methods: {
 			handleRecharge() {
@@ -161,11 +159,11 @@
 			load() {
 
 				uni.request({
-					url: 'http://demo.iot-master.com:8082/api/recharge/create',
+					url: 'http://gamebox.zgwit.cn:8082/api/recharge/create',
 					method: 'POST',
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
-						'Authorization': this.token
+						'Authorization': 'Bearer ' + this.token
 					},
 					data: {
 						user_id: this.user.id,
@@ -175,11 +173,11 @@
 				});
 
 				uni.request({
-					url: `http://demo.iot-master.com:8082/api/user/${uni.getStorageSync('id')}`,
+					url: `http://gamebox.zgwit.cn:8082/api/user/${uni.getStorageSync('id')}`,
 					method: 'POST',
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
-						'Authorization': this.token
+						'Authorization': 'Bearer ' + this.token
 					},
 					data: this.user,
 					success: (item) => {

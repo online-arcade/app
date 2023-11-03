@@ -1,10 +1,14 @@
 <template>
 	<model class="model" @receiveData="handleModel">
 		<view class="operate">
-			<image src="../../static/avatar.jpg" class="photo"></image>
+			<uni-file-picker class="custom-file-picker" limit="1" :del-icon="false" disable-preview :auto-upload="false"
+				:value="fileLists" :imageStyles="imageStyles" @select="handleSelect" file-mediatype="image">
+				<!-- <image :src="src" class="photo"></image> -->
+			</uni-file-picker>
+
 			<image src="../../static/edit.png" class="edit" @click="edit()">
 			</image>
-			<span>名称 :{{user.nick_name}}</span>
+			<!-- <span>名称 :{{user.nick_name}}</span> -->
 		</view>
 		<view class="mess" ref="scrollableDiv">
 			<form>
@@ -13,7 +17,7 @@
 						<view class="demo-uni-col dark">昵称:</view>
 					</uni-col>
 					<uni-col :span="17" :offset="1">
-						<input class="input" name="input" :placeholder="user.nick_name" v-model="user.nick_name" />
+						<input class="input" name="input" :placeholder="user.nickname" v-model="user.nickname" />
 					</uni-col>
 				</uni-row>
 
@@ -22,9 +26,9 @@
 						<view class="demo-uni-col dark">性别:</view>
 					</uni-col>
 					<uni-col :span="17" :offset="1">
-						<image :src="radio1" @click="chooseRadio(1)"></image>
+						<image :src="user.gender==='男'? radio1:radio2" @click="chooseRadio(1)"></image>
 						<image src="../../static/boy.png"></image>
-						<image :src="radio2" @click="chooseRadio(0)"></image>
+						<image :src="user.gender==='男'? radio2:radio1" @click="chooseRadio(0)"></image>
 						<image src="../../static/gril.png"></image>
 					</uni-col>
 				</uni-row>
@@ -35,7 +39,8 @@
 						<view class="demo-uni-col dark">积分:</view>
 					</uni-col>
 					<uni-col :span="17" :offset="1">
-						<input class="input" name="input" :placeholder="user.integral+' '" />
+
+						<input class="input" name="input" disabled="true" :placeholder="user.integral+' '" />
 					</uni-col>
 				</uni-row>
 
@@ -61,7 +66,7 @@
 						<view class="demo-uni-col dark">签名:</view>
 					</uni-col>
 					<uni-col :span="17" :offset="1">
-						<input class="input" name="input" placeholder="这个人很懒,什么签名也没有" />
+						<input class="input" name="input" v-model="user.signature" :placeholder="user.signature" />
 					</uni-col>
 				</uni-row>
 
@@ -84,10 +89,25 @@
 		props: ['user'],
 		data() {
 			return {
+				imageStyles: {
+					// width: 62,
+					// height: 62,
+					// border: {
+					// 	radius: '50%'
+					// }, 
+
+				},
+				fileLists: [{
+					url: 'http://gamebox.zgwit.cn:8082' + this.user.avatar,
+
+				}],
+
+				src: 'http://gamebox.zgwit.cn:8082/static/image/2023/10/19940221.png',
 				radio1: '../../static/radio1.png',
 				radio2: '../../static/radio2.png',
 				choose: ['../../static/radio1.png', '../../static/radio2.png'],
 				sendMess: '',
+
 				mess: [{
 						name: '张三',
 						data: '发送了一条信息',
@@ -102,29 +122,46 @@
 			};
 		},
 		methods: {
+			handleSelect(e) {
+
+				const tempFilePaths = e.tempFilePaths;
+				uni.uploadFile({
+					url: 'http://gamebox.zgwit.cn:8082/api/img/create', //上传图片的后端接口
+					filePath: tempFilePaths[0],
+					header: {
+						'Authorization': 'Bearer ' + uni.getStorageSync('token')
+					},
+					name: 'file',
+					success: res => {
+						let msg = res.data
+						// this.user.avatar = JSON.parse(res.data).data[
+						// 	0]
+						this.edit()
+					}
+				})
+
+			},
 
 			handleModel() {
-
 				this.$emit('receiveData')
-
 			},
 			edit() {
 
 				uni.request({
-					url: '/api/user/0',
+					url: `http://gamebox.zgwit.cn:8082/api/user/${uni.getStorageSync('id')}`,
 					method: 'POST',
 					data: this.user,
-					// {
-					// 	name: this.user.name
-					// },
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + uni.getStorageSync('token')
+					},
 					success: (item) => {
 						uni.showToast({
 							title: "提交成功!",
 						});
+						this.close()
 					}
 				});
-
-
 
 			},
 			close() {
@@ -136,16 +173,13 @@
 					data: this.sendMess,
 					float: 'left'
 				})
-
 				this.$refs.scrollableDiv.scrollTop = this.$refs.scrollableDiv.scrollHeight;
 			},
 			chooseRadio(mess) {
 				if (mess) {
-					this.radio1 = this.choose[0];
-					this.radio2 = this.choose[1]
+					this.user.gender = '男'
 				} else {
-					this.radio2 = this.choose[0];
-					this.radio1 = this.choose[1]
+					this.user.gender = '女'
 				}
 			}
 		},
@@ -160,6 +194,7 @@
 
 <style lang="scss">
 	.model {
+
 		.container {
 
 			width: 100%;
@@ -174,18 +209,33 @@
 				color: white;
 				position: relative;
 
-				//	justify-content: space-between;
-				//height: 50px;
-				span {
+
+				/deep/ .file-picker__box {
+					height: 60px !important;
+					width: 60px !important;
+					padding: 0px !important;
+
+				}
+
+				/deep/ .file-picker__box-content {
+
+					border-radius: 50% !important;
+					border: none !important;
+					box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3s);
+
+				}
+
+				file-picker__box-content span {
 					margin-left: 10px;
 				}
 
 				image {
-					width: 50px;
-					height: 50px;
+					width: 45px;
+					height: 45px;
 				}
 
 				.photo {
+
 					border-radius: 50%;
 					box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3s);
 				}

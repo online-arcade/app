@@ -24,13 +24,13 @@
 			<view class="toolbar">
 				<view class="menus" :style="{ width: toolbar ? '' : '0' }">
 					<view class="item">
-						<image src="../../static/icon/wallet.svg"></image>
+						<image src="../../static/icon/wallet.svg" style="background-color: rgb(224, 196, 160);"></image>
 						<view>兑换</view>
 					</view>
-					<view class="item">
+					<!-- <view class="item">
 						<image src="../../static/icon/lock.svg"></image>
 						<view>锁机</view>
-					</view>
+					</view> -->
 					<view class="item">
 						<image src="../../static/icon/setting.svg"></image>
 						<view @click="setting()">设置</view>
@@ -41,27 +41,27 @@
 					</view>
 					<view class="item">
 						<image src="../../static/icon/money.svg"></image>
-						<view>结算</view>
+						<view>下机</view>
 					</view>
-					<view class="item">
+					<!-- <view class="item">
 						<image src="../../static/icon/game.svg"></image>
 						<view>摇杆</view>
-					</view>
+					</view> -->
 					<view class="item" @click="dialogOpen()">
 						<image src="../../static/icon/bi.svg"></image>
 						<view>投币</view>
 					</view>
-					<view class="item" @click="quit">
+					<!-- <view class="item" @click="quit">
 						<image src="../../static/icon/quit.svg"></image>
 						<view>退出</view>
-					</view>
+					</view> -->
 				</view>
 				<uni-icons color="white" :type="toolbar ? 'arrow-left' : 'arrow-right'" size="30" @click="toggle">
 				</uni-icons>
 				<!-- <view>收起</view> -->
 			</view>
 
-			<view class="bet" @touchstart="emit('J')" @touchend="emit('j')">押</view>
+			<view class="bet" @touchstart="emit('J')" @touchend="emit('j')">加</view>
 			<view class="fire" ref="fire" @touchstart="fireStart" @touchend="fireEnd"></view>
 
 			<!-- <view class="coin" @click="coin">币</view>
@@ -779,8 +779,9 @@
 				.menus {
 					overflow: hidden;
 					height: 100%;
-					width: 350px;
+					width: 250px;
 					transition: all 0.8s ease;
+
 
 					//display: flex;
 					//justify-content: space-around;
@@ -794,6 +795,9 @@
 						justify-content: center;
 						align-items: center;
 						width: 50px;
+						color: rgb(224, 196, 160);
+						font-weight: bold;
+						font-size: 19px;
 
 						image {
 							width: 30px;

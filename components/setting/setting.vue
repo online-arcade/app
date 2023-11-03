@@ -23,7 +23,8 @@
 						<span style="display: flex;justify-content: center;align-items: center;text-shadow:0 0 0">分辨率:
 							<uni-data-select :localdata="select" @change="change"
 								style="box-sizing: border-box;padding: 10px;color: black;">
-							</uni-data-select></span>
+							</uni-data-select>
+						</span>
 					</view>
 					<view v-if="item.name==='更多'">{{item.mess}}</view>
 					<view style="display: flex;flex-direction: column;" v-if="item.name==='音量'">
@@ -90,21 +91,21 @@
 						click: true,
 						mess: '音量设置'
 					},
-					{
-						name: '操作设置',
-						click: false,
-						mess: '操作设置'
-					},
-					{
-						name: '渲染',
-						click: false,
-						mess: '渲染设置'
-					},
-					{
-						name: '更多',
-						click: false,
-						mess: '更多设置'
-					}
+					// {
+					// 	name: '操作设置',
+					// 	click: false,
+					// 	mess: '操作设置'
+					// },
+					// {
+					// 	name: '渲染',
+					// 	click: false,
+					// 	mess: '渲染设置'
+					// },
+					// {
+					// 	name: '更多',
+					// 	click: false,
+					// 	mess: '更多设置'
+					// }
 				],
 				mess: ['音量设置',
 					'操作设置',
@@ -120,11 +121,11 @@
 				this.$emit('receiveData')
 			},
 			show(mes) {
-				this.data.filter(item => {
-					if (item.name === mes) {
-						item.click = !item.click
-					} else item.click = false
-				})
+				// this.data.filter(item => {
+				// 	if (item.name === mes) {
+				// 		item.click = !item.click
+				// 	} else item.click = false
+				// })
 			},
 			cs() {
 				this.volume++
