@@ -4,8 +4,8 @@
 		<video id="video" :src="v" :autoplay="true" :controls="false" :play-strategy="2" :muted="true" object-fit="fill"
 			poster="/static/fkmgc.png" :show-center-play-btn="false" x-webkit-airplay="true" webkit-playsinline="true"
 			playsinline="true" x5-playsinline="true" x5-video-player-type="h5-page" @play="onPlay"></video>
-		<canvas canvas-id="canvas"></canvas>
-		<!-- <view class="hover"></view> -->
+		<canvas canvas-id="canvas" v-if="showCanvas"></canvas>
+		<view class="hover"></view>
 
 		<image v-if="!ready" class="poster" src="../../static/fkmgc.png" mode="scaleToFill"></image>
 
@@ -14,18 +14,19 @@
 		</view>
 
 		<view class="controls" v-if="ready && seated">
+
 			<view class="direction">
-				<view class="btn up" @touchstart="emit('W')" @touchend="emit('w')"></view>
-				<view class="btn down" @touchstart="emit('S')" @touchend="emit('s')"></view>
-				<view class="btn left" @touchstart="emit('A')" @touchend="emit('a')"></view>
-				<view class="btn right" @touchstart="emit('D')" @touchend="emit('d')"></view>
+				<view class="btn up" @touchstart="keydown('up')" @touchend="keyup('up')"></view>
+				<view class="btn down" @touchstart="keydown('down')" @touchend="keyup('down')"></view>
+				<view class="btn left" @touchstart="keydown('left')" @touchend="keyup('left')"></view>
+				<view class="btn right" @touchstart="keydown('right')" @touchend="keyup('right')"></view>
 			</view>
 
 			<view class="toolbar">
 				<view class="menus" :style="{ width: toolbar ? '' : '0' }">
 					<view class="item">
-						<image src="../../static/icon/wallet.svg" style="background-color: rgb(224, 196, 160);"></image>
-						<view>兑换</view>
+						<image src="../../static/icon/wallet.svg"></image>
+						<view class="font">兑换</view>
 					</view>
 					<!-- <view class="item">
 						<image src="../../static/icon/lock.svg"></image>
@@ -33,15 +34,15 @@
 					</view> -->
 					<view class="item">
 						<image src="../../static/icon/setting.svg"></image>
-						<view @click="setting()">设置</view>
+						<view class="font" @click="setting()">设置</view>
 					</view>
 					<view class="item">
 						<image src="../../static/icon/manual.svg"></image>
-						<view>说明</view>
+						<view class="font">说明</view>
 					</view>
-					<view class="item">
+					<view class="item" @click="goto('index/index')">
 						<image src="../../static/icon/money.svg"></image>
-						<view>下机</view>
+						<view class="font">下机</view>
 					</view>
 					<!-- <view class="item">
 						<image src="../../static/icon/game.svg"></image>
@@ -49,7 +50,7 @@
 					</view> -->
 					<view class="item" @click="dialogOpen()">
 						<image src="../../static/icon/bi.svg"></image>
-						<view>投币</view>
+						<view class="font">投币</view>
 					</view>
 					<!-- <view class="item" @click="quit">
 						<image src="../../static/icon/quit.svg"></image>
@@ -61,7 +62,7 @@
 				<!-- <view>收起</view> -->
 			</view>
 
-			<view class="bet" @touchstart="emit('J')" @touchend="emit('j')">加</view>
+			<view class="bet" @click="click('bet')">加</view>
 			<view class="fire" ref="fire" @touchstart="fireStart" @touchend="fireEnd"></view>
 
 			<!-- <view class="coin" @click="coin">币</view>
@@ -79,22 +80,22 @@
 		</view>
 
 		<view class="seats" v-if="ready && !seated">
-			<view class="seat" @click="seat(1)">
+			<view class="seat" @click="seat(0)">
 				<view>1P</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
 			</view>
-			<view class="seat" @click="seat(2)">
+			<view class="seat" @click="seat(1)">
 				<view>2P</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
 			</view>
-			<view class="seat" @click="seat(3)">
+			<view class="seat" @click="seat(2)">
 				<view>3P</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
 			</view>
-			<view class="seat" @click="seat(4)">
+			<!-- 			<view class="seat" @click="seat(3)">
 				<view>4P</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
-			</view>
+			</view> -->
 		</view>
 
 		<!-- class="container" -->
@@ -144,6 +145,7 @@
 	export default {
 		data() {
 			return {
+				showCanvas: true,
 				tabHide: false,
 				select: false,
 				pay: 10, //当前余额
@@ -191,6 +193,14 @@
 			uni.stopPullDownRefresh();
 		},
 		onReady(res) {
+
+
+			if (/android/i.test(navigator.userAgent)) {
+				this.showCanvas = false
+			} else {
+				this.showCanvas = true
+			}
+
 			this.videoElement = uni.createVideoContext('video');
 			this.canvas = uni.createCanvasContext("canvas", this);
 			this.canvas.drawImage("/static/fkmgc.png", 0, 0, 843, 374, 0, 0, this.canvas.offsetWidth, this.canvas
@@ -330,6 +340,15 @@
 			//this.peer.destroy();
 		},
 		methods: {
+			goto(name) {
+
+				// uni.showToast({
+				// 	title: '更新中!',
+				// });
+				uni.navigateTo({
+					url: '/pages/' + name
+				});
+			},
 			setting() {
 				const v = document.getElementsByTagName('video')[0];
 				v.muted = !v.muted
@@ -380,7 +399,11 @@
 				const v = document.getElementsByTagName('video')[0]
 				const c = document.getElementsByTagName('canvas')[0]
 				const ctx = c.getContext('2d');
-				setTimeout(() => this._drawFrame(ctx, v, c), 0)
+				const systemInfo = uni.getSystemInfoSync();
+				if (this.showCanvas) {
+					setTimeout(() => this._drawFrame(ctx, v, c), 0)
+				}
+
 			},
 			_drawFrame(ctx, v, c) {
 				//console.log("_drawFrame", v.videoWidth, v.videoHeight, c.offsetWidth, c.offsetHeight)
@@ -538,17 +561,37 @@
 			toggle(e) {
 				this.toolbar = !this.toolbar;
 			},
-			emit(key) {
+			click(key) {
 				//this.channel.send(this.pos + key);
 				//this.sock.send({ data: this.pos + key });
-				this.sock.send(this.pos + key);
+				//this.sock.send(this.pos + key);
+				this.sock.send(JSON.stringify({
+					type: 'click',
+					seat: this.pos,
+					key: key
+				}));
+			},
+			keydown(key) {
+				this.sock.send(JSON.stringify({
+					type: 'keydown',
+					seat: this.pos,
+					key: key
+				}));
+			},
+			keyup(key) {
+				this.sock.send(JSON.stringify({
+					type: 'keyup',
+					seat: this.pos,
+					key: key
+				}));
 			},
 			fireStart() {
 				this.fireTime = Date.now();
-				this.emit('K');
+				this.keydown('fire');
 			},
 			fireEnd() {
-				if (Date.now() - this.fireTime < 3000) this.emit('k');
+				if (Date.now() - this.fireTime < 3000)
+					this.keyup('fire');
 			},
 			coin() {
 				console.log('coin');
@@ -559,14 +602,25 @@
 				setInterval(() => this.sock.send(this.pos + 'C'), 100);
 			},
 			quit() {
+				this.sock.send(JSON.stringify({
+					type: 'stand',
+					seat: pos
+				}));
+
 				console.log('quit');
-				this.sock.send(this.pos + 'L');
-				setTimeout(() => this.sock.send(this.pos + 'l'), 50);
+				//this.sock.send(this.pos + 'L');
+				//setTimeout(() => this.sock.send(this.pos + 'l'), 50);
 				uni.navigateBack();
 			},
 			seat(pos) {
 				this.pos = pos;
 				this.seated = true;
+
+				this.sock.send(JSON.stringify({
+					type: 'sit',
+					seat: pos
+				}));
+
 
 				setTimeout(() => {
 					this.toolbar = false;
@@ -796,8 +850,12 @@
 						align-items: center;
 						width: 50px;
 						color: rgb(224, 196, 160);
+						text-shadow: 0 0 1px black;
+						font-family: font;
 						font-weight: bold;
-						font-size: 19px;
+						font-size: 20px;
+
+
 
 						image {
 							width: 30px;
@@ -837,8 +895,11 @@
 				height: 40px;
 				border-radius: 50%;
 
+				font-size: 20px;
+				font-weight: bold;
 				//background-color: white;
-				background-color: rgba(0, 0, 0, 0.5);
+				// background-color: rgba(0, 0, 0, 0.5);
+				background-color: rgb(28, 236, 122);
 				border: 5rpx solid rgba(256, 256, 256, 0.2);
 				color: white;
 
@@ -876,11 +937,11 @@
 				width: 80px;
 				height: 80px;
 
-				background: url(/static/fire3.png) no-repeat;
+				background: url(/static/fire6.png) no-repeat;
 				background-size: contain;
 
 				&:active {
-					background-image: url(/static/fire4.png);
+					background-image: url(/static/fire5.png);
 				}
 
 				//为了不被video覆盖

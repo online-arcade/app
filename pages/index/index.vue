@@ -54,7 +54,7 @@
 				</view>
 
 			</uni-transition>
-			<uni-popup ref="popup">
+			<uni-popup ref="popup" :is-mask-click="false">
 				<view class="modal">
 					<view class="modal-title">{{modal.title}}</view>
 					<view class="modal-content">
@@ -65,16 +65,17 @@
 					</view>
 					<view class="modal-foot">
 
-						<view class="modal-foot-btn " @click="handleOk()">
+						<!-- <view class="modal-foot-btn " @click="handleOk()">
 							接受
-						</view>
+						</view> -->
 						<!-- 	<text style="position: absolute;color: black">
 
 							<uni-countdown :show-day="false" :second="5"   />
 						</text> -->
-						<image class=" progress" src="../../static/loading.png">
-							<view class="modal-foot-btn red" @click="handleClose">
-								拒绝</view>
+						<uni-load-more iconType="snow" status="loading"></uni-load-more>
+						<!-- <image class=" progress" src="../../static/loading.png"> -->
+						<!-- <view class="modal-foot-btn red" @click="handleClose">
+								拒绝</view> -->
 
 					</view>
 				</view>
@@ -129,7 +130,7 @@
 
 		</view>
 
-
+		<showToast class="showToast" :msg="msg" v-show="showToast"></showToast>
 
 		<!-- <view class="loading" v-show="loading">
 			<image src="../../static/load.png" style="width: 20%; " mode="widthFix"></image>
@@ -165,6 +166,10 @@
 
 		data() {
 			return {
+				showToast: false,
+				msg: {
+					name: '提交成功!'
+				},
 				time: '',
 				gotoGame: '',
 				url: '1',
@@ -308,7 +313,7 @@
 
 		},
 		onShow() {
-			this.screenFull()
+			//this.screenFull()
 		},
 		mounted() {
 			this.$refs.report.open('center');
@@ -434,6 +439,7 @@
 
 			},
 			handleOk() {
+				let time = setInterval(() => {}, 1000)
 				uni.showToast({
 					title: '游戏加载中!',
 				});
@@ -490,18 +496,18 @@
 <style lang="scss">
 	.content {
 		font-family: font;
-		width: 100vw;
-		height: 100vh;
+		// width: 100vh;
+		// height: 100vw;
 		display: flex;
 		flex-direction: column;
 		position: relative;
 
 
-		// width: 100vh;
-		// height: 100vw;
-		// margin-left: 100vw;
-		// transform: rotate(90deg);
-		// transform-origin: left top;
+		width: 100vh;
+		height: 100vw;
+		margin-left: 100vw;
+		transform: rotate(90deg);
+		transform-origin: left top;
 
 
 		.showModel {
@@ -770,7 +776,7 @@
 				box-sizing: border-box;
 				padding: 10px;
 				//改
-				width: 70vw;
+				width: 70vh;
 				border-radius: 5px;
 				background: white;
 
@@ -811,7 +817,7 @@
 				box-sizing: border-box;
 				padding: 10px;
 				//改
-				width: 50vw;
+				width: 50vh;
 				border-radius: 5px;
 				background: white;
 
@@ -874,7 +880,7 @@
 		.foot {
 			position: fixed;
 			bottom: 0;
-			width: 100vw;
+			width: 100vh;
 			height: 50px;
 			line-height: 50px;
 			//background-color: transparent;
@@ -926,14 +932,28 @@
 
 		}
 
+		.showToast {
+
+			position: absolute;
+			transform: rotate(0deg);
+			//改
+			width: 100px;
+			height: 100px;
+			border-radius: 5px;
+			left: 50%;
+			top: 50%;
+			// background-color: rgb(57, 6, 15);
+			margin-left: 0vw;
+			transform: translate(-50%, -49%);
+		}
 
 		.chat {
 
 			position: absolute;
 			transform: rotate(0deg);
 			//改
-			width: 90vw;
-			height: 90vh;
+			width: 90vh;
+			height: 90vw;
 			left: 50%;
 			top: 50%;
 			background-color: rgb(57, 6, 15);
@@ -946,8 +966,8 @@
 			position: absolute;
 			transform: rotate(0deg);
 			//改 
-			width: 60vw;
-			height: 90vh;
+			width: 60vh;
+			height: 90vw;
 			left: 50%;
 			top: 50%;
 			background-color: rgb(57, 6, 15);

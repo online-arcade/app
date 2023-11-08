@@ -1,10 +1,11 @@
 <template>
-	<view class="content" @dblclick='screenFull'>
-		<view
+	<view class="content">
+		<!-- @dblclick='screenFull' -->
+		<!-- <view
 			style="font-size: 26px; display: flex;align-items: center;justify-content: center; background: lightgray;width: 100vw;height:100vh;position: absolute;z-index: 9999;"
 			@click='screenFull' v-show="textShow">
 			请设置屏幕横屏
-		</view>
+		</view> -->
 		<view class="login">
 
 
