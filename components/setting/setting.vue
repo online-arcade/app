@@ -153,12 +153,12 @@
 			padding: 5px;
 
 			.title {
-				background-color: rgb(255, 244, 38);
+				//background-color: rgb(255, 244, 38);
 				box-sizing: border-box;
 				padding: 5px;
-				color: rgb(254, 251, 26);
+				//color: rgb(254, 251, 26);
 				font-size: 25px;
-				text-shadow: 0 1px rgba(185, 0, 55, 0.8), 0 2px rgba(185, 0, 55, 0.8), 0 3px rgba(185, 0, 55, 0.8), 0 4px rgba(185, 0, 55, 0.8), 0 5px rgba(185, 0, 55, 0.8), 0 6px rgba(185, 0, 55, 0.8), 0 0 7px white, 0 0 12px rgb(212, 21, 157);
+				//text-shadow: 0 1px rgba(185, 0, 55, 0.8), 0 2px rgba(185, 0, 55, 0.8), 0 3px rgba(185, 0, 55, 0.8), 0 4px rgba(185, 0, 55, 0.8), 0 5px rgba(185, 0, 55, 0.8), 0 6px rgba(185, 0, 55, 0.8), 0 0 7px white, 0 0 12px rgb(212, 21, 157);
 				position: absolute;
 				left: 50%;
 				top: 0;
@@ -166,7 +166,7 @@
 				border-radius: 10px;
 
 				span {
-					background-color: rgb(123, 25, 30);
+					//background-color: rgb(123, 25, 30);
 					border-radius: 10px;
 					box-sizing: border-box;
 					padding: 1px 10px;

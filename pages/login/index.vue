@@ -32,7 +32,7 @@
 				</uni-forms>
 				<view class="btn" style="display: flex; justify-content: space-between">
 
-					<view class="btn-form" @click="register" style="background:limegreen">
+					<view class="btn-form" @click="register">
 						微信一键登录
 					</view>
 
@@ -83,8 +83,7 @@
 				document.querySelector('meta[name="viewport"]').setAttribute('content',
 					'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
 			}
-			this.enterLandscape();
-
+			//this.enterLandscape();
 		},
 		methods: {
 
@@ -219,7 +218,7 @@
 		// transform: rotate(90deg);
 		// transform-origin: left top;
 
-		background-image: url('../../static/login.jpg');
+		background-image: url('../../static/login.png');
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: center center;
@@ -233,10 +232,11 @@
 			// height: 55vh;
 			//	background-color: rgba(211, 211, 211, 0.7);
 			color: white;
-			background-image: linear-gradient(to bottom, rgb(125, 25, 30), rgb(82, 13, 17));
-			border: 4px solid rgb(255, 244, 38);
-			border-radius: 10px;
-			box-shadow: 1px 1px rgba(0, 0, 0, 0.2), 2px 2px rgba(0, 0, 0, 0.2), 3px 3px rgba(0, 0, 0, 0.2);
+			//background-image: linear-gradient(to bottom, rgb(125, 25, 30), rgb(82, 13, 17));
+			background-color: rgba(211, 211, 211, 0.5);
+			//border: 4px solid rgb(255, 244, 38);
+			//border-radius: 30px;
+			//box-shadow: 1px 1px rgba(0, 0, 0, 0.2), 2px 2px rgba(0, 0, 0, 0.2), 3px 3px rgba(0, 0, 0, 0.2);
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -249,7 +249,8 @@
 
 				h2 {
 					text-align: center;
-					text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3), 4px 4px rgba(0, 0, 0, 0.3);
+					//text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3), 4px 4px rgba(0, 0, 0, 0.3);
+					text-shadow: 2px 2px rgba(0, 0, 0, 0.3);
 				}
 
 				.input {
@@ -261,8 +262,9 @@
 					span {
 						margin-right: 20px;
 						font-weight: bold;
-						text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3), 4px 4px rgba(0, 0, 0, 0.3);
+						//text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3), 3px 3px rgba(0, 0, 0, 0.3), 4px 4px rgba(0, 0, 0, 0.3);
 						//color: gray;
+						text-shadow: 2px 2px rgba(0, 0, 0, 0.3);
 					}
 				}
 
@@ -272,14 +274,15 @@
 						justify-content: center;
 						align-items: center;
 
-						text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5), -2px -2px 2px rgba(0, 0, 0, 0.5);
-						;
+						//text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5), -2px -2px 2px rgba(0, 0, 0, 0.5);
+						//text-shadow: 2px 2px rgba(0, 0, 0, 0.3) inset;
 
 						border-radius: 6px;
 						box-sizing: border-box;
 						padding: 5px 20px;
-						background-image: linear-gradient(to bottom, rgb(40, 175, 255), rgb(29, 111, 255));
-						box-shadow: 1px 1px rgba(0, 0, 0, 0.6), 0 2px rgba(0, 0, 0, 0.6);
+						//background-image: linear-gradient(to bottom, rgb(40, 175, 255), rgb(29, 111, 255));
+						box-shadow: 1px 1px rgba(0, 0, 0, 0.9), 0 2px rgba(0, 0, 0, 0.9);
+						background:seagreen;
 
 					}
 				}

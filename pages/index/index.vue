@@ -4,24 +4,26 @@
 			<view class="group">
 				<view class="box">
 					<image class="photo" :src="url" @click="handleModel(1)"></image>
-
+					<text> 测试玩家 </text>
 				</view>
-
-				<view class="group money">
-					<image src="../../static/coin.png" style="transform: translateX(-25%);"></image>
-					<span> {{user.balance}} </span>
-
-					<image class="icon" src="../../static/add.png" style="transform: translateX(25%);"
-						@click="handleRecharge(1)"></image>
-				</view>
-				<image class="" src="../../static/start.png" style="z-index: 2;">
+<!-- 				<image class="" src="../../static/start.png" style="z-index: 2;">
 				</image>
 				<span class="start-bar"> {{user.integral}}
-				</span>
+				</span> -->
 			</view>
+			
+
+				<view class="group money">
+					<image src="../../static/coin.png" style="transform: translateX(25%);"></image>
+					<span> {{user.balance}} </span>
+
+					<image class="icon" src="../../static/add.png" style="transform: translateX(-25%);"
+						@click="handleRecharge(1)"></image>
+				</view>
+			
 
 
-			<view class="group">
+<!-- 			<view class="group">
 
 				<span @click="handleGetData(1)" class="group-flex">
 					<image class="" src="../../static/chat.png" class="chat-icon"></image>
@@ -33,11 +35,21 @@
 					<span>设置</span>
 				</span>
 
-			</view>
+			</view> -->
 
 		</view>
 
 		<view :class="{'main':true,'main-pad':!show}">
+			
+		
+		<swiper class="ad" :indicator-dots="true" :autoplay="true" :interval="5000" :duration="1000">
+			<swiper-item>
+					<image src="../../static/act.png" mode="aspectFill"></image>
+			</swiper-item>
+			<swiper-item>
+					<image src="../../static/bydr.png" mode="aspectFill"></image>
+			</swiper-item>
+		</swiper>
 
 			<uni-transition custom-class="transition" :mode-class="modeClass" :show="show" :class="{'row':!series }">
 				<view :class="{'col':true,'col-wid1':true}" v-for="(item,index) of game">
@@ -46,8 +58,6 @@
 							<image :src="'../../static/'+item.icon" style=" height: 100%;">
 							</image>
 							<span class="num">{{item.desc}}</span>
-
-							<span class="font" style="font-size: 45px;color: yellow;">games</span>
 							<span class="font">{{item.name}}</span>
 						</view>
 					</view>
@@ -148,7 +158,7 @@
 		<uni-transition custom-class="transition" :mode-class="modeClass" :show="mask" class="showModel">
 			<chat class="chat" v-show="chatShow" @receiveData="handleGetData(0)"></chat>
 			<setting class="chat" v-show="setShow" @receiveData="handleSet(0)"></setting>
-			<userInfo class="model" v-show="modelShow" :user="user" @receiveData="handleModel(0)"></userInfo>
+			<userInfo class="chat" v-show="modelShow" :user="user" @receiveData="handleModel(0)"></userInfo>
 			<recharge class="chat" v-show="rechargeShow" :user="user" @receiveData="handleRecharge(0)"></recharge>
 
 		</uni-transition>
@@ -187,7 +197,7 @@
 				rechargeShow: false,
 				activityShow: false,
 				setShow: false,
-				modeClass: ['fade', 'slide-left'],
+				modeClass: ['fade', 'zoom-in'],
 				show: true,
 				row1: [],
 				row2: [],
@@ -324,7 +334,7 @@
 			this.row2 = this.data.slice((this.data.length + 1) / 2)
 
 
-			window.addEventListener('resize', this.handleResize);
+			//window.addEventListener('resize', this.handleResize);
 		},
 
 		methods: {
@@ -356,7 +366,7 @@
 					this.$refs.popup.close()
 					this.goto(this.gotoGame)
 					clearInterval(this.time)
-				}, 5000)
+				}, 2000)
 			},
 			screenFull() {
 
@@ -502,12 +512,17 @@
 		flex-direction: column;
 		position: relative;
 
+		background-image: url('../../static/index.jpg');
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center center;
 
-		width: 100vh;
-		height: 100vw;
-		margin-left: 100vw;
-		transform: rotate(90deg);
-		transform-origin: left top;
+		//width: 100vh;
+		//height: 100vw;
+		//margin-left: 100vw;
+		//transform: rotate(90deg);
+		//transform-origin: left top;
+		height: 100vh;
 
 
 		.showModel {
@@ -524,28 +539,30 @@
 			height: 50px;
 			color: white;
 			//border: 1px solid gray;
-			background-color: transparent;
-			background-image: linear-gradient(to bottom, rgb(234, 56, 202), rgb(62, 0, 72));
-			border-bottom: 2px solid rgb(99, 14, 78);
+			//background-color: transparent;
+			//background-image: linear-gradient(to bottom, rgb(234, 56, 202), rgb(62, 0, 72));
+			//border-bottom: 2px solid rgb(99, 14, 78);
+			background-color: rgba(255, 255, 255, 0.5);
 			position: fixed;
 			top: 0;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			box-sizing: border-box;
-			padding: 0 20px;
+			padding: 0 10px;			
 			font-size: 13px;
 
 			.money {
-				margin: 0 50px;
+				//margin: 0 20px;
 
-				box-shadow: 0 0 0 transparent, 0 0 8px whitesmoke inset, 0 0 0 transparent, 0 0 10px rgb(143, 0, 125);
+				//box-shadow: 0 0 0 transparent, 0 0 8px whitesmoke inset, 0 0 0 transparent, 0 0 10px rgb(143, 0, 125);
 				color: white;
-				border-radius: 50px;
-				background-color: rgb(39, 2, 55);
+				border-radius: 20px;
+				background-color: seagreen;
+				box-shadow: 2px 2px 2px rgba(0,0,0,0.3) inset;
 
 				span {
-					padding: 0 15px;
+					padding: 10px 15px;
 				}
 
 				image {
@@ -613,17 +630,24 @@
 				.box {
 					padding: 3px;
 					box-sizing: border-box;
-					border-radius: 25px;
-					background: linear-gradient(to bottom, rgb(146, 27, 135), rgb(193, 43, 117));
+					border-radius: 6px;
+					//background: linear-gradient(to bottom, rgb(146, 27, 135), rgb(193, 43, 117));
+					//background-color: rgba(255, 255, 255, 0.3);
+					background-color: seagreen;
+					//box-shadow: 2px 2px 2px rgba(0,0,0,0.3) inset;
+					//padding: 5px;
 					display: flex;
 					justify-content: center;
 					align-items: center;
 
 					.photo {
-
-						width: 37px;
-						height: 37px;
-						border-radius: 25px;
+						width: 30px;
+						height: 30px;
+						border-radius: 5px;
+					}
+					text{
+						padding: 4px;
+						font-size: 18px;
 					}
 				}
 			}
@@ -647,10 +671,20 @@
 			// padding-top: 52px;
 			// padding-bottom: 52px;
 			//background-color: red;
-			background-image: linear-gradient(to bottom, rgb(39, 15, 32), rgb(150, 59, 71));
+			//background-image: linear-gradient(to bottom, rgb(39, 15, 32), rgb(150, 59, 71));
+			
 			flex: 1;
 			width: 100%;
 			height: 100%;
+			
+			.ad{
+				margin: 10px 0 20px;
+				
+				width: 100%;
+				image{
+					width: 100%;
+				}
+			}
 
 			.returnIcon {
 				position: fixed;
@@ -679,7 +713,7 @@
 				// grid-auto-flow: row;
 				// grid-gap: 10px 0px;
 				//overflow: scroll; 
-				overflow-y: scroll;
+				overflow-y: auto;
 				display: flex;
 				flex-flow: row wrap;
 				//box-shadow: inset 4px 0px 5px rgba(172, 36, 155, 0.2);
@@ -698,7 +732,9 @@
 				}
 
 				.col-wid1 {
-					width: 33%;
+					//width: 33%;
+					width: 40vw;
+					height: 40vw;
 					padding: 5px 0px 8px;
 				}
 
@@ -715,8 +751,9 @@
 
 					display: flex;
 					justify-content: center;
+					justify-items: center;
 					//width: 22%;
-					height: 50%;
+					//height: 50%;
 					//flex-direction: row;
 					//flex-wrap: nowrap;
 					//overflow: hidden;
@@ -738,17 +775,21 @@
 							.num {
 
 								position: absolute;
-								top: 0px;
-								right: 0;
+								top: 4px;
+								right: 4px;
 								color: white;
-								text-shadow: 1px 1px rgb(39, 15, 32), 2px 2px rgb(39, 15, 32);
+								font-size: 14px;
+								//text-shadow: 1px 1px rgb(39, 15, 32), 2px 2px rgb(39, 15, 32);
 								//font-size: 20px;
 							}
 
 							image {
 								width: 100%;
-								//	height: 100%;
-								border: 3px solid rgb(255, 244, 38);
+								height: 100%;
+								
+								//border: 3px solid rgb(255, 244, 38);
+								//border: 3px solid rgb(0, 170, 0);
+								box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);
 								border-radius: 7px;
 								position: relative;
 							}
@@ -776,7 +817,8 @@
 				box-sizing: border-box;
 				padding: 10px;
 				//改
-				width: 70vh;
+				//width: 70vh;
+				width: 90vw;
 				border-radius: 5px;
 				background: white;
 
@@ -788,10 +830,13 @@
 				}
 
 				.report-content {
-					background: rgb(202, 223, 254);
+					background: rgba(0,0,0,0.1);
+					font-size: 12px;
 
 					margin-bottom: 10px;
-					padding: 5px 5px 20px
+					//padding: 5px 5px 20px;
+					//border-radius: 5px;
+					padding: 10px;
 				}
 
 				.report-foot {
@@ -803,10 +848,10 @@
 
 						display: flex;
 						justify-content: center;
-						border-radius: 20px;
+						border-radius: 6px;
 						box-sizing: border-box;
 						padding: 5px 40px;
-						background: rgb(54, 120, 233);
+						background: seagreen;
 						box-shadow: 1px 1px rgba(0, 0, 0, 0.6), 0 2px rgba(0, 0, 0, 0.6);
 
 					}
@@ -817,7 +862,9 @@
 				box-sizing: border-box;
 				padding: 10px;
 				//改
-				width: 50vh;
+				//width: 50vh;
+				width: 90vw;
+				
 				border-radius: 5px;
 				background: white;
 
@@ -937,7 +984,7 @@
 			position: absolute;
 			transform: rotate(0deg);
 			//改
-			width: 100px;
+			width: 90vw;
 			height: 100px;
 			border-radius: 5px;
 			left: 50%;
@@ -952,8 +999,9 @@
 			position: absolute;
 			transform: rotate(0deg);
 			//改
-			width: 90vh;
-			height: 90vw;
+			width: 90vw;
+			height: 90vh;
+			
 			left: 50%;
 			top: 50%;
 			background-color: rgb(57, 6, 15);
@@ -964,15 +1012,17 @@
 		.model {
 
 			position: absolute;
-			transform: rotate(0deg);
+			//transform: rotate(0deg);
 			//改 
-			width: 60vh;
-			height: 90vw;
-			left: 50%;
-			top: 50%;
+			//width: 60vh;
+			//height: 90vw;
+			width: 90vw;
+			height: 80vh;
+			//left: 50%;
+			//top: 50%;
 			background-color: rgb(57, 6, 15);
-			margin-left: 0vw;
-			transform: translate(-50%, -49%);
+			//margin-left: 0vw;
+			//transform: translate(-50%, -49%);
 		}
 
 		@keyframes spin {
