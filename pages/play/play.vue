@@ -7,13 +7,13 @@
 		<canvas canvas-id="canvas" v-if="showCanvas"></canvas>
 		<view class="hover"></view>
 
-		<image v-if="!ready" class="poster" src="../../static/fkmgc.png" mode="scaleToFill"></image>
+		<image v-if="!ready" class="poster" src="../../static/bk.jpg" mode="scaleToFill"></image>
 
 		<view v-if="select" class="charge ">
 			<coin></coin>
 		</view>
 
-		<view class="controls">
+		<view class="controls" v-if="ready && seated">
 
 			<view class="direction">
 				<view class="btn up" @touchstart="keydown('up')" @touchend="keyup('up')"></view>

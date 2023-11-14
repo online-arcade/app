@@ -542,7 +542,8 @@
 			//background-color: transparent;
 			//background-image: linear-gradient(to bottom, rgb(234, 56, 202), rgb(62, 0, 72));
 			//border-bottom: 2px solid rgb(99, 14, 78);
-			background-color: rgba(255, 255, 255, 0.5);
+			background-color: rgba(255, 255, 255, 0.8);
+			box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
 			position: fixed;
 			top: 0;
 			display: flex;
