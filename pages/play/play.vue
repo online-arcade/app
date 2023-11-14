@@ -13,7 +13,7 @@
 			<coin></coin>
 		</view>
 
-		<view class="controls" v-if="ready && seated">
+		<view class="controls">
 
 			<view class="direction">
 				<view class="btn up" @touchstart="keydown('up')" @touchend="keyup('up')"></view>
@@ -24,22 +24,22 @@
 
 			<view class="toolbar">
 				<view class="menus" :style="{ width: toolbar ? '' : '0' }">
-					<view class="item">
+<!-- 					<view class="item">
 						<image src="../../static/icon/wallet.svg"></image>
 						<view class="font">兑换</view>
-					</view>
+					</view> -->
 					<!-- <view class="item">
 						<image src="../../static/icon/lock.svg"></image>
 						<view>锁机</view>
 					</view> -->
-					<view class="item">
+<!-- 					<view class="item">
 						<image src="../../static/icon/setting.svg"></image>
 						<view class="font" @click="setting()">设置</view>
 					</view>
 					<view class="item">
 						<image src="../../static/icon/manual.svg"></image>
 						<view class="font">说明</view>
-					</view>
+					</view> -->
 					<view class="item" @click="goto('index/index')">
 						<image src="../../static/icon/money.svg"></image>
 						<view class="font">下机</view>
@@ -366,11 +366,11 @@
 				this.$refs.rechargeDialog.close();
 			},
 			dialogClose() {
-				//this.$refs.coinDialog.close()
+				this.$refs.coinDialog.close()
 			},
 			dialogOpen() {
 				this.select = !this.select;
-				//	this.$refs.coinDialog.open()
+				this.$refs.coinDialog.open()
 			},
 			dialogConfirm() {
 				if (this.pay < this.coinNum) this.$refs.rechargeDialog.open();
@@ -833,7 +833,7 @@
 				.menus {
 					overflow: hidden;
 					height: 100%;
-					width: 250px;
+					width: 120px;
 					transition: all 0.8s ease;
 
 
