@@ -33,7 +33,7 @@
 				<view class="btn" style="display: flex; justify-content: space-between">
 
 					<view class="btn-form" @click="register">
-						微信一键登录
+						微信登录
 					</view>
 
 					<view class="btn-form" @click="login">

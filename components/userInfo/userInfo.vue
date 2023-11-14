@@ -246,11 +246,12 @@
 					position: absolute;
 					bottom: 0;
 					right: 0;
-					background-color: rgb(149, 0, 54);
-					border-radius: 50%;
+					//background-color: rgb(149, 0, 54);
+					background-color: seagreen;
+					//border-radius: 50%;
 					width: 30px;
 					height: 30px;
-					border: 2px solid rgb(88, 14, 42);
+					//border: 2px solid rgb(88, 14, 42);
 				}
 
 				.send {
@@ -276,8 +277,9 @@
 				height: 70%;
 				border-radius: 7px;
 				//background-color: rgb(70, 13, 19);
-				background-color: rgb(63, 6, 18);
-				overflow: scroll;
+				//background-color: rgb(63, 6, 18);
+				background-color: seagreen;
+				overflow-y: auto;
 				display: flex;
 				flex-direction: column;
 
@@ -304,9 +306,9 @@
 
 				.input {
 					//	border: 3px solid rgb(117, 23, 28);
-					background-color: rgb(47, 0, 17);
+					//background-color: rgb(47, 0, 17);
 					border-radius: 5px;
-					box-shadow: 0 0 15px rgb(97, 19, 37);
+					//box-shadow: 0 0 15px rgb(97, 19, 37);
 					// color: rgb(245, 231, 202);
 					//box-sizing: border-box;
 					padding: 10px;

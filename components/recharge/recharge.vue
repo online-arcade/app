@@ -244,7 +244,8 @@
 			width: 100%;
 			height: 70%;
 			border-radius: 7px;
-			background-color: rgb(70, 13, 19);
+			//background-color: rgb(70, 13, 19);
+			background-color: seagreen;
 			overflow: scroll;
 			display: flex;
 			flex-direction: column;
