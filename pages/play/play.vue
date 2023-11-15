@@ -2,16 +2,13 @@
 	<!-- :class="{container: !isLandScape, containera: isLandScape}" -->
 	<view :class="{ container: true, row: !isLandScape, column: isLandScape }">
 		<video id="video" :src="v" :autoplay="true" :controls="false" :play-strategy="2" :muted="true" object-fit="fill"
-			poster="/static/fkmgc.png" :show-center-play-btn="false" x-webkit-airplay="true" webkit-playsinline="true"
+			poster="../../static/bk.jpg" :show-center-play-btn="false" x-webkit-airplay="true" webkit-playsinline="true"
 			playsinline="true" x5-playsinline="true" x5-video-player-type="h5-page" @play="onPlay"></video>
-		<canvas canvas-id="canvas" v-if="showCanvas"></canvas>
-		<view class="hover"></view>
+		<!-- 	<canvas canvas-id="canvas" :hidpi='false'></canvas> -->
+
 
 		<image v-if="!ready" class="poster" src="../../static/bk.jpg" mode="scaleToFill"></image>
 
-		<view v-if="select" class="charge ">
-			<coin></coin>
-		</view>
 
 		<view class="controls" v-if="ready && seated">
 
@@ -24,7 +21,7 @@
 
 			<view class="toolbar">
 				<view class="menus" :style="{ width: toolbar ? '' : '0' }">
-<!-- 					<view class="item">
+					<!-- 					<view class="item">
 						<image src="../../static/icon/wallet.svg"></image>
 						<view class="font">兑换</view>
 					</view> -->
@@ -32,7 +29,7 @@
 						<image src="../../static/icon/lock.svg"></image>
 						<view>锁机</view>
 					</view> -->
-<!-- 					<view class="item">
+					<!-- 					<view class="item">
 						<image src="../../static/icon/setting.svg"></image>
 						<view class="font" @click="setting()">设置</view>
 					</view>
@@ -40,9 +37,9 @@
 						<image src="../../static/icon/manual.svg"></image>
 						<view class="font">说明</view>
 					</view> -->
-					<view class="item" @click="goto('index/index')">
+					<view class="item" @click="exit('index/index')">
 						<image src="../../static/icon/money.svg"></image>
-						<view class="font">下机</view>
+						<view class="font">退币</view>
 					</view>
 					<!-- <view class="item">
 						<image src="../../static/icon/game.svg"></image>
@@ -99,19 +96,27 @@
 		</view>
 
 		<!-- class="container" -->
-		<uni-popup ref="coinDialog" type="dialog">
-			<uni-popup-dialog type="info" cancelText="关闭" confirmText="投币" title="投币信息" @confirm="dialogConfirm"
+		<uni-popup ref="coinDialog" type="dialog" style="z-index: 99999;">
+			<uni-popup-dialog type="info" cancelText="关闭" confirmText="投币" title="投币信息" @confirm="insertCoins(0)"
 				@close="dialogClose">
 				<view class="coinDialog">
 					<view>
-						<span style="width: 300px;">当前余额:</span>
+						<span style="width: 300px;">当前余额 ： </span>
 						<span>{{ pay }}</span>
 					</view>
-					<view style="width: 200px;display: flex;justify-content: space-between;">
-						<span>投币数量:</span>
+					<view class="custom">
+						<view>投币数量 ：</view>
 						<span>
-							<uni-number-box v-model="coinNum" />
+							<uni-number-box v-model="coinNum" :max="99999" />
 						</span>
+					</view>
+					<view class="coinSend">
+						<view class="text">选中投币 ：</view>
+						<view class="btn">
+							<view class="confirm" @click="insertCoins(50)">50</view>
+							<view class="confirm green" @click="insertCoins(100)">100</view>
+							<view class="confirm yellow" @click="insertCoins(200)">200</view>
+						</view>
 					</view>
 				</view>
 			</uni-popup-dialog>
@@ -122,17 +127,40 @@
 				@close="rechargeClose">
 				<view style="display: flex;flex-direction: column;">
 					<view>
-						<span style="width: 300px;">当前余额:</span>
+						<span style="width: 300px;">当前余额：</span>
 						<span>{{ pay }}</span>
 					</view>
 					<view style="width: 200px;display: flex;justify-content: space-between;">
 						<span>投币数量:</span>
 						<span>
-							<uni-number-box />
+							<uni-number-box max="99999" />
 						</span>
 					</view>
 				</view>
 			</uni-popup-dialog>
+		</uni-popup>
+
+		<uni-popup ref="popup" :is-mask-click="false">
+			<view class="modal">
+				<view class="modal-title">{{modal.title}}</view>
+				<view class="modal-content">
+					<view v-for="(item,index) of modal.content">
+						({{index+1}}) {{item}}
+					</view>
+
+				</view>
+				<view class="modal-foot">
+					</text>
+					<uni-load-more iconType="snow" status="loading"></uni-load-more>
+				</view>
+			</view>
+
+
+		</uni-popup>
+
+
+		<uni-popup ref="report" style="z-index:9999999">
+			<alert :text='text' :icon='toast'></alert>
 		</uni-popup>
 	</view>
 </template>
@@ -145,10 +173,19 @@
 	export default {
 		data() {
 			return {
+				toast: false,
+				text: '',
+				modal: {
+					title: "游戏须知",
+					content: ['机台1币=200分，开始游戏即自动投10币=2000分;',
+						'系统总分上限100万分，超过上限后的投币与打中boss的加分不计数，游玩时请注意台面分数，避免无效上分;',
+						'有任何问题，请加客服微信咨询!'
+					]
+				},
 				showCanvas: true,
 				tabHide: false,
 				select: false,
-				pay: 10, //当前余额
+				pay: 99999, //当前余额
 				coinNum: 1,
 				isLandScape: false, //横竖屏切换
 				toolbar: true,
@@ -194,12 +231,11 @@
 		},
 		onReady(res) {
 
-
-			if (/android/i.test(navigator.userAgent)) {
-				this.showCanvas = false
-			} else {
-				this.showCanvas = true
-			}
+			// if (/android/i.test(navigator.userAgent)) {
+			// 	this.showCanvas = false
+			// } else {
+			// 	this.showCanvas = true
+			// }
 
 			this.videoElement = uni.createVideoContext('video');
 			this.canvas = uni.createCanvasContext("canvas", this);
@@ -340,14 +376,28 @@
 			//this.peer.destroy();
 		},
 		methods: {
-			goto(name) {
 
-				// uni.showToast({
-				// 	title: '更新中!',
+			showPopup() {
+				// open 方法传入参数 等同在 uni-popup 组件上绑定 type属性
+				//this.$refs.popup.open('center');
+				this.$refs.popup.open('center');
+				this.time = setInterval(() => {
+					this.$refs.popup.close()
+
+					clearInterval(this.time)
+				}, 3000)
+			},
+
+			exit(name) {
+
+				this.sock.send(JSON.stringify({
+					type: 'refund',
+					seat: this.pos
+				}));
+
+				// uni.navigateTo({
+				// 	url: '/pages/' + name
 				// });
-				uni.navigateTo({
-					url: '/pages/' + name
-				});
 			},
 			setting() {
 				const v = document.getElementsByTagName('video')[0];
@@ -372,10 +422,39 @@
 				this.select = !this.select;
 				this.$refs.coinDialog.open()
 			},
-			dialogConfirm() {
-				if (this.pay < this.coinNum) this.$refs.rechargeDialog.open();
+			insertCoins(num) {
+				let temmNum
+				if (!num) {
+					temmNum = this.coinNum
+				} else {
+					temmNum = num
+				}
+				if (this.pay >= temmNum) {
+					this.sock.send(JSON.stringify({
+						type: 'coin',
+						seat: this.pos,
+						coin: temmNum
+					}));
+					this.text = "充值成功！"
+					this.toast = false
+					this.$refs.report.open('center');
+					this.time = setInterval(() => {
+						this.$refs.report.close()
+						clearInterval(this.time)
+					}, 1500)
+
+				} else {
+					this.text = "充值失败！"
+					this.toast = true
+					this.$refs.report.open('center');
+					this.time = setInterval(() => {
+						this.$refs.report.close()
+						clearInterval(this.time)
+					}, 1500)
+				}
 				this.$refs.coinDialog.close();
 			},
+
 			screenChange() {
 				let width = document.documentElement.clientWidth,
 					height = document.documentElement.clientHeight;
@@ -388,6 +467,7 @@
 				var time = setTimeout(() => {
 					if (document.readyState === 'complete') {
 						this.ready = true
+						this.showPopup()
 					} else {
 						this.resourcesLoaded()
 					}
@@ -397,12 +477,12 @@
 
 				console.log('onPlay', $event)
 				const v = document.getElementsByTagName('video')[0]
-				const c = document.getElementsByTagName('canvas')[0]
-				const ctx = c.getContext('2d');
+				// const c = document.getElementsByTagName('canvas')[0]
+				// const ctx = c.getContext('2d');
 				const systemInfo = uni.getSystemInfoSync();
-				if (this.showCanvas) {
-					setTimeout(() => this._drawFrame(ctx, v, c), 0)
-				}
+
+				setTimeout(() => this._drawFrame(ctx, v, c), 0)
+
 
 			},
 			_drawFrame(ctx, v, c) {
@@ -736,7 +816,7 @@
 			object-position: bottom;
 
 			//display: none;
-			visibility: hidden;
+			// visibility: hidden;
 		}
 
 		canvas {
@@ -780,7 +860,7 @@
 
 			color: white;
 			font-weight: bolder;
-			font-size: 30px;
+			font-size: 25px;
 
 			.seat {
 				display: flex;
@@ -795,6 +875,111 @@
 					width: 50px;
 					height: 100px;
 					//height: 50%;
+				}
+			}
+		}
+
+		.coinDialog {
+			.custom {
+				margin: 7px 0 5px 0;
+				width: 200px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			.coinSend {
+				.text {
+					margin-bottom: 5px
+				}
+
+				.btn {
+					display: flex;
+					justify-content: space-between;
+
+
+					.confirm {
+						background-image: linear-gradient(to bottom, rgb(40, 175, 255), rgb(30, 133, 255));
+						box-sizing: border-box;
+						padding: 3px 5px;
+						width: 50px;
+						text-align: center;
+						border-radius: 8px;
+						color: white; // text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
+						//border: 1px solid black; //rgb(70, 13, 19)
+						// box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
+
+					}
+
+					.green {
+						background: rgba(0, 139, 137, 1)
+					}
+
+					.yellow {
+						background: rgba(247, 181, 0, 1)
+					}
+				}
+
+
+
+			}
+
+		}
+
+
+		.modal {
+			box-sizing: border-box;
+			padding: 10px;
+			//改
+			//width: 50vh;
+			width: 90vw;
+
+			border-radius: 5px;
+			background: white;
+
+			.modal-title {
+				font-weight: bold;
+				font-size: 18px;
+				padding: 5px;
+				text-align: center
+			}
+
+			.modal-content {
+				background: rgb(242, 242, 242);
+
+				margin-bottom: 10px;
+				padding: 5px 5px 20px
+			}
+
+			.modal-foot {
+				display: flex;
+				justify-content: space-around;
+				color: white;
+				align-items: center;
+
+				.progress {
+					width: 25px;
+					height: 25px;
+					animation: spin 2s linear infinite;
+
+				}
+
+				.modal-foot-btn {
+
+					display: flex;
+					justify-content: center;
+					align-items: center;
+
+					border-radius: 6px;
+					box-sizing: border-box;
+					padding: 5px 20px;
+					background-image: linear-gradient(to bottom, rgb(40, 175, 255), rgb(29, 111, 255));
+					box-shadow: 1px 1px rgba(0, 0, 0, 0.6), 0 2px rgba(0, 0, 0, 0.6);
+
+				}
+
+				.red {
+					color: rgb(173, 52, 77)
 				}
 			}
 		}

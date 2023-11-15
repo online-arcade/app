@@ -1,29 +1,30 @@
 <template>
 	<view class="content">
+
 		<view class="header">
 			<view class="group">
 				<view class="box">
 					<image class="photo" :src="url" @click="handleModel(1)"></image>
 					<text> 测试玩家 </text>
 				</view>
-<!-- 				<image class="" src="../../static/start.png" style="z-index: 2;">
+				<!-- 				<image class="" src="../../static/start.png" style="z-index: 2;">
 				</image>
 				<span class="start-bar"> {{user.integral}}
 				</span> -->
 			</view>
-			
-
-				<view class="group money">
-					<image src="../../static/coin.png" style="transform: translateX(25%);"></image>
-					<span> {{user.balance}} </span>
-
-					<image class="icon" src="../../static/add.png" style="transform: translateX(-25%);"
-						@click="handleRecharge(1)"></image>
-				</view>
-			
 
 
-<!-- 			<view class="group">
+			<view class="group money">
+				<image src="../../static/coin.png" style="transform: translateX(25%);"></image>
+				<span> {{user.balance}} </span>
+
+				<image class="icon" src="../../static/add.png" style="transform: translateX(-25%);"
+					@click="handleRecharge(1)"></image>
+			</view>
+
+
+
+			<!-- 			<view class="group">
 
 				<span @click="handleGetData(1)" class="group-flex">
 					<image class="" src="../../static/chat.png" class="chat-icon"></image>
@@ -40,16 +41,16 @@
 		</view>
 
 		<view :class="{'main':true,'main-pad':!show}">
-			
-		
-		<swiper class="ad" :indicator-dots="true" :autoplay="true" :interval="5000" :duration="1000">
-			<swiper-item>
-					<image src="../../static/act.png" mode="aspectFill"></image>
-			</swiper-item>
-			<swiper-item>
+
+
+			<swiper class="ad" :indicator-dots="true" :autoplay="true" :interval="5000" :duration="1000">
+				<swiper-item>
 					<image src="../../static/bydr.png" mode="aspectFill"></image>
-			</swiper-item>
-		</swiper>
+				</swiper-item>
+				<swiper-item>
+					<image src="../../static/act.png" mode="aspectFill"></image>
+				</swiper-item>
+			</swiper>
 
 			<uni-transition custom-class="transition" :mode-class="modeClass" :show="show" :class="{'row':!series }">
 				<view :class="{'col':true,'col-wid1':true}" v-for="(item,index) of game">
@@ -92,6 +93,7 @@
 			</uni-popup>
 
 			<uni-popup ref="report">
+
 				<view class="report">
 					<view class="report-title">{{report.title}}</view>
 					<view class="report-content">
@@ -359,14 +361,14 @@
 			toggle(type, msg) {
 
 				// open 方法传入参数 等同在 uni-popup 组件上绑定 type属性
-				this.$refs.popup.open('center');
+				// this.$refs.popup.open('center');
 				this.gotoGame = msg
 
-				this.time = setInterval(() => {
-					this.$refs.popup.close()
-					this.goto(this.gotoGame)
-					clearInterval(this.time)
-				}, 2000)
+				// this.time = setInterval(() => {
+				// 	this.$refs.popup.close()
+				this.goto(this.gotoGame)
+				// 	clearInterval(this.time)
+				// }, 2000)
 			},
 			screenFull() {
 
@@ -550,7 +552,7 @@
 			align-items: center;
 			justify-content: space-between;
 			box-sizing: border-box;
-			padding: 0 10px;			
+			padding: 0 10px;
 			font-size: 13px;
 
 			.money {
@@ -560,7 +562,7 @@
 				color: white;
 				border-radius: 20px;
 				background-color: seagreen;
-				box-shadow: 2px 2px 2px rgba(0,0,0,0.3) inset;
+				box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3) inset;
 
 				span {
 					padding: 10px 15px;
@@ -646,7 +648,8 @@
 						height: 30px;
 						border-radius: 5px;
 					}
-					text{
+
+					text {
 						padding: 4px;
 						font-size: 18px;
 					}
@@ -673,16 +676,17 @@
 			// padding-bottom: 52px;
 			//background-color: red;
 			//background-image: linear-gradient(to bottom, rgb(39, 15, 32), rgb(150, 59, 71));
-			
+
 			flex: 1;
 			width: 100%;
 			height: 100%;
-			
-			.ad{
+
+			.ad {
 				margin: 10px 0 20px;
-				
+
 				width: 100%;
-				image{
+
+				image {
 					width: 100%;
 				}
 			}
@@ -787,7 +791,7 @@
 							image {
 								width: 100%;
 								height: 100%;
-								
+
 								//border: 3px solid rgb(255, 244, 38);
 								//border: 3px solid rgb(0, 170, 0);
 								box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);
@@ -831,7 +835,7 @@
 				}
 
 				.report-content {
-					background: rgba(0,0,0,0.1);
+					background: rgba(0, 0, 0, 0.1);
 					font-size: 12px;
 
 					margin-bottom: 10px;
@@ -865,7 +869,7 @@
 				//改
 				//width: 50vh;
 				width: 90vw;
-				
+
 				border-radius: 5px;
 				background: white;
 
@@ -1002,7 +1006,7 @@
 			//改
 			width: 90vw;
 			height: 90vh;
-			
+
 			left: 50%;
 			top: 50%;
 			background-color: rgb(57, 6, 15);

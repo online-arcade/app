@@ -1,6 +1,6 @@
 <template>
 	<model class="model" @receiveData="handleModel">
-		<view class="operate">
+		<view class="operate" style=" ">
 			<uni-file-picker class="custom-file-picker" limit="1" :del-icon="false" disable-preview :auto-upload="false"
 				:value="fileLists" :imageStyles="imageStyles" @select="handleSelect" file-mediatype="image">
 				<!-- <image :src="src" class="photo"></image> -->
@@ -11,7 +11,7 @@
 			<!-- <span>名称 :{{user.nick_name}}</span> -->
 		</view>
 		<view class="mess" ref="scrollableDiv">
-			<form>
+			<form style="background: white;color:black;border-radius: 5px;">
 				<uni-row class="row">
 					<uni-col :span="5" style="text-align: right;">
 						<view class="demo-uni-col dark">昵称:</view>
@@ -158,6 +158,7 @@
 					success: (item) => {
 						uni.showToast({
 							title: "提交成功!",
+							icon: 'error'
 						});
 						this.close()
 					}
