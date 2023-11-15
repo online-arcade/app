@@ -238,10 +238,10 @@
 			// }
 
 			this.videoElement = uni.createVideoContext('video');
-			this.canvas = uni.createCanvasContext("canvas", this);
-			this.canvas.drawImage("/static/fkmgc.png", 0, 0, 843, 374, 0, 0, this.canvas.offsetWidth, this.canvas
-				.offsetHeight)
-			this.canvas.draw()
+			// this.canvas = uni.createCanvasContext("canvas", this);
+			// this.canvas.drawImage("/static/fkmgc.png", 0, 0, 843, 374, 0, 0, this.canvas.offsetWidth, this.canvas
+			// 	.offsetHeight)
+			// this.canvas.draw()
 		},
 		onResize() {
 			this.screenChange();
@@ -481,8 +481,7 @@
 				// const ctx = c.getContext('2d');
 				const systemInfo = uni.getSystemInfoSync();
 
-				setTimeout(() => this._drawFrame(ctx, v, c), 0)
-
+				//setTimeout(() => this._drawFrame(ctx, v, c), 0)
 
 			},
 			_drawFrame(ctx, v, c) {
