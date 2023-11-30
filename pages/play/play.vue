@@ -89,10 +89,10 @@
 				<view>3P</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
 			</view>
-			<!-- 			<view class="seat" @click="seat(3)">
+			<view class="seat" @click="seat(3)">
 				<view>4P</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
-			</view> -->
+			</view>
 		</view>
 
 		<!-- class="container" -->
@@ -983,8 +983,8 @@
 			}
 		}
 
-		$direction_size: 120px;
-		$direction_btn_size: 50px;
+		$direction_size: 160px;
+		$direction_btn_size: 60px;
 		$direction_btn_offset: ($direction_size - $direction_btn_size) * 0.5;
 
 		.controls {
