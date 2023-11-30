@@ -32,11 +32,11 @@
 				</uni-forms>
 				<view class="btn" style="display: flex; justify-content: space-between">
 
-					<view class="btn-form" @click="register">
+					<view class="btn-form" @click="login(1)">
 						微信登录
 					</view>
 
-					<view class="btn-form" @click="login">
+					<view class="btn-form" @click="login(0)">
 						登录</view>
 				</view>
 
@@ -125,42 +125,34 @@
 
 			},
 			register() {
-
-
-				uni.setStorageSync('token',
-					'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6MSwiZXhwIjoxNzAwNzA0MTc4fQ.3RXeNH0_BWFJsk8Qnu2dUmjwsZ3xeY3E9y_-SyWoSEM'
-				);
-				uni.setStorageSync('id', '1');
-				uni.showToast({
-					title: '登陆成功！'
-				});
-
-				uni.navigateTo({
-					url: '/pages/index/index'
-				});
-				return
-				// uni.request({
-				// 	url: 'http://gamebox.zgwit.cn:8082/api/user/create',
-				// 	method: 'POST',
-				// 	data: formData,
-				// 	success: (item) => {
-				// 		uni.showToast({
-				// 			title: '注册成功！'
-				// 		});
-				// 	},
-				// 	fail: () => {
-				// 		uni.showToast({
-				// 			title: '注册失败...'
-				// 		});
-
-				// 	}
-
-				// })
-			},
-			login() {
 				const mess = {
-					username: this.formData.username,
-					password: this.$md5(this.formData.password)
+					username: "admin",
+					password: this.$md5("123456")
+				}
+				uni.request({
+					url: 'http://gamebox.zgwit.cn:8082/api/login',
+					method: 'POST',
+					data: mess,
+					success: (item) => {
+						uni.setStorageSync('token', item.data.data.token);
+						uni.setStorageSync('id', item.data.data.user.id);
+						uni.showToast({
+							title: '登陆成功！'
+						});
+
+						uni.navigateTo({
+							url: '/pages/index/index'
+						});
+
+					},
+
+				})
+			},
+			login(e) {
+
+				const mess = {
+					username: e ? "admin" : this.formData.username,
+					password: e ? this.$md5("123456") : this.$md5(this.formData.password)
 				}
 				uni.request({
 					url: 'http://gamebox.zgwit.cn:8082/api/login',
@@ -282,7 +274,7 @@
 						padding: 5px 20px;
 						//background-image: linear-gradient(to bottom, rgb(40, 175, 255), rgb(29, 111, 255));
 						box-shadow: 1px 1px rgba(0, 0, 0, 0.9), 0 2px rgba(0, 0, 0, 0.9);
-						background:seagreen;
+						background: seagreen;
 
 					}
 				}
