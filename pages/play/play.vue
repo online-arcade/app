@@ -467,7 +467,7 @@
 				var time = setTimeout(() => {
 					if (document.readyState === 'complete') {
 						this.ready = true
-						this.showPopup()
+						//this.showPopup()
 					} else {
 						this.resourcesLoaded()
 					}
