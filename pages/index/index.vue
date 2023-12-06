@@ -491,8 +491,26 @@
 			handleReportOk() {
 				this.$refs.report.close()
 			},
-			goto(name) {
+			screenFull() {
 
+				const element = document.documentElement;
+
+				// 根据不同的浏览器获取全屏方法
+				const requestFullScreen =
+					element.requestFullscreen ||
+					element.webkitRequestFullscreen ||
+					element.mozRequestFullScreen ||
+					element.msRequestFullscreen;
+
+				// 请求全屏
+				if (requestFullScreen) {
+					requestFullScreen.call(element);
+				}
+				this.textShow = false
+
+			},
+			goto(name) {
+				this.screenFull()
 				// uni.showToast({
 				// 	title: '更新中!',
 				// });
