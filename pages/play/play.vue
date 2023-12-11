@@ -18,6 +18,10 @@
 					<image src="../../static/icon/bi.svg"></image>
 					<view class="font">投币</view>
 				</view>
+				<view class="item" @click="sound()">
+					<image src="../../static/icon/sound.svg"></image>
+					<view class="font">音量</view>
+				</view>
 				<view class="item" @click="quit">
 					<image src="../../static/icon/quit.svg"></image>
 					<view>退出</view>
@@ -66,6 +70,10 @@
 					<view class="item" @click="dialogOpen()">
 						<image src="../../static/icon/bi.svg"></image>
 						<view class="font">投币</view>
+					</view>
+					<view class="item" @click="sound()">
+						<image src="../../static/icon/sound.svg"></image>
+						<view class="font">音量</view>
 					</view>
 					<view class="item" @click="quit">
 						<image src="../../static/icon/quit.svg"></image>
@@ -191,6 +199,7 @@
 	export default {
 		data() {
 			return {
+				soundStatus: true,
 				toast: false,
 				text: '',
 				modal: {
@@ -247,6 +256,7 @@
 		onPullDownRefresh() {
 			uni.stopPullDownRefresh();
 		},
+
 		onReady(res) {
 
 			// if (/android/i.test(navigator.userAgent)) {
@@ -481,7 +491,17 @@
 				}
 				this.$refs.coinDialog.close();
 			},
+			sound() {
+				this.soundStatus = !this.soundStatus
+				this.text = "音量" + (this.soundStatus ? '开' : '关')
+				this.toast = false
+				this.$refs.report.open('center');
+				this.time = setInterval(() => {
+					this.$refs.report.close()
+					clearInterval(this.time)
+				}, 1500)
 
+			},
 			screenChange() {
 				let width = document.documentElement.clientWidth,
 					height = document.documentElement.clientHeight;
@@ -1032,7 +1052,7 @@
 			.menus {
 				overflow: hidden;
 				height: 100%;
-				width: 150px;
+				width: 200px;
 				transition: all 0.8s ease;
 
 
@@ -1098,7 +1118,7 @@
 				.menus {
 					overflow: hidden;
 					height: 100%;
-					width: 150px;
+					width: 200px;
 					transition: all 0.8s ease;
 
 

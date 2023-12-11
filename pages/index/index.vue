@@ -16,7 +16,7 @@
 
 			<view class="group money">
 				<image src="../../static/coin.png" style="transform: translateX(25%);"></image>
-				<span> {{user.balance}} </span>
+				<span> {{user.balance||0}} </span>
 
 				<image class="icon" src="../../static/add.png" style="transform: translateX(-25%);"
 					@click="handleRecharge(1)"></image>
@@ -187,7 +187,7 @@
 				},
 				time: '',
 				gotoGame: '',
-				url: '1',
+				url: '../../static/avatar.jpg',
 				token: '',
 				user: {},
 				mask: false,
@@ -292,7 +292,23 @@
 				},
 
 				series: [],
-				game: [],
+				game: [{
+					created: "2023-07-26T09:55:42+08:00",
+					desc: "2人在玩",
+					disabled: true,
+					icon: "fkmgc.png",
+					id: 2,
+					name: "疯狂魔鬼城",
+					type: "fkmgc"
+				}, {
+					created: "2023-07-26T09:55:41+08:00",
+					desc: "1人在玩",
+					disabled: true,
+					icon: "bydr.png",
+					id: 1,
+					name: "捕鱼达人",
+					type: "bydr"
+				}, ],
 				box: [],
 				recharge: [],
 				signin: [],
@@ -336,7 +352,7 @@
 			this.$refs.report.open('center');
 			this.token = uni.getStorageSync('token')
 			this.resourcesLoaded();
-			this.load()
+			this.login()
 			this.row1 = this.data.slice(0, (this.data.length + 1) / 2)
 			this.row2 = this.data.slice((this.data.length + 1) / 2)
 
@@ -393,36 +409,50 @@
 				this.textShow = false
 
 			},
-			load() {
+			async login() {
 
-				uni.request({ //用户
-					url: `http://gamebox.zgwit.cn:8082/api/user/${uni.getStorageSync('id')}`,
+				const mess = {
+					username: "admin",
+					password: this.$md5("123456")
+				}
+				const res = await this.$request({
+					method: 'POST',
+					url: 'login',
+					data: mess,
+				})
+				if (res.data.data) {
+					uni.setStorageSync('token', res.data.data.token);
+					uni.setStorageSync('id', res.data.data.user.id);
+					this.load()
+				}
+
+			},
+
+			async load() {
+				const res = await this.$request({
 					method: 'GET',
+					url: `user/${uni.getStorageSync('id')}`,
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
 						'Authorization': 'Bearer ' + this.token
-					},
-					success: (item) => {
-
-						this.user = item.data.data || ''
-						this.url = 'http://gamebox.zgwit.cn:8082' + this.user.avatar
-						console.log(this.url)
 					}
-				});
+				})
+				if (res.data.data) {
+					this.user = res.data.data || ''
+					this.user.avatar ? this.url = 'http://gamebox.zgwit.cn:8082' + this.user.avatar : ''
+				}
 
-				uni.request({ //游戏厅
-					url: 'http://gamebox.zgwit.cn:8082/api/game/list',
+				const game = await this.$request({
 					method: 'GET',
+					url: `game/list`,
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
 						'Authorization': 'Bearer ' + this.token
-					},
-					success: (item) => {
-						this.game = item.data.data
 					}
-				});
-
-
+				})
+				if (game.data.data) {
+					this.game = game.data.data
+				}
 
 			},
 

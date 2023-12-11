@@ -31,10 +31,9 @@
 
 				</uni-forms>
 				<view class="btn" style="display: flex; justify-content: space-between">
+					<uni-link class="btn-form" font-size="16" color="white" showUnderLine="false" :href="url"
+						text="微信登录"></uni-link>
 
-					<view class="btn-form" @click="login(1)">
-						微信登录
-					</view>
 
 					<view class="btn-form" @click="login(0)">
 						登录</view>
@@ -58,7 +57,8 @@
 					username: '',
 					password: ''
 				},
-				textShow: true
+				textShow: true,
+				url: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf9aba5e1b7018a74&redirect_uri=https%3A%2F%2Fgamebox.zgwit.cn&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'
 			};
 		},
 		onShow() {
@@ -124,30 +124,7 @@
 				this.textShow = false
 
 			},
-			register() {
-				const mess = {
-					username: "admin",
-					password: this.$md5("123456")
-				}
-				uni.request({
-					url: 'http://gamebox.zgwit.cn:8082/api/login',
-					method: 'POST',
-					data: mess,
-					success: (item) => {
-						uni.setStorageSync('token', item.data.data.token);
-						uni.setStorageSync('id', item.data.data.user.id);
-						uni.showToast({
-							title: '登陆成功！'
-						});
 
-						uni.navigateTo({
-							url: '/pages/index/index'
-						});
-
-					},
-
-				})
-			},
 			login(e) {
 
 				const mess = {
@@ -178,13 +155,7 @@
 							});
 
 						}
-						// uni.showToast({
-						// 	title: '登陆成功！'
-						// });
 
-						// uni.navigateTo({
-						// 	url: '/pages/index/index'
-						// });
 					},
 
 				})
