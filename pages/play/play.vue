@@ -8,6 +8,24 @@
 
 
 		<image v-if="!ready" class="poster" src="../../static/bk.jpg" mode="scaleToFill"></image>
+		<view class="toolbar" v-if="ready">
+			<view class="menus" :style="{ width: toolbar ? '' : '0' }">
+				<view class="item" @click="exit('index/index')">
+					<image src="../../static/icon/money.svg"></image>
+					<view class="font">下机</view>
+				</view>
+				<view class="item" @click="dialogOpen()">
+					<image src="../../static/icon/bi.svg"></image>
+					<view class="font">投币</view>
+				</view>
+				<view class="item" @click="quit">
+					<image src="../../static/icon/quit.svg"></image>
+					<view>退出</view>
+				</view>
+			</view>
+			<uni-icons color="white" :type="toolbar ? 'arrow-left' : 'arrow-right'" size="30" @click="toggle">
+			</uni-icons>
+		</view>
 
 
 		<view class="controls" v-if="ready && seated">
@@ -39,7 +57,7 @@
 					</view> -->
 					<view class="item" @click="exit('index/index')">
 						<image src="../../static/icon/money.svg"></image>
-						<view class="font">退币</view>
+						<view class="font">下机</view>
 					</view>
 					<!-- <view class="item">
 						<image src="../../static/icon/game.svg"></image>
@@ -49,10 +67,10 @@
 						<image src="../../static/icon/bi.svg"></image>
 						<view class="font">投币</view>
 					</view>
-					<!-- <view class="item" @click="quit">
+					<view class="item" @click="quit">
 						<image src="../../static/icon/quit.svg"></image>
 						<view>退出</view>
-					</view> -->
+					</view>
 				</view>
 				<uni-icons color="white" :type="toolbar ? 'arrow-left' : 'arrow-right'" size="30" @click="toggle">
 				</uni-icons>
@@ -159,7 +177,7 @@
 		</uni-popup>
 
 
-		<uni-popup ref="report" style="z-index:9999999">
+		<uni-popup ref="report">
 			<alert :text='text' :icon='toast'></alert>
 		</uni-popup>
 	</view>
@@ -390,11 +408,20 @@
 
 			exit(name) {
 
+
 				this.sock.send(JSON.stringify({
 					type: 'refund',
 					seat: this.pos
 				}));
 
+				this.text = "下机！"
+				this.toast = false
+				this.$refs.report.open('center');
+				this.time = setInterval(() => {
+					this.$refs.report.close()
+					clearInterval(this.time)
+				}, 1500)
+				this.seated = false;
 				// uni.navigateTo({
 				// 	url: '/pages/' + name
 				// });
@@ -681,17 +708,18 @@
 				setInterval(() => this.sock.send(this.pos + 'C'), 100);
 			},
 			quit() {
-				this.sock.send(JSON.stringify({
-					type: 'stand',
-					seat: pos
-				}));
+				// this.sock.send(JSON.stringify({
+				// 	type: 'stand',
+				// 	seat: pos
+				// }));
 
-				console.log('quit');
+
 				//this.sock.send(this.pos + 'L');
 				//setTimeout(() => this.sock.send(this.pos + 'l'), 50);
 				uni.navigateBack();
 			},
 			seat(pos) {
+
 				this.pos = pos;
 				this.seated = true;
 
@@ -987,6 +1015,59 @@
 		$direction_btn_size: 60px;
 		$direction_btn_offset: ($direction_size - $direction_btn_size) * 0.5;
 
+		.toolbar {
+			// z-index: 9999999999;
+			//position: relative;
+			position: absolute;
+			//display: block;
+			left: 0;
+			top: 10px;
+			height: 70px;
+			border-radius: 0 10px 10px 0;
+			display: inline-flex;
+			//justify-content: space-around;
+			align-items: center;
+			overflow: hidden;
+
+			.menus {
+				overflow: hidden;
+				height: 100%;
+				width: 150px;
+				transition: all 0.8s ease;
+
+
+				//display: flex;
+				//justify-content: space-around;
+				//align-items: center;
+				.item {
+					height: 100%;
+					//border-right: 1px solid #999999;
+					display: inline-flex;
+					flex-direction: column;
+					//display: inline-block;
+					justify-content: center;
+					align-items: center;
+					width: 50px;
+					color: rgb(224, 196, 160);
+					text-shadow: 0 0 1px black;
+					font-family: font;
+					font-weight: bold;
+					font-size: 20px;
+
+
+
+					image {
+						width: 30px;
+						height: 30px;
+					}
+				}
+			}
+
+			background-color: rgba(0, 0, 0, 0.5);
+			//background-color: white;
+			color: white;
+		}
+
 		.controls {
 			z-index: 10000;
 
@@ -1017,7 +1098,7 @@
 				.menus {
 					overflow: hidden;
 					height: 100%;
-					width: 120px;
+					width: 150px;
 					transition: all 0.8s ease;
 
 
