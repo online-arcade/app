@@ -478,7 +478,8 @@
 						'Authorization': 'Bearer ' + this.token
 					},
 					data: {
-						amount: 10
+						amount: 2,
+						name: "充值"
 					}
 				})
 				if (res.data.data) {
