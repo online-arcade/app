@@ -484,11 +484,12 @@
 				if (res.data.data) {
 					console.log("微信支付：", res.data.data)
 					const order = res.data.data
-					
+					const timestamp = Math.floor(Date.now()/1000)
+					console.log("timestamp",timestamp)
 					  WeixinJSBridge.invoke(
 						  'getBrandWCPayRequest', {
 							 "appId":order.AppID,     //公众号ID，由商户传入     
-							 "timeStamp":new Date().getTime(),         //时间戳，自1970年以来的秒数     
+							 "timeStamp": timestamp,         //时间戳，自1970年以来的秒数     
 							 "nonceStr":order.NonceStr, //随机串     
 							 "package":"prepay_id="+order.PrePayId,     
 							 "signType":"MD5",         //微信签名方式：     
