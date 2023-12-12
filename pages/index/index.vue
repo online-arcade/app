@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-
+		
 		<view class="header">
 			<view class="group">
 				<view class="box">
@@ -349,10 +349,28 @@
 			//this.screenFull()
 		},
 		mounted() {
-			this.$refs.report.open('center');
+			// 获取query参数
+			const code = this.$route.query.code;
+			console.log("微信自动登录 code", code);
+			if (code) {
+				this.weixinAuth(code)
+				return
+			}
+
 			this.token = uni.getStorageSync('token')
+			if (!this.token) {
+				uni.navigateTo({
+					url: "/pages/login/index"
+				})
+				return
+			}
+
+
+			this.$refs.report.open('center');
+			//this.token = uni.getStorageSync('token')
 			this.resourcesLoaded();
-			this.login()
+			//this.login()
+			this.load()
 			this.row1 = this.data.slice(0, (this.data.length + 1) / 2)
 			this.row2 = this.data.slice((this.data.length + 1) / 2)
 
@@ -409,8 +427,87 @@
 				this.textShow = false
 
 			},
+			async weixinAuth(code) {
+				const res = this.$request({
+					method: 'GET',
+					url: 'weixin/auth',
+					data: {code}
+				})
+				
+				if (res.data.data){
+					this.token = res.data.data.token
+					uni.setStorageSync('token', res.data.data.token);
+					uni.setStorageSync('id', res.data.data.user.id);
+					this.load()
+					//this.weixinJsInit()
+				} else {
+					uni.redirectTo({
+						url:"/pages/login/index"
+					})
+				}
+			},
+			async weixinJsInit() {
+				const res = await this.$request({
+					method: 'GET',
+					url: `weixin/get-js`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + this.token
+					},
+					data: {
+						url: location.protocol +"//" + location.host + location.pathname + location.search
+					}
+				})
+				if (res.data.data) {
+					console.log("微信支付初始化：", res.data.data)
+					// wx.config({
+					//   debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					//   res.data.data...,
+					//   jsApiList: [] // 必填，需要使用的JS接口列表
+					// });
+				}
+				
+			},
+			
+			async weixinTestPay() {
+				const res = await this.$request({
+					method: 'GET',
+					url: `weixin/pre-pay`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + this.token
+					},
+					data: {
+						amount: 10
+					}
+				})
+				if (res.data.data) {
+					console.log("微信支付：", res.data.data)
+					const order = res.data.data
+					
+					  WeixinJSBridge.invoke(
+						  'getBrandWCPayRequest', {
+							 "appId":order.AppID,     //公众号ID，由商户传入     
+							 "timeStamp":new Date().getTime(),         //时间戳，自1970年以来的秒数     
+							 "nonceStr":order.NonceStr, //随机串     
+							 "package":"prepay_id="+order.PrePayId,     
+							 "signType":"MD5",         //微信签名方式：     
+							 "paySign":order.Sign //微信签名 
+						  },
+						  (res)=>{
+							  console.log("getBrandWCPayRequest", res)
+							  if(res.err_msg == "get_brand_wcpay_request:ok" ){
+							  // 使用以上方式判断前端返回,微信团队郑重提示：
+									//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+									
+									
+							  } 
+					   });
+				}
+				
+			},
+			
 			async login() {
-
 				const mess = {
 					username: "admin",
 					password: this.$md5("123456")
@@ -421,11 +518,11 @@
 					data: mess,
 				})
 				if (res.data.data) {
+					this.token = res.data.data.token
 					uni.setStorageSync('token', res.data.data.token);
 					uni.setStorageSync('id', res.data.data.user.id);
 					this.load()
 				}
-
 			},
 
 			async load() {
@@ -440,6 +537,12 @@
 				if (res.data.data) {
 					this.user = res.data.data || ''
 					this.user.avatar ? this.url = 'http://gamebox.zgwit.cn:8082' + this.user.avatar : ''
+					if (this.user.openid) {
+						//this.weixinJsInit()
+						
+						//测试支付
+						this.weixinTestPay()
+					}
 				}
 
 				const game = await this.$request({

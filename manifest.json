@@ -6,7 +6,8 @@
     "versionCode" : "100",
     "transformPx" : false,
     "h5" : {
-        "screenOrientation" : "landscape"
+        "screenOrientation" : "landscape",
+        "template" : "index.h5.html"
     },
     // "router": {
     // 	"base": "./",
