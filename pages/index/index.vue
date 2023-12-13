@@ -485,18 +485,20 @@
 				if (res.data.data) {
 					console.log("微信支付：", res.data.data)
 					const order = res.data.data
-					const timestamp = Math.floor(Date.now()/1000)
-					const args = {
-						 "appId":order.AppID,     //公众号ID，由商户传入     
-						 "timeStamp": timestamp,         //时间戳，自1970年以来的秒数     
-						 "nonceStr":order.NonceStr, //随机串     
-						 "package":"prepay_id="+order.PrePayID,     
-						 "signType":"MD5",         //微信签名方式：     
-						 "paySign":order.Sign //微信签名 
-					}
-					console.log("getBrandWCPayRequest", args)
+					// const timestamp = Math.floor(Date.now()/1000)
+					// const args = {
+					// 	 "appId":order.AppID,     //公众号ID，由商户传入     
+					// 	 "timeStamp": timestamp,         //时间戳，自1970年以来的秒数     
+					// 	 "nonceStr":order.NonceStr, //随机串     
+					// 	 "package":"prepay_id="+order.PrePayID,     
+					// 	 "signType":"MD5",         //微信签名方式：     
+					// 	 "paySign":order.Sign //微信签名 
+					// }
+					order.appId = "wxf9aba5e1b7018a74"
+					order.timeStamp = order.timestamp
+					console.log("getBrandWCPayRequest", order)
 					  WeixinJSBridge.invoke(
-						  'getBrandWCPayRequest', args, (res)=>{
+						  'getBrandWCPayRequest', order, (res)=>{
 							  console.log("getBrandWCPayRequest", res)
 							  if(res.err_msg == "get_brand_wcpay_request:ok" ){
 							  // 使用以上方式判断前端返回,微信团队郑重提示：
