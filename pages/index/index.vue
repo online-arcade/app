@@ -491,7 +491,7 @@
 				if (res.data.data) {
 					this.user = res.data.data || ''
 
-					this.user.avatar ? this.url = 'http://gamebox.zgwit.cn:8082' + this.user.avatar :
+					this.user.avatar ? this.url = 'https://gamebox.zgwit.cn' + this.user.avatar :
 						''
 					if (this.user.openid) {
 						//this.weixinJsInit()
@@ -577,7 +577,7 @@
 			chooseSeries(mess) {
 
 				uni.request({ //游戏厅
-					url: `http://gamebox.zgwit.cn:8082/api/box/search`,
+					url: `https://gamebox.zgwit.cn/api/box/search`,
 					method: 'POST',
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
