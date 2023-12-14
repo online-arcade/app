@@ -1,11 +1,11 @@
 <template>
 	<view class="content">
-		
+
 		<view class="header">
 			<view class="group">
 				<view class="box">
 					<image class="photo" :src="url" @click="handleModel(1)"></image>
-					<text> 测试玩家 </text>
+					<text> {{user.nickname||'测试玩家'}} </text>
 				</view>
 				<!-- 				<image class="" src="../../static/start.png" style="z-index: 2;">
 				</image>
@@ -15,28 +15,13 @@
 
 
 			<view class="group money">
-				<image src="../../static/coin.png" style="transform: translateX(25%);"></image>
+				<image src="../../static/coin.png" style="transform: translateX(25%);" @click="handlePay(1)"></image>
 				<span> {{user.balance||0}} </span>
 
 				<image class="icon" src="../../static/add.png" style="transform: translateX(-25%);"
 					@click="handleRecharge(1)"></image>
 			</view>
 
-
-
-			<!-- 			<view class="group">
-
-				<span @click="handleGetData(1)" class="group-flex">
-					<image class="" src="../../static/chat.png" class="chat-icon"></image>
-					<span>聊天</span>
-				</span>
-				<span style="width: 10px;"></span>
-				<span @click="handleSet(1)" class="group-flex">
-					<image class="" src="../../static/set.png"></image>
-					<span>设置</span>
-				</span>
-
-			</view> -->
 
 		</view>
 
@@ -58,7 +43,7 @@
 						<view class="box-content" @click="toggle('center',item.type)">
 							<image :src="'../../static/'+item.icon" style=" height: 100%;">
 							</image>
-							<span class="num">{{item.desc}}</span>
+							<span class="num">{{onlineNum}}人在线</span>
 							<span class="font">{{item.name}}</span>
 						</view>
 					</view>
@@ -76,17 +61,9 @@
 					</view>
 					<view class="modal-foot">
 
-						<!-- <view class="modal-foot-btn " @click="handleOk()">
-							接受
-						</view> -->
-						<!-- 	<text style="position: absolute;color: black">
 
-							<uni-countdown :show-day="false" :second="5"   />
-						</text> -->
 						<uni-load-more iconType="snow" status="loading"></uni-load-more>
-						<!-- <image class=" progress" src="../../static/loading.png"> -->
-						<!-- <view class="modal-foot-btn red" @click="handleClose">
-								拒绝</view> -->
+
 
 					</view>
 				</view>
@@ -119,27 +96,7 @@
 					</view>
 				</view>
 			</uni-popup>
-			<!-- <image src="../../static/return.png" v-show="!show" @click=" show = ! show" class="returnIcon">
-			</image> -->
 
-			<!-- 	<uni-transition custom-class="transition" :mode-class="modeClass" :show="!show" :class="{'row':!series }">
-
-				<view :class="{'col':true,'col-wid2':true}" v-for="(item,dex) of box">
-					<view class="box">
-						<view class="box-content" @click="goto(item.type)">
-							<image src="../../static/gamebox.jpg" style=" height: 100%;">
-							</image>
-							<span class="num">{{item.desc}}</span>
-							<span class="font">游戏机{{dex+1}}</span>
-						</view>
-					</view>
-				</view>
-
-				<view v-if="!box"
-					style="color: rgb(255,244,38) ;font-size: 30px;display: flex;justify-content: center;align-items: center;width: 100%;height: 100%;">
-					请上传游戏数据！</view>
-
-			</uni-transition> -->
 
 
 
@@ -147,24 +104,14 @@
 
 		<showToast class="showToast" :msg="msg" v-show="showToast"></showToast>
 
-		<!-- <view class="loading" v-show="loading">
-			<image src="../../static/load.png" style="width: 20%; " mode="widthFix"></image>
-			<image class="progress" src="../../static/loading.png">
-			</image>
-			<span> 注意 : 若累计游戏时间如超过5小时 ，游戏内的收益（经验、金钱）直接为0</span>
-		</view> -->
 
 
-
-
-		<!-- <view v-show="mask" class="showModel"> </view> -->
-		<!-- v-show="chatShow" -->
-		<!-- <chat class="chat" v-show="true" @receiveData="handleGetData(0)"></chat> -->
 		<uni-transition custom-class="transition" :mode-class="modeClass" :show="mask" class="showModel">
 			<chat class="chat" v-show="chatShow" @receiveData="handleGetData(0)"></chat>
 			<setting class="chat" v-show="setShow" @receiveData="handleSet(0)"></setting>
 			<userInfo class="chat" v-show="modelShow" :user="user" @receiveData="handleModel(0)"></userInfo>
 			<recharge class="chat" v-show="rechargeShow" :user="user" @receiveData="handleRecharge(0)"></recharge>
+			<conversion class="chat" v-show="payShow" :user="user" @receiveData="handlePay(0)"></conversion>
 
 		</uni-transition>
 
@@ -181,6 +128,7 @@
 
 		data() {
 			return {
+				onlineNum: 1,
 				showToast: false,
 				msg: {
 					name: '提交成功!'
@@ -199,6 +147,7 @@
 				series: false,
 				chatShow: false,
 				modelShow: false,
+				payShow: false,
 				rechargeShow: false,
 				activityShow: false,
 				setShow: false,
@@ -341,15 +290,43 @@
 				]
 			}
 		},
+
+
+
 		onLoad() {
+			// const code = this.$route;
+			// const code1 = this.$route.query;
+			// const code2 = this.$route.query.code;
+			// console.log("微信自动登录 code", code, code1, code2);
+			// console.log(option)
 			this.series = false
 
 		},
-		onShow() {
-			//this.screenFull()
-		},
 		mounted() {
+
+			this.$nextTick(() => {
+				const pages = getCurrentPages();
+				console.log(pages)
+				let code = this.$route.query.code;
+				console.log(code);
+			});
+
+
+			setTimeout(() => {
+				const pages = getCurrentPages();
+				console.log(pages)
+				let code = this.$route.query.code;
+				console.log(code);
+			}, 1000); // 延时 1 秒后获取参数
+
+
+
+			const pages = getCurrentPages();
+			console.log(pages)
+
 			// 获取query参数
+			// const code = this.$route;
+			// const code1 = this.$route.query;
 			const code = this.$route.query.code;
 			console.log("微信自动登录 code", code);
 			if (code) {
@@ -371,8 +348,8 @@
 			this.resourcesLoaded();
 			//this.login()
 			this.load()
-			this.row1 = this.data.slice(0, (this.data.length + 1) / 2)
-			this.row2 = this.data.slice((this.data.length + 1) / 2)
+			// this.row1 = this.data.slice(0, (this.data.length + 1) / 2)
+			// this.row2 = this.data.slice((this.data.length + 1) / 2)
 
 
 			//window.addEventListener('resize', this.handleResize);
@@ -399,15 +376,8 @@
 			},
 			toggle(type, msg) {
 
-				// open 方法传入参数 等同在 uni-popup 组件上绑定 type属性
-				// this.$refs.popup.open('center');
 				this.gotoGame = msg
-
-				// this.time = setInterval(() => {
-				// 	this.$refs.popup.close()
 				this.goto(this.gotoGame)
-				// 	clearInterval(this.time)
-				// }, 2000)
 			},
 			screenFull() {
 
@@ -428,13 +398,17 @@
 
 			},
 			async weixinAuth(code) {
+				console.log(code)
 				const res = this.$request({
 					method: 'GET',
 					url: 'weixin/auth',
-					data: {code}
+					data: {
+						code
+					}
 				})
-				
-				if (res.data.data){
+				console.log(res)
+				if (res.data.data) {
+					console.log(res.data)
 					this.token = res.data.data.token
 					uni.setStorageSync('token', res.data.data.token);
 					uni.setStorageSync('id', res.data.data.user.id);
@@ -442,7 +416,7 @@
 					//this.weixinJsInit()
 				} else {
 					uni.redirectTo({
-						url:"/pages/login/index"
+						url: "/pages/login/index"
 					})
 				}
 			},
@@ -455,7 +429,7 @@
 						'Authorization': 'Bearer ' + this.token
 					},
 					data: {
-						url: location.protocol +"//" + location.host + location.pathname + location.search
+						url: location.protocol + "//" + location.host + location.pathname + location.search
 					}
 				})
 				if (res.data.data) {
@@ -466,10 +440,10 @@
 					//   jsApiList: [] // 必填，需要使用的JS接口列表
 					// });
 				}
-				
+
 			},
-			
-			async weixinTestPay() {
+
+			async weixinTestPay(cost) {
 				const res = await this.$request({
 					method: 'GET',
 					url: `weixin/pre-pay`,
@@ -478,7 +452,7 @@
 						'Authorization': 'Bearer ' + this.token
 					},
 					data: {
-						amount: 2,
+						amount: cost,
 						name: "充值"
 					}
 				})
@@ -497,20 +471,20 @@
 					order.appId = "wxf9aba5e1b7018a74"
 					order.timeStamp = order.timestamp
 					console.log("getBrandWCPayRequest", order)
-					  WeixinJSBridge.invoke(
-						  'getBrandWCPayRequest', order, (res)=>{
-							  console.log("getBrandWCPayRequest", res)
-							  if(res.err_msg == "get_brand_wcpay_request:ok" ){
-							  // 使用以上方式判断前端返回,微信团队郑重提示：
-									//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-									
-									
-							  } 
-					   });
+					WeixinJSBridge.invoke(
+						'getBrandWCPayRequest', order, (res) => {
+							console.log("getBrandWCPayRequest", res)
+							if (res.err_msg == "get_brand_wcpay_request:ok") {
+								// 使用以上方式判断前端返回,微信团队郑重提示：
+								//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+
+
+							}
+						});
 				}
-				
+
 			},
-			
+
 			async login() {
 				const mess = {
 					username: "admin",
@@ -530,6 +504,7 @@
 			},
 
 			async load() {
+
 				const res = await this.$request({
 					method: 'GET',
 					url: `user/${uni.getStorageSync('id')}`,
@@ -540,12 +515,14 @@
 				})
 				if (res.data.data) {
 					this.user = res.data.data || ''
-					this.user.avatar ? this.url = 'http://gamebox.zgwit.cn:8082' + this.user.avatar : ''
+
+					this.user.avatar ? this.url = 'http://gamebox.zgwit.cn:8082' + this.user.avatar :
+						''
 					if (this.user.openid) {
 						//this.weixinJsInit()
-						
+
 						//测试支付
-						this.weixinTestPay()
+						// this.weixinTestPay()
 					}
 				}
 
@@ -560,6 +537,19 @@
 				if (game.data.data) {
 					this.game = game.data.data
 				}
+
+
+				uni.request({
+					url: 'https://gamebox.zgwit.cn/count',
+					method: 'GET',
+					success: (item) => {
+						this.onlineNum = item.data.data
+
+					},
+
+				})
+
+
 
 			},
 
@@ -586,6 +576,10 @@
 			},
 			handleRecharge(show) {
 				this.mask = this.rechargeShow = this.showAll[show];
+
+			},
+			handlePay(show) {
+				this.mask = this.payShow = this.showAll[show];
 
 			},
 			handleIcon(index, show) {

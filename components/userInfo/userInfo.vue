@@ -17,7 +17,7 @@
 						<view class="demo-uni-col dark">昵称:</view>
 					</uni-col>
 					<uni-col :span="17" :offset="1">
-						<input class="input" name="input" :placeholder="user.nickname" v-model="user.nickname" />
+						<input class="input" name="input" :placeholder="name" v-model="name" />
 					</uni-col>
 				</uni-row>
 
@@ -26,10 +26,16 @@
 						<view class="demo-uni-col dark">性别:</view>
 					</uni-col>
 					<uni-col :span="17" :offset="1">
-						<image :src="user.gender==='男'? radio1:radio2" @click="chooseRadio(1)"></image>
-						<image src="../../static/boy.png"></image>
-						<image :src="user.gender==='男'? radio2:radio1" @click="chooseRadio(0)"></image>
-						<image src="../../static/gril.png"></image>
+						<span @click="chooseRadio(1)">
+							<image :src="user.gender==='男'? radio1:radio2"></image>
+							<image src="../../static/boy.png"></image>
+						</span>
+
+						<span @click="chooseRadio(0)">
+							<image :src="user.gender==='男'? radio2:radio1"></image>
+							<image src="../../static/gril.png"></image>
+						</span>
+
 					</uni-col>
 				</uni-row>
 
@@ -49,13 +55,13 @@
 					<uni-col :span="5" style="text-align: right;">
 						<view class="demo-uni-col dark">人缘:</view>
 					</uni-col>
-					<uni-col :span="3" :offset="1" style="color:rgb(254,254,61);font-size: 18px;">
+					<uni-col :span="3" :offset="1" style="  ">
 						90
 					</uni-col>
 					<uni-col :span="5" style="text-align: right;">
 						<view class="demo-uni-col dark">vip:</view>
 					</uni-col>
-					<uni-col :span="5" :offset="1" style="color:rgb(254,254,61);font-size: 18px;">
+					<uni-col :span="5" :offset="1" style=" ">
 						成为vip
 					</uni-col>
 				</uni-row>
@@ -97,8 +103,11 @@
 					// }, 
 
 				},
+				name: '',
 				fileLists: [{
-					url: 'http://gamebox.zgwit.cn:8082' + this.user.avatar,
+					url: (this.user.avatar ? ('http://gamebox.zgwit.cn:8082' + this
+						.user
+						.avatar) : '../../static/avatar.jpg')
 
 				}],
 
@@ -134,8 +143,9 @@
 					name: 'file',
 					success: res => {
 						let msg = res.data
-						// this.user.avatar = JSON.parse(res.data).data[
-						// 	0]
+						this.user.avatar = JSON.parse(res.data).data[
+							0]
+
 						this.edit()
 					}
 				})
@@ -146,7 +156,7 @@
 				this.$emit('receiveData')
 			},
 			edit() {
-
+				this.user.nickname = this.name
 				uni.request({
 					url: `http://gamebox.zgwit.cn:8082/api/user/${uni.getStorageSync('id')}`,
 					method: 'POST',
@@ -182,10 +192,11 @@
 				} else {
 					this.user.gender = '女'
 				}
+				console.log(this.user.gender)
 			}
 		},
 		mounted() {
-			// console.log(this.user)
+			this.name = this.user.nickname
 		},
 		onShow() {
 
@@ -220,7 +231,7 @@
 
 				/deep/ .file-picker__box-content {
 
-					border-radius: 50% !important;
+					// border-radius: 50% !important;
 					border: none !important;
 					box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3s);
 
@@ -242,6 +253,7 @@
 				}
 
 				.edit {
+					border-radius: 5px;
 					box-sizing: border-box;
 					padding: 1px;
 					position: absolute;
@@ -296,23 +308,25 @@
 					display: flex;
 					align-items: center;
 					margin-bottom: 5px;
+					font-size: 19px;
 
 					image {
-						width: 30px;
-						height: 30px;
+						width: 22px;
+						height: 22px;
 						background-color: transparent;
 						border-radius: 0;
 					}
 				}
 
 				.input {
-					//	border: 3px solid rgb(117, 23, 28);
+					font-size: 19px;
+					// border: 1px solid rgb(117, 23, 28);
 					//background-color: rgb(47, 0, 17);
 					border-radius: 5px;
 					//box-shadow: 0 0 15px rgb(97, 19, 37);
 					// color: rgb(245, 231, 202);
 					//box-sizing: border-box;
-					padding: 10px;
+					padding: 10px 1px;
 
 				}
 

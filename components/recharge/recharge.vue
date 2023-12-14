@@ -7,7 +7,7 @@
 			<view class="operate">
 
 				<view style="display: flex; ">
-					<image :src="'http://gamebox.zgwit.cn:8082' + user.avatar"></image>
+					<image :src="url"></image>
 					<view class="infor">
 						<span>名称 :{{user.nickname}}</span>
 						<span>余额 :{{user.balance}}</span>
@@ -34,7 +34,7 @@
 
 				<uni-popup ref="alertDialog" type="dialog">
 					<uni-popup-dialog type="warn" cancelText="关闭" confirmText="同意" title="通知" :content="content"
-						@confirm="dialogConfirm" @close="dialogClose"></uni-popup-dialog>
+						@confirm="dialogConfirm('礼包')" @close="dialogClose"></uni-popup-dialog>
 				</uni-popup>
 			</view>
 
@@ -69,6 +69,7 @@
 				customShow: 0,
 				content: '',
 				sendMess: '',
+				url: '../../static/avatar.jpg',
 				shop: [{
 						name: '积分100',
 						url: '../../static/integral.png',
@@ -111,6 +112,10 @@
 			};
 		},
 		mounted() {
+
+			this.user.avatar ? this.url = 'http://gamebox.zgwit.cn:8082' + this.user.avatar :
+				''
+
 			this.token = uni.getStorageSync('token')
 		},
 		methods: {
@@ -120,7 +125,6 @@
 			cost(mess) {
 				this.content = "充值" + mess
 				this.$refs.alertDialog.open()
-
 			},
 			custom(num) {
 
@@ -128,57 +132,92 @@
 			},
 			dialogClose() {},
 			confirm() {
-				if (this.recharge) {
-
-					this.user.balance += Number(this.recharge)
-
-					this.load()
-
+				if (Number(this.recharge)) {
+					this.dialogConfirm(Number(this.recharge))
 				} else {
 					uni.showToast({
 						icon: 'error',
-
 						title: '请输入充值金额!',
-
 					});
 				}
 			},
-			dialogConfirm() {
-
-				this.user.balance += Number(this.content.slice(4))
-				this.load()
+			dialogConfirm(e) {
+				if (e === "礼包") {
+					this.weixinTestPay(this.content.slice(4))
+				} else
+					this.weixinTestPay(e)
 			},
+			async weixinTestPay(pay) {
 
-			load() {
+				const res = await this.$request({
+					method: 'GET',
+					url: `weixin/pre-pay`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + this.token
+					},
+					data: {
+						amount: pay,
+						name: "充值"
+					}
+				})
+				if (res.data.data) {
 
-				uni.request({
-					url: 'http://gamebox.zgwit.cn:8082/api/recharge/create',
+					console.log("微信支付：", res.data.data)
+					const order = res.data.data
+					order.appId = "wxf9aba5e1b7018a74"
+					order.timeStamp = order.timestamp
+					console.log("getBrandWCPayRequest", order)
+					WeixinJSBridge.invoke(
+						'getBrandWCPayRequest', order, (res) => {
+							console.log("getBrandWCPayRequest", res)
+							if (res.err_msg == "get_brand_wcpay_request:ok") {
+								// 使用以上方式判断前端返回,微信团队郑重提示：
+								//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+
+								this.submit(pay)
+							}
+						});
+
+				} else {
+
+					uni.showToast({
+						icon: 'error',
+						title: '支付失败!',
+					});
+				}
+
+			},
+			async submit(e) {
+				const cost = await this.$request({
 					method: 'POST',
+					url: `recharge/create`,
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
 						'Authorization': 'Bearer ' + this.token
 					},
 					data: {
 						user_id: this.user.id,
-						amount: Number(this.recharge)
-					},
-					success: (item) => {}
-				});
-
-				uni.request({
-					url: `http://gamebox.zgwit.cn:8082/api/user/${uni.getStorageSync('id')}`,
+						amount: e
+					}
+				})
+				this.user.balance += e / 100
+				const user = await this.$request({
 					method: 'POST',
+					url: `user/${uni.getStorageSync('id')}`,
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
 						'Authorization': 'Bearer ' + this.token
 					},
-					data: this.user,
-					success: (item) => {
-						uni.showToast({
-							title: "充值成功!",
-						});
-					}
-				});
+					data: this.user
+				})
+				if (user.data.data) {
+					uni.showToast({
+						title: "充值成功!",
+					});
+				}
+
+
 			}
 		}
 	}
