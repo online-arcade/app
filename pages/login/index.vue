@@ -132,7 +132,7 @@
 					password: e ? this.$md5("123456") : this.$md5(this.formData.password)
 				}
 				uni.request({
-					url: 'http://gamebox.zgwit.cn:8082/api/login',
+					url: 'https://gamebox.zgwit.cn/api/login',
 					method: 'POST',
 					data: mess,
 					success: (item) => {

@@ -70,7 +70,7 @@
 		},
 		mounted() {
 
-			this.user.avatar ? this.url = 'http://gamebox.zgwit.cn:8082' + this.user.avatar :
+			this.user.avatar ? this.url = 'https://gamebox.zgwit.cn' + this.user.avatar :
 				''
 
 			this.token = uni.getStorageSync('token')

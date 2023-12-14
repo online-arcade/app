@@ -105,13 +105,13 @@
 				},
 				name: '',
 				fileLists: [{
-					url: (this.user.avatar ? ('http://gamebox.zgwit.cn:8082' + this
+					url: (this.user.avatar ? ('https://gamebox.zgwit.cn' + this
 						.user
 						.avatar) : '../../static/avatar.jpg')
 
 				}],
 
-				src: 'http://gamebox.zgwit.cn:8082/static/image/2023/10/19940221.png',
+				src: 'https://gamebox.zgwit.cn/static/image/2023/10/19940221.png',
 				radio1: '../../static/radio1.png',
 				radio2: '../../static/radio2.png',
 				choose: ['../../static/radio1.png', '../../static/radio2.png'],
@@ -135,7 +135,7 @@
 
 				const tempFilePaths = e.tempFilePaths;
 				uni.uploadFile({
-					url: 'http://gamebox.zgwit.cn:8082/api/img/create', //上传图片的后端接口
+					url: 'https://gamebox.zgwit.cn/api/img/create', //上传图片的后端接口
 					filePath: tempFilePaths[0],
 					header: {
 						'Authorization': 'Bearer ' + uni.getStorageSync('token')
@@ -158,7 +158,7 @@
 			edit() {
 				this.user.nickname = this.name
 				uni.request({
-					url: `http://gamebox.zgwit.cn:8082/api/user/${uni.getStorageSync('id')}`,
+					url: `https://gamebox.zgwit.cn/api/user/${uni.getStorageSync('id')}`,
 					method: 'POST',
 					data: this.user,
 					header: {

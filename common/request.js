@@ -1,4 +1,4 @@
-const baseUrl = 'http://gamebox.zgwit.cn:8082/api/'
+const baseUrl = 'https://gamebox.zgwit.cn/api/'
 const request = (options) => {
 	return new Promise((resolve, reject) => {
 		uni.request({
