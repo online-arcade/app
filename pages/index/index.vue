@@ -5,7 +5,7 @@
 			<view class="group">
 				<view class="box">
 					<image class="photo" :src="url" @click="handleModel(1)"></image>
-					<text> {{user.nickname||'测试玩家'}} </text>
+					<text> {{user.nickname||'无名'}} </text>
 				</view>
 				<!-- 				<image class="" src="../../static/start.png" style="z-index: 2;">
 				</image>
@@ -491,8 +491,7 @@
 				if (res.data.data) {
 					this.user = res.data.data || ''
 
-					this.user.avatar ? this.url = 'https://gamebox.zgwit.cn' + this.user.avatar :
-						''
+					this.url = this.user.avatar || 'https://gamebox.zgwit.cn/static/boy1.png'
 					if (this.user.openid) {
 						//this.weixinJsInit()
 

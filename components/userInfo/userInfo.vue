@@ -105,10 +105,7 @@
 				},
 				name: '',
 				fileLists: [{
-					url: (this.user.avatar ? ('https://gamebox.zgwit.cn' + this
-						.user
-						.avatar) : '../../static/avatar.jpg')
-
+					url: this.user.avatar || 'https://gamebox.zgwit.cn/static/boy1.png'
 				}],
 
 				src: 'https://gamebox.zgwit.cn/static/image/2023/10/19940221.png',

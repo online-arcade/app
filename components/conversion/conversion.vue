@@ -70,8 +70,7 @@
 		},
 		mounted() {
 
-			this.user.avatar ? this.url = 'https://gamebox.zgwit.cn' + this.user.avatar :
-				''
+			this.url = this.user.avatar || 'https://gamebox.zgwit.cn/static/boy1.png'
 
 			this.token = uni.getStorageSync('token')
 		},
