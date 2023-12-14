@@ -123,6 +123,8 @@
 
 <script>
 	import screenfull from "screenfull";
+	import url from "url";
+	
 	// import Peer from 'peerjs';
 	export default {
 
@@ -303,31 +305,11 @@
 
 		},
 		mounted() {
-
-			this.$nextTick(() => {
-				const pages = getCurrentPages();
-				console.log(pages)
-				let code = this.$route.query.code;
-				console.log(code);
-			});
-
-
-			setTimeout(() => {
-				const pages = getCurrentPages();
-				console.log(pages)
-				let code = this.$route.query.code;
-				console.log(code);
-			}, 1000); // 延时 1 秒后获取参数
-
-
-
-			const pages = getCurrentPages();
-			console.log(pages)
+			const u = url.parse(location.href, true)
+			console.log("url parse", u.query.code)
 
 			// 获取query参数
-			// const code = this.$route;
-			// const code1 = this.$route.query;
-			const code = this.$route.query.code;
+			const code = u.query.code || this.$route.query.code;
 			console.log("微信自动登录 code", code);
 			if (code) {
 				this.weixinAuth(code)
@@ -399,7 +381,7 @@
 			},
 			async weixinAuth(code) {
 				console.log(code)
-				const res = this.$request({
+				const res = await this.$request({
 					method: 'GET',
 					url: 'weixin/auth',
 					data: {
@@ -407,18 +389,22 @@
 					}
 				})
 				console.log(res)
-				if (res.data.data) {
-					console.log(res.data)
-					this.token = res.data.data.token
-					uni.setStorageSync('token', res.data.data.token);
-					uni.setStorageSync('id', res.data.data.user.id);
-					this.load()
-					//this.weixinJsInit()
-				} else {
-					uni.redirectTo({
-						url: "/pages/login/index"
-					})
+				if (res.data.error) {
+					uni.showToast({
+						title: res.data.error
+					})	
+					setTimeout(()=>{
+						uni.redirectTo({
+							url: "/pages/login/index"
+						})
+					}, 500)
 				}
+				
+				console.log(res.data)
+				this.token = res.data.data.token
+				uni.setStorageSync('token', res.data.data.token);
+				uni.setStorageSync('id', res.data.data.user.id);
+				this.load()
 			},
 			async weixinJsInit() {
 				const res = await this.$request({

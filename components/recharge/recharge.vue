@@ -165,8 +165,6 @@
 
 					console.log("微信支付：", res.data.data)
 					const order = res.data.data
-					order.appId = "wxf9aba5e1b7018a74"
-					order.timeStamp = order.timestamp
 					console.log("getBrandWCPayRequest", order)
 					WeixinJSBridge.invoke(
 						'getBrandWCPayRequest', order, (res) => {
