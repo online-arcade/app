@@ -446,12 +446,24 @@
 			},
 
 			exit(name) {
+				if (!this.seated) {
 
-
+					this.text = "未入座！！"
+					this.toast = true
+					this.$refs.report.open('center');
+					this.time = setInterval(() => {
+						this.$refs.report.close()
+						clearInterval(this.time)
+					}, 1500)
+					return
+				}
 				this.sock.send(JSON.stringify({
-					type: 'refund',
-					seat: this.pos
+					type: 'click',
+					seat: this.pos,
+					key: 'refund'
 				}));
+
+
 
 				this.text = "下机！"
 				this.toast = false

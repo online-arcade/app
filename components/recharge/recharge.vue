@@ -71,40 +71,40 @@
 				sendMess: '',
 				url: '../../static/avatar.jpg',
 				shop: [{
-						name: '积分100',
+						name: '金币100',
 						url: '../../static/integral.png',
 						spend: '￥ 10'
 					},
 					{
-						name: '积分300',
+						name: '金币300',
 						url: '../../static/integral.png',
 						spend: '￥ 30'
 					},
 					{
-						name: '积分600',
+						name: '金币600',
 						url: '../../static/integral.png',
 						spend: '￥ 60'
 					},
 					{
-						name: '积分900',
+						name: '金币900',
 						url: '../../static/integral.png',
 						spend: '￥ 90'
 					},
 					{
-						name: '积分1200',
+						name: '金币1200',
 						url: '../../static/integral.png',
 						spend: '￥ 120'
 					},
 					{
-						name: '积分1500',
+						name: '金币1500',
 						url: '../../static/integral.png',
 						spend: '￥ 150'
 					}, {
-						name: '积分1800',
+						name: '金币1800',
 						url: '../../static/integral.png',
 						spend: '￥ 180'
 					}, {
-						name: '积分2100',
+						name: '金币2100',
 						url: '../../static/integral.png',
 						spend: '￥ 210'
 					},

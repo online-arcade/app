@@ -104,30 +104,20 @@
 				}
 			},
 			dialogConfirm(e) {
-				if (this.user.Integral < 1000) {
+
+				if (!Number(this.user.integral) || this.user.integral < 1000) {
 					uni.showToast({
 						icon: "error",
 						title: "积分不足！"
 					})
 					return
 				}
-				this.submit()
+				this.submit(e)
 
 			},
 			async submit(e) {
-				const cost = await this.$request({
-					method: 'POST',
-					url: `recharge/create`,
-					header: {
-						'Content-Type': 'application/json;charset=UTF-8',
-						'Authorization': 'Bearer ' + this.token
-					},
-					data: {
-						user_id: this.user.id,
-						amount: 100
-					}
-				})
-				this.user.balance -= 100
+
+				this.user.integral -= 1000
 				const user = await this.$request({
 					method: 'POST',
 					url: `user/${uni.getStorageSync('id')}`,

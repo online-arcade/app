@@ -42,7 +42,7 @@
 
 				<uni-row class="row">
 					<uni-col :span="5" style="text-align: right;">
-						<view class="demo-uni-col dark">积分:</view>
+						<view class="demo-uni-col dark">金币:</view>
 					</uni-col>
 					<uni-col :span="17" :offset="1">
 

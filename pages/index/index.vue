@@ -366,7 +366,7 @@
 			},
 			toggle(type, msg) {
 
-				if (this.onlineNum === 6) {
+				if (this.onlineNum >= 6) {
 
 					uni.showToast({
 						icon: 'error',
