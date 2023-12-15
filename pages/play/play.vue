@@ -128,7 +128,7 @@
 				<view class="coinDialog">
 					<view>
 						<span style="width: 300px;">当前余额 ： </span>
-						<span>{{ pay }}</span>
+						<span>{{ user.balance}}</span>
 					</view>
 					<view class="custom">
 						<view>投币数量 ：</view>
@@ -199,6 +199,7 @@
 	export default {
 		data() {
 			return {
+				user: {},
 				soundStatus: true,
 				toast: false,
 				text: '',
@@ -209,6 +210,7 @@
 						'有任何问题，请加客服微信咨询!'
 					]
 				},
+				token: '',
 				showCanvas: true,
 				tabHide: false,
 				select: false,
@@ -280,6 +282,9 @@
 			// #ifdef APP-PLUS
 			plus.screen.lockOrientation('default');
 			// #endif
+
+			//用户加载
+			this.loadUser()
 
 			//控制连接
 			//this.sock = new WebSocket('ws://gamebox.zgwit.cn:9001/player');
@@ -405,6 +410,30 @@
 		},
 		methods: {
 
+			async loadUser() {
+				this.token = uni.getStorageSync('token')
+				const res = await this.$request({
+					method: 'GET',
+					url: `user/${uni.getStorageSync('id')}`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + this.token
+					}
+				})
+				if (res.data.data) {
+					this.user = res.data.data || ''
+
+					this.url = this.user.avatar || 'https://gamebox.zgwit.cn/static/boy1.png'
+					if (this.user.openid) {
+						//this.weixinJsInit()
+
+						//测试支付
+						// this.weixinTestPay()
+					}
+				}
+
+			},
+
 			showPopup() {
 				// open 方法传入参数 等同在 uni-popup 组件上绑定 type属性
 				//this.$refs.popup.open('center');
@@ -460,28 +489,30 @@
 				this.$refs.coinDialog.open()
 			},
 			insertCoins(num) {
+				if (!this.seated) {
+
+					this.text = "未入座！！"
+					this.toast = true
+					this.$refs.report.open('center');
+					this.time = setInterval(() => {
+						this.$refs.report.close()
+						clearInterval(this.time)
+					}, 1500)
+					return
+				}
 				let temmNum
 				if (!num) {
 					temmNum = this.coinNum
 				} else {
 					temmNum = num
 				}
-				if (this.pay >= temmNum) {
-					this.sock.send(JSON.stringify({
-						type: 'coin',
-						seat: this.pos,
-						coin: temmNum
-					}));
-					this.text = "充值成功！"
-					this.toast = false
-					this.$refs.report.open('center');
-					this.time = setInterval(() => {
-						this.$refs.report.close()
-						clearInterval(this.time)
-					}, 1500)
+				if (this.user.balance >= temmNum) {
+
+					this.submit(temmNum)
+
 
 				} else {
-					this.text = "充值失败！"
+					this.text = "投币失败！"
 					this.toast = true
 					this.$refs.report.open('center');
 					this.time = setInterval(() => {
@@ -491,6 +522,48 @@
 				}
 				this.$refs.coinDialog.close();
 			},
+			async submit(e) {
+				const cost = await this.$request({
+					method: 'POST',
+					url: `recharge/create`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + this.token
+					},
+					data: {
+						user_id: this.user.id,
+						amount: e
+					}
+				})
+
+				this.user.balance -= e
+				const user = await this.$request({
+					method: 'POST',
+					url: `user/${uni.getStorageSync('id')}`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + this.token
+					},
+					data: this.user
+				})
+				if (user.data.data) {
+					this.sock.send(JSON.stringify({
+						type: 'coin',
+						seat: this.pos,
+						coin: e
+					}));
+					this.text = "投币成功！"
+					this.toast = false
+					this.$refs.report.open('center');
+					this.time = setInterval(() => {
+						this.$refs.report.close()
+						clearInterval(this.time)
+					}, 1500)
+				}
+
+
+			},
+
 			sound() {
 				this.soundStatus = !this.soundStatus
 				this.text = "音量" + (this.soundStatus ? '开' : '关')
@@ -739,6 +812,20 @@
 				uni.navigateBack();
 			},
 			seat(pos) {
+
+				if (!this.user.balance) {
+
+					this.text = "请充值！"
+					this.toast = true
+					this.$refs.report.open('center');
+					this.time = setInterval(() => {
+						this.$refs.report.close()
+						clearInterval(this.time)
+					}, 1500)
+
+
+					return
+				}
 
 				this.pos = pos;
 				this.seated = true;

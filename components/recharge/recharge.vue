@@ -108,7 +108,8 @@
 						url: '../../static/integral.png',
 						spend: '￥ 210'
 					},
-				]
+				],
+				check: 0
 			};
 		},
 		mounted() {
@@ -142,9 +143,12 @@
 			},
 			dialogConfirm(e) {
 				if (e === "礼包") {
+					this.check = 1
 					this.weixinTestPay(this.content.slice(4))
-				} else
+				} else {
+					this.check = 0
 					this.weixinTestPay(e)
+				}
 			},
 			async weixinTestPay(pay) {
 
@@ -156,7 +160,7 @@
 						'Authorization': 'Bearer ' + this.token
 					},
 					data: {
-						amount: pay,
+						amount: pay * 100,
 						name: "充值"
 					}
 				})
@@ -198,7 +202,8 @@
 						amount: e
 					}
 				})
-				this.user.balance += e / 100
+				if (this.check) this.user.Integral += e * 10
+				else this.user.balance += e
 				const user = await this.$request({
 					method: 'POST',
 					url: `user/${uni.getStorageSync('id')}`,

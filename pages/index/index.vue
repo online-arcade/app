@@ -124,7 +124,7 @@
 <script>
 	import screenfull from "screenfull";
 	import url from "url";
-	
+
 	// import Peer from 'peerjs';
 	export default {
 
@@ -264,6 +264,7 @@
 				recharge: [],
 				signin: [],
 				email: [],
+				loadNum: 0,
 				image: [{
 						url: '../../static/sign.png',
 						name: '签到',
@@ -292,8 +293,13 @@
 				]
 			}
 		},
+		onShow() {
 
-
+			this.load()
+		},
+		onHide() {
+			clearInterval(this.timer)
+		},
 
 		onLoad() {
 			// const code = this.$route;
@@ -305,6 +311,7 @@
 
 		},
 		mounted() {
+
 			const u = url.parse(location.href, true)
 			console.log("url parse", u.query.code)
 
@@ -330,6 +337,7 @@
 			this.resourcesLoaded();
 			//this.login()
 			this.load()
+			this.loadNum = 1
 			// this.row1 = this.data.slice(0, (this.data.length + 1) / 2)
 			// this.row2 = this.data.slice((this.data.length + 1) / 2)
 
@@ -357,6 +365,16 @@
 				}
 			},
 			toggle(type, msg) {
+
+				if (this.onlineNum === 6) {
+
+					uni.showToast({
+						icon: 'error',
+						title: "人数已满！"
+					})
+
+					return
+				}
 
 				this.gotoGame = msg
 				this.goto(this.gotoGame)
@@ -392,14 +410,14 @@
 				if (res.data.error) {
 					uni.showToast({
 						title: res.data.error
-					})	
-					setTimeout(()=>{
+					})
+					setTimeout(() => {
 						uni.redirectTo({
 							url: "/pages/login/index"
 						})
 					}, 500)
 				}
-				
+
 				console.log(res.data)
 				this.token = res.data.data.token
 				uni.setStorageSync('token', res.data.data.token);
@@ -511,22 +529,24 @@
 				if (game.data.data) {
 					this.game = game.data.data
 				}
+				clearInterval(this.timer)
+				this.loadOnline()
+				this.timer = setInterval(() => {
+					this.loadOnline()
+				}, 5000)
 
 
+
+			},
+			loadOnline() {
 				uni.request({
 					url: 'https://gamebox.zgwit.cn/count',
 					method: 'GET',
 					success: (item) => {
 						this.onlineNum = item.data.data
-
 					},
-
 				})
-
-
-
 			},
-
 			resourcesLoaded() {
 				var time = setTimeout(() => {
 					if (document.readyState === 'complete') {
@@ -779,6 +799,7 @@
 
 					text {
 						padding: 4px;
+						margin: 0 5px;
 						font-size: 18px;
 					}
 				}

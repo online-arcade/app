@@ -81,9 +81,9 @@
 			cost(mess) {
 				this.check = mess
 				if (mess) {
-					this.content = "是否消费100积分兑换京东e卡"
+					this.content = "是否消费1000积分兑换京东e卡"
 				} else {
-					this.content = "是否消费100积分兑换话费卡"
+					this.content = "是否消费1000积分兑换话费卡"
 				}
 
 				this.$refs.alertDialog.open()
@@ -104,7 +104,7 @@
 				}
 			},
 			dialogConfirm(e) {
-				if (this.user.balance < 100) {
+				if (this.user.Integral < 1000) {
 					uni.showToast({
 						icon: "error",
 						title: "积分不足！"

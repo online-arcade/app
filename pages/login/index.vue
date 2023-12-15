@@ -62,19 +62,7 @@
 			};
 		},
 		onShow() {
-
-			// const requestFullScreen =
-			// 	element.requestFullscreen ||
-			// 	element.webkitRequestFullscreen ||
-			// 	element.mozRequestFullScreen ||
-			// 	element.msRequestFullscreen;
-
-			// // 请求全屏
-			// if (requestFullScreen) {
-			// 	requestFullScreen.call(element);
-			// }
-
-			//this.register()
+			uni.removeStorage('token')
 		},
 		onLaunch() {
 			if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent) && /MicroMessenger/i.test(navigator
