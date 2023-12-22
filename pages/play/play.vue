@@ -825,7 +825,21 @@
 			},
 			seat(pos) {
 
-				if (!this.user.balance) {
+				if (Number(this.user.balance) >= 1) {
+
+					this.pos = pos;
+					this.seated = true;
+
+					this.sock.send(JSON.stringify({
+						type: 'sit',
+						seat: pos
+					}));
+
+					setTimeout(() => {
+						this.toolbar = false;
+					}, 2000);
+
+				} else {
 
 					this.text = "请充值！"
 					this.toast = true
@@ -834,23 +848,8 @@
 						this.$refs.report.close()
 						clearInterval(this.time)
 					}, 1500)
-
-
-					return
 				}
 
-				this.pos = pos;
-				this.seated = true;
-
-				this.sock.send(JSON.stringify({
-					type: 'sit',
-					seat: pos
-				}));
-
-
-				setTimeout(() => {
-					this.toolbar = false;
-				}, 2000);
 			},
 			firetouchstart(e) {
 				console.log('start', e);
