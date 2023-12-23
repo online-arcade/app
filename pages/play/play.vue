@@ -278,6 +278,7 @@
 		},
 
 		onLoad(options) {
+			this.id = options.id
 			this.screenChange();
 			// #ifdef APP-PLUS
 			plus.screen.lockOrientation('default');
@@ -288,20 +289,13 @@
 
 			//控制连接
 			//this.sock = new WebSocket('ws://gamebox.zgwit.cn:9001/player');
-			this.sock = new WebSocket('wss://gamebox.zgwit.cn/player');
-			this.sock.onmessage = msg => {
-				console.log('message', msg);
-			};
-			this.sock.onerror = err => {
-				console.error('socket', err);
-			};
 
 			this.name = options.name || 'demo';
 			this.pos = options.pos || 1;
 
 			//视频连接（后续统一）
 			//this.ws = new WebSocket('ws://gamebox.zgwit.cn:8989');
-			this.ws = new WebSocket('wss://gamebox.zgwit.cn/user');
+			this.ws = new WebSocket('wss://gamebox.zgwit.cn/api/box/'+this.id+'/bridge?token='+this.token);
 			this.ws.binaryType = 'arraybuffer';
 
 			function ab2str(buf) {
@@ -311,15 +305,15 @@
 			this.ws.onopen = () => {
 				console.log('open');
 				//this.ws.send("{}");
-				if (this.iceServers) connect(this.iceServers);
+				if (this.iceServers)
+					this.connect();
 				else
-					this.ws.send(
-						JSON.stringify({
+					this.ws.send(JSON.stringify({
 							type: 'getIceServers'
-						})
-					);
+						}));
 				//connect();
 			};
+			
 			this.ws.onmessage = e => {
 				//console.log('onmessage', e.data);
 				let str = e.data;
@@ -372,6 +366,9 @@
 							this.pc.addIceCandidate(candidate);
 						}
 						this.pc.addIceCandidate();
+						
+						//可以关了
+						this.ws.close()
 						break;
 				}
 			};
@@ -379,10 +376,10 @@
 				console.log('close');
 
 				//断网 1s 重连
-				if (this.open)
-					setTimeout(() => {
-						this.onLoad(options);
-					}, 1000);
+				// if (this.open)
+				// 	setTimeout(() => {
+				// 		this.onLoad(options);
+				// 	}, 1000);
 			};
 			this.ws.onerror = function(e) {
 				console.log(e);
@@ -829,11 +826,22 @@
 
 					this.pos = pos;
 					this.seated = true;
-
-					this.sock.send(JSON.stringify({
-						type: 'sit',
-						seat: pos
-					}));
+					
+					this.sock = new WebSocket('wss://gamebox.zgwit.cn/api/box/'+this.id+'/seat/'+pos+"?token="+this.token);
+					this.sock.onmessage = msg => {
+						console.log('message', msg);
+					};
+					
+					this.sock.onerror = err => {
+						console.error('socket', err);
+					};
+					
+					this.sock.onopen = ()=>{						
+						this.sock.send(JSON.stringify({
+							type: 'sit',
+							seat: pos
+						}));
+					}
 
 					setTimeout(() => {
 						this.toolbar = false;

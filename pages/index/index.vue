@@ -40,7 +40,7 @@
 			<uni-transition custom-class="transition" :mode-class="modeClass" :show="show" :class="{'row':!series }">
 				<view :class="{'col':true,'col-wid1':true}" v-for="(item,index) of game">
 					<view class="box">
-						<view class="box-content" @click="toggle('center',item.type)">
+						<view class="box-content" @click="toggle('center',item.id)">
 							<image :src="'../../static/'+item.icon" style=" height: 100%;">
 							</image>
 							<span class="num">{{onlineNum}}人在线</span>
@@ -645,7 +645,7 @@
 				// 	title: '更新中!',
 				// });
 				uni.navigateTo({
-					url: '/pages/play/play?name=' + name
+					url: '/pages/play/play?id=' + name
 				});
 			}
 
