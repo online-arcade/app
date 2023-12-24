@@ -272,6 +272,7 @@
 			// this.canvas.drawImage("/static/fkmgc.png", 0, 0, 843, 374, 0, 0, this.canvas.offsetWidth, this.canvas
 			// 	.offsetHeight)
 			// this.canvas.draw()
+			//document.getElementById("video").muted = true;
 		},
 		onResize() {
 			this.screenChange();
@@ -662,12 +663,12 @@
 						})
 					}
 					setTimeout(() => v.play, 500)
-					try {
-						v.play();
-						//v.muted = false; //值为false时首屏不显示,setting设置muted
-					} catch (e) {
-						//TODO handle the exception
-					}
+					// try {
+					// 	v.play();
+					// 	//v.muted = false; //值为false时首屏不显示,setting设置muted
+					// } catch (e) {
+					// 	//TODO handle the exception
+					// }
 					//this.ready = true;
 				};
 				this.pc.oniceconnectionstatechange = evt => {
@@ -682,6 +683,8 @@
 						);
 					} else if (this.pc.iceConnectionState === 'disconnected') {
 						if (this.open) this.connect();
+					} else if (this.pc.iceConnectionState === 'completed') {
+						this.ws.close()
 					}
 					//connected
 				};
@@ -699,10 +702,11 @@
 				};
 
 				this.pc.onicegatheringstatechange = evt => {
-					console.log('onicegatheringstatechange', evt);
+					console.log('onicegatheringstatechange', this.pc.iceGatheringState);
 					//console.log(this.pc.getReceivers());
-					if (this.pc.iceGatheringState == "complete") 
-						this.ws.close()
+					if (this.pc.iceGatheringState == "complete") {
+						//this.ws.close()
+					}
 				};
 
 				//打开数据口
