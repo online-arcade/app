@@ -368,7 +368,7 @@
 						this.pc.addIceCandidate();
 						
 						//可以关了
-						this.ws.close()
+						//this.ws.close()
 						break;
 				}
 			};
@@ -700,7 +700,9 @@
 
 				this.pc.onicegatheringstatechange = evt => {
 					console.log('onicegatheringstatechange', evt);
-					console.log(this.pc.getReceivers());
+					//console.log(this.pc.getReceivers());
+					if (this.pc.iceGatheringState == "complete") 
+						this.ws.close()
 				};
 
 				//打开数据口
