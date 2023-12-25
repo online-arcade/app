@@ -34,7 +34,7 @@
 
 				<uni-popup ref="alertDialog" type="dialog">
 					<uni-popup-dialog type="info" cancelText="关闭" confirmText="同意" title="通知" :content="content"
-						@confirm="showCharge()" @close="dialogClose">
+						@confirm="dialogConfirm('礼包')" @close="dialogClose">
 
 						<!-- <text>手机号</text> -->
 					</uni-popup-dialog>
@@ -77,7 +77,7 @@
 		props: ['user'],
 		data() {
 			return {
-				phone: '',
+
 				token: '',
 				recharge: 0,
 				customShow: 0,
@@ -159,20 +159,7 @@
 				}
 			},
 			dialogConfirm(e) {
-				if (!this.phone) {
-					uni.showToast({
-						title: "不为空！",
-						icon: "error"
-					})
-					return
-				}
-				if (this.phone.length !== 11) {
-					uni.showToast({
-						title: "格式错误！",
-						icon: "error"
-					})
-					return
-				}
+
 				if (e === "礼包") {
 					this.check = 1
 					this.weixinTestPay(this.content.slice(4))

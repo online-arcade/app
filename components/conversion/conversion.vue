@@ -43,8 +43,20 @@
 
 				<uni-popup ref="alertDialog" type="dialog">
 					<uni-popup-dialog type="warn" cancelText="关闭" confirmText="同意" title="通知" :content="content"
-						@confirm="dialogConfirm" @close="dialogClose"></uni-popup-dialog>
+						@confirm="showCharge" @close="dialogClose"></uni-popup-dialog>
 				</uni-popup>
+
+
+				<uni-popup ref="alertDialogConfirm" type="dialog">
+					<uni-popup-dialog type="warn" mode="input" cancelText="关闭" confirmText="同意" title="通知"
+						placeholder="请输入手机号!" @confirm="dialogConfirm" @close="dialogClose">
+
+						<uni-easyinput type="text" v-model="phone" placeholder="请输入手机号" />
+
+						<!-- <text>手机号</text> -->
+					</uni-popup-dialog>
+				</uni-popup>
+
 			</view>
 
 
@@ -59,6 +71,7 @@
 		props: ['user'],
 		data() {
 			return {
+				phone: '',
 				check: 0,
 				token: '',
 				recharge: 0,
@@ -103,17 +116,37 @@
 					});
 				}
 			},
+			showCharge() {
+				this.$refs.alertDialogConfirm.open()
+			},
 			dialogConfirm(e) {
+				if (!this.phone) {
+					uni.showToast({
+						title: "不为空！",
+						icon: "error"
+					})
+					return
+				}
+				if (this.phone.length !== 11) {
+					uni.showToast({
+						title: "格式错误！",
+						icon: "error"
+					})
+					this.phone = ""
+					return
+				}
+
 
 				if (!Number(this.user.integral) || this.user.integral < 1000) {
 					uni.showToast({
 						icon: "error",
 						title: "积分不足！"
 					})
+					this.phone = ""
 					return
 				}
 				this.submit(e)
-
+				this.phone = ""
 			},
 			async submit(e) {
 

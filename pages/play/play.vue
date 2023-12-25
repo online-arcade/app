@@ -907,6 +907,9 @@
 
 					this.sock = new WebSocket('wss://gamebox.zgwit.cn/api/box/' + this.id + '/seat/' + pos + "?token=" +
 						this.token);
+					this.sock.onclose = msg => {
+						this.seated = false
+					};
 					this.sock.onmessage = msg => {
 						console.log('message', msg);
 					};
