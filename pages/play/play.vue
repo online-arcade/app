@@ -12,7 +12,7 @@
 			<view class="menus" :style="{ width: toolbar ? '' : '0' }">
 				<view class="item" @click="exit('index/index')">
 					<image src="../../static/icon/money.svg"></image>
-					<view class="font">下机</view>
+					<view class="font">退币</view>
 				</view>
 				<view class="item" @click="dialogOpen()">
 					<image src="../../static/icon/bi.svg"></image>
@@ -61,7 +61,7 @@
 					</view> -->
 					<view class="item" @click="exit('index/index')">
 						<image src="../../static/icon/money.svg"></image>
-						<view class="font">下机</view>
+						<view class="font">退币</view>
 					</view>
 					<!-- <view class="item">
 						<image src="../../static/icon/game.svg"></image>
@@ -296,7 +296,7 @@
 
 			//视频连接（后续统一）
 			//this.ws = new WebSocket('ws://gamebox.zgwit.cn:8989');
-			this.ws = new WebSocket('wss://gamebox.zgwit.cn/api/box/'+this.id+'/bridge?token='+this.token);
+			this.ws = new WebSocket('wss://gamebox.zgwit.cn/api/box/' + this.id + '/bridge?token=' + this.token);
 			this.ws.binaryType = 'arraybuffer';
 
 			function ab2str(buf) {
@@ -310,11 +310,11 @@
 					this.connect();
 				else
 					this.ws.send(JSON.stringify({
-							type: 'getIceServers'
-						}));
+						type: 'getIceServers'
+					}));
 				//connect();
 			};
-			
+
 			this.ws.onmessage = e => {
 				//console.log('onmessage', e.data);
 				let str = e.data;
@@ -367,7 +367,7 @@
 							this.pc.addIceCandidate(candidate);
 						}
 						this.pc.addIceCandidate();
-						
+
 						//可以关了
 						//this.ws.close()
 						break;
@@ -463,7 +463,7 @@
 
 
 
-				this.text = "下机！"
+				this.text = "退币！"
 				this.toast = false
 				this.$refs.report.open('center');
 				this.time = setInterval(() => {
@@ -832,17 +832,18 @@
 
 					this.pos = pos;
 					this.seated = true;
-					
-					this.sock = new WebSocket('wss://gamebox.zgwit.cn/api/box/'+this.id+'/seat/'+pos+"?token="+this.token);
+
+					this.sock = new WebSocket('wss://gamebox.zgwit.cn/api/box/' + this.id + '/seat/' + pos + "?token=" +
+						this.token);
 					this.sock.onmessage = msg => {
 						console.log('message', msg);
 					};
-					
+
 					this.sock.onerror = err => {
 						console.error('socket', err);
 					};
-					
-					this.sock.onopen = ()=>{						
+
+					this.sock.onopen = () => {
 						this.sock.send(JSON.stringify({
 							type: 'sit',
 							seat: pos
