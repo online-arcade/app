@@ -50,9 +50,9 @@
 				</view>
 
 			</uni-transition>
-			<uni-popup ref="popup" :is-mask-click="false">
+			<uni-popup ref="popup" :mask-click="false">
 				<view class="modal">
-					<view class="modal-title">{{modal.title}}</view>
+					<view class="modal-title">{{modal.title }}</view>
 					<view class="modal-content">
 						<view v-for="(item,index) of modal.content">
 							({{index+1}}) {{item}}
@@ -69,7 +69,7 @@
 				</view>
 			</uni-popup>
 
-			<uni-popup ref="report">
+			<uni-popup ref="report" :mask-click="false">
 
 				<view class="report">
 					<view class="report-title">{{report.title}}</view>
@@ -294,14 +294,16 @@
 			}
 		},
 		onShow() {
+			this.$refs.report.open('center');
+			// this.load()
 
-			this.load()
 		},
 		onHide() {
 			clearInterval(this.timer)
 		},
 
 		onLoad() {
+
 			// const code = this.$route;
 			// const code1 = this.$route.query;
 			// const code2 = this.$route.query.code;
@@ -311,7 +313,7 @@
 
 		},
 		mounted() {
-
+			this.$refs.report.open('center');
 			const u = url.parse(location.href, true)
 			console.log("url parse", u.query.code)
 
@@ -332,7 +334,7 @@
 			}
 
 
-			this.$refs.report.open('center');
+			// this.$refs.report.open('center');
 			//this.token = uni.getStorageSync('token')
 			this.resourcesLoaded();
 			//this.login()
@@ -543,7 +545,7 @@
 					url: 'https://gamebox.zgwit.cn/count',
 					method: 'GET',
 					success: (item) => {
-						this.onlineNum = item.data.data
+						this.onlineNum = item.data.data || 0
 					},
 				})
 			},

@@ -8,6 +8,7 @@
 
 
 		<image v-if="!ready" class="poster" src="../../static/bk.jpg" mode="scaleToFill"></image>
+
 		<view class="toolbar" v-if="ready">
 			<view class="menus" :style="{ width: toolbar ? '' : '0' }">
 				<view class="item" @click="exit('index/index')">
@@ -86,6 +87,8 @@
 			</view>
 
 			<view class="bet" @click="click('bet')">加</view>
+			<view class="open-ticket" @click="deposit()">开票</view>
+			<view class="close-ticket" @click="withdraw()">消票</view>
 			<view class="fire" ref="fire" @touchstart="fireStart" @touchend="fireEnd"></view>
 
 			<!-- <view class="coin" @click="coin">币</view>
@@ -104,19 +107,19 @@
 
 		<view class="seats" v-if="ready && !seated">
 			<view class="seat" @click="seat(0)">
-				<view>1P</view>
+				<view>{{posStatus[0]?"已坐下": "1P"}}</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
 			</view>
 			<view class="seat" @click="seat(1)">
-				<view>2P</view>
+				<view>{{posStatus[1]?"已坐下": "2P"}}</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
 			</view>
 			<view class="seat" @click="seat(2)">
-				<view>3P</view>
+				<view>{{posStatus[2]?"已坐下": "3P"}}</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
 			</view>
 			<view class="seat" @click="seat(3)">
-				<view>4P</view>
+				<view>{{posStatus[3]?"已坐下": "4P"}}</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
 			</view>
 		</view>
@@ -238,10 +241,13 @@
 				ws: undefined,
 				pc: undefined,
 				earlyCandidates: undefined,
-				iceServers: undefined //{"this.iceServers":[{"urls":["stun:stun.l.google.com:19302"]}]};
+				iceServers: undefined, //{"this.iceServers":[{"urls":["stun:stun.l.google.com:19302"]}]};
+				posStatus: [0, 0, 0, 0]
 			};
 		},
-
+		onHide() {
+			this.quit()
+		},
 		// onShow() {
 
 		// 	this.windowResizeCallback = (res) => {
@@ -284,6 +290,9 @@
 			// #ifdef APP-PLUS
 			plus.screen.lockOrientation('default');
 			// #endif
+
+
+			this.getPos()
 
 			//用户加载
 			this.loadUser()
@@ -407,7 +416,25 @@
 			//this.peer.destroy();
 		},
 		methods: {
+			deposit() {
 
+				this.sock.send(JSON.stringify({
+					type: 'click',
+					seat: this.pos,
+					key: 'deposit'
+				}));
+
+
+			},
+			withdraw() {
+
+				this.sock.send(JSON.stringify({
+					type: 'click',
+					seat: this.pos,
+					key: 'withdraw'
+				}));
+
+			},
 			async loadUser() {
 				this.token = uni.getStorageSync('token')
 				const res = await this.$request({
@@ -470,7 +497,7 @@
 					this.$refs.report.close()
 					clearInterval(this.time)
 				}, 1500)
-				this.seated = false;
+				// this.seated = false;
 				// uni.navigateTo({
 				// 	url: '/pages/' + name
 				// });
@@ -815,18 +842,61 @@
 				}, 30);
 				setInterval(() => this.sock.send(this.pos + 'C'), 100);
 			},
-			quit() {
+			async getPos() {
+				const res = await this.$request({
+					method: 'GET',
+					url: `box/${this.id}/status`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + uni.getStorageSync('token')
+					}
+				})
+				if (res.data.data) {
+					res.data.data.filter((item, index) => {
+						this.posStatus[index] = item.user_id
+					})
+				}
+
+			},
+			async quit() {
+				if (!this.seated) {
+					uni.navigateBack();
+					return
+				}
 				// this.sock.send(JSON.stringify({
 				// 	type: 'stand',
-				// 	seat: pos
+				// 	seat: this.pos
 				// }));
 
+				const res = await this.$request({
+					method: 'GET',
+					url: `box/${this.id}/stand/${this.pos}`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + this.token
+					}
+				})
+
+				if (res.data.code === 200) {
+					console.log("ok")
+				}
 
 				//this.sock.send(this.pos + 'L');
 				//setTimeout(() => this.sock.send(this.pos + 'l'), 50);
 				uni.navigateBack();
 			},
 			seat(pos) {
+
+				if (this.posStatus[pos]) {
+					this.text = "已坐下！"
+					this.toast = true
+					this.$refs.report.open('center');
+					this.time = setInterval(() => {
+						this.$refs.report.close()
+						clearInterval(this.time)
+					}, 1500)
+					return
+				}
 
 				if (Number(this.user.balance) >= 1) {
 
@@ -1282,6 +1352,24 @@
 
 				//为了不被video覆盖
 				animation: noop 3s infinite;
+			}
+
+			.open-ticket {
+				position: absolute;
+				top: 25px;
+				background: white;
+				right: 100px;
+				border-radius: 3px;
+				padding: 3px;
+			}
+
+			.close-ticket {
+				position: absolute;
+				top: 25px;
+				background: white;
+				right: 150px;
+				border-radius: 3px;
+				padding: 3px;
 			}
 
 			.bet {
