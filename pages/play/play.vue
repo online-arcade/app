@@ -861,6 +861,7 @@
 			async quit() {
 				if (!this.seated) {
 					uni.navigateBack();
+					this.keyup('fire');
 					return
 				}
 				// this.sock.send(JSON.stringify({
@@ -883,6 +884,7 @@
 
 				//this.sock.send(this.pos + 'L');
 				//setTimeout(() => this.sock.send(this.pos + 'l'), 50);
+				this.keyup('fire');
 				uni.navigateBack();
 			},
 			seat(pos) {
