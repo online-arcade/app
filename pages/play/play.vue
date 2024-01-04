@@ -105,7 +105,7 @@
 			<view class="btn quit" @touchstart="emit('L')" @touchend="emit('l')">退</view> -->
 		</view>
 
-		<view class="seats" v-if="ready && !seated">
+		<view class="seats" v-if=" ready && !seated">
 			<view class="seat" @click="seat(0)">
 				<view>{{posStatus[0]?"已坐下": "1P"}}</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
@@ -202,6 +202,7 @@
 	export default {
 		data() {
 			return {
+				tempPos: null,
 				user: {},
 				soundStatus: true,
 				toast: false,
@@ -526,17 +527,17 @@
 				this.$refs.coinDialog.open()
 			},
 			insertCoins(num) {
-				if (!this.seated) {
+				// if (!this.seated) {
 
-					this.text = "未入座！！"
-					this.toast = true
-					this.$refs.report.open('center');
-					this.time = setInterval(() => {
-						this.$refs.report.close()
-						clearInterval(this.time)
-					}, 1500)
-					return
-				}
+				// 	this.text = "未入座！！"
+				// 	this.toast = true
+				// 	this.$refs.report.open('center');
+				// 	this.time = setInterval(() => {
+				// 		this.$refs.report.close()
+				// 		clearInterval(this.time)
+				// 	}, 1500)
+				// 	return
+				// }
 				let temmNum
 				if (!num) {
 					temmNum = this.coinNum
@@ -584,6 +585,20 @@
 					data: this.user
 				})
 				if (user.data.data) {
+					if ((!this.seated) && (!this.tempPos)) {
+						this.text = "请选择位置！"
+						this.toast = true
+						this.$refs.report.open('center');
+						this.time = setInterval(() => {
+							this.$refs.report.close()
+							clearInterval(this.time)
+						}, 1500)
+						return
+					}
+					if (!this.seated)
+						this.connectSeat()
+
+
 					this.sock.send(JSON.stringify({
 						type: 'coin',
 						seat: this.pos,
@@ -596,6 +611,11 @@
 						this.$refs.report.close()
 						clearInterval(this.time)
 					}, 1500)
+
+
+
+
+
 				}
 
 
@@ -888,7 +908,11 @@
 				uni.navigateBack();
 			},
 			seat(pos) {
-
+				this.tempPos = pos
+				if (this.posStatus[pos] === this.user.id) {
+					this.connectSeat()
+					return
+				}
 				if (this.posStatus[pos]) {
 					this.text = "已坐下！"
 					this.toast = true
@@ -899,46 +923,53 @@
 					}, 1500)
 					return
 				}
+				this.dialogOpen()
 
-				if (Number(this.user.balance) >= 1) {
 
-					this.pos = pos;
-					this.seated = true;
+				// if (Number(this.user.balance) >= 1) {
 
-					this.sock = new WebSocket('wss://gamebox.zgwit.cn/api/box/' + this.id + '/seat/' + pos + "?token=" +
-						this.token);
-					this.sock.onclose = msg => {
-						this.seated = false
-					};
-					this.sock.onmessage = msg => {
-						console.log('message', msg);
-					};
+				// } else {
 
-					this.sock.onerror = err => {
-						console.error('socket', err);
-					};
+				// 	this.text = "请充值！"
+				// 	this.toast = true
+				// 	this.$refs.report.open('center');
+				// 	this.time = setInterval(() => {
+				// 		this.$refs.report.close()
+				// 		clearInterval(this.time)
+				// 	}, 1500)
+				// }
 
-					this.sock.onopen = () => {
-						this.sock.send(JSON.stringify({
-							type: 'sit',
-							seat: pos
-						}));
-					}
+			},
+			connectSeat() {
 
-					setTimeout(() => {
-						this.toolbar = false;
-					}, 2000);
 
-				} else {
+				this.pos = this.tempPos;
+				this.seated = true;
 
-					this.text = "请充值！"
-					this.toast = true
-					this.$refs.report.open('center');
-					this.time = setInterval(() => {
-						this.$refs.report.close()
-						clearInterval(this.time)
-					}, 1500)
+				this.sock = new WebSocket('wss://gamebox.zgwit.cn/api/box/' + this.id + '/seat/' + this.pos + "?token=" +
+					this.token);
+				this.sock.onclose = msg => {
+					this.seated = false
+				};
+				this.sock.onmessage = msg => {
+					console.log('message', msg);
+				};
+
+				this.sock.onerror = err => {
+					console.error('socket', err);
+				};
+
+				this.sock.onopen = () => {
+					this.sock.send(JSON.stringify({
+						type: 'sit',
+						seat: this.pos
+					}));
 				}
+
+				setTimeout(() => {
+					this.toolbar = false;
+				}, 2000);
+
 
 			},
 			firetouchstart(e) {
