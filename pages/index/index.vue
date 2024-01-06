@@ -107,7 +107,7 @@
 
 
 		<uni-transition custom-class="transition" :mode-class="modeClass" :show="mask" class="showModel">
-			<chat class="chat" v-show="chatShow" @receiveData="handleGetData(0)"></chat>
+			<!-- <chat class="chat" v-show="chatShow" @receiveData="handleGetData(0)"></chat> -->
 			<setting class="chat" v-show="setShow" @receiveData="handleSet(0)"></setting>
 			<userInfo class="chat" v-show="modelShow" :user="user" @receiveData="handleModel(0)"></userInfo>
 			<recharge class="chat" v-show="rechargeShow" :user="user" @receiveData="handleRecharge(0)"></recharge>

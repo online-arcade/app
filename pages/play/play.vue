@@ -87,8 +87,8 @@
 			</view>
 
 			<view class="bet" @click="click('bet')">加</view>
-			<view class="open-ticket" @click="deposit()">开票</view>
-			<view class="close-ticket" @click="withdraw()">消票</view>
+			<!-- <view class="open-ticket" @click="deposit()">开票</view>
+			<view class="close-ticket" @click="withdraw()">消票</view> -->
 			<view class="fire" ref="fire" @touchstart="fireStart" @touchend="fireEnd"></view>
 
 			<!-- <view class="coin" @click="coin">币</view>
