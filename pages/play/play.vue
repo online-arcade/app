@@ -585,7 +585,7 @@
 					data: this.user
 				})
 				if (user.data.data) {
-					if ((!this.seated) && (!this.tempPos)) {
+					if ((!this.seated) && !( this.tempPos>=0&& this.tempPos<=3)) {
 						this.text = "请选择位置！"
 						this.toast = true
 						this.$refs.report.open('center');
