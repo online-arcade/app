@@ -261,19 +261,13 @@
 		onHide() {
 			// this.quit()
 		},
-		// onShow() {
+		onShow() {
 
-		// 	this.windowResizeCallback = (res) => {
-		// 		console.log(res.deviceOrientation)
-		// 		if (res.deviceOrientation === 'landscape') {
-		// 			this.isLandScape = true;
-		// 		} else {
-		// 			this.isLandScape = false;
-		// 		}
-		// 	}
-		// 	uni.onWindowResize(this.windowResizeCallback);
-
-		// },
+			setTimeout(() => {
+				if (!this.seated)
+					uni.navigateBack();
+			}, 60000)
+		},
 		onPullDownRefresh() {
 			uni.stopPullDownRefresh();
 		},
