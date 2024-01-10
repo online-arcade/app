@@ -87,6 +87,7 @@
 			</view>
 
 			<view class="bet" @click="click('bet')">加</view>
+			<!-- <view class="open-ticket" @click="tui()">退币</view> -->
 			<!-- <view class="open-ticket" @click="deposit()">开票</view>
 			<view class="close-ticket" @click="withdraw()">消票</view> -->
 			<view class="fire" ref="fire" @touchstart="fireStart" @touchend="fireEnd"></view>
@@ -213,6 +214,7 @@
 	export default {
 		data() {
 			return {
+				closeTimeout: null,
 				coinStatus: false,
 				tempPos: null,
 				user: {},
@@ -258,14 +260,13 @@
 				posStatus: [0, 0, 0, 0]
 			};
 		},
-		onHide() {
-			// this.quit()
-		},
+		onHide() {},
 		onShow() {
-
-			setTimeout(() => {
-				if (!this.seated)
+			this.loadUser()
+			this.closeTimeout = setTimeout(() => {
+				if (!this.seated) {
 					uni.navigateBack();
+				}
 			}, 60000)
 		},
 		onPullDownRefresh() {
@@ -292,119 +293,10 @@
 		},
 
 		onLoad(options) {
-			this.id = options.id
-			this.screenChange();
-			// #ifdef APP-PLUS
-			plus.screen.lockOrientation('default');
-			// #endif
-
-
-			this.getPos()
-
-			//用户加载
-			this.loadUser()
-
-			//控制连接
-			//this.sock = new WebSocket('ws://gamebox.zgwit.cn:9001/player');
-
-			this.name = options.name || 'demo';
-			this.pos = options.pos || 1;
-
-			//视频连接（后续统一）
-			//this.ws = new WebSocket('ws://gamebox.zgwit.cn:8989');
-			this.ws = new WebSocket('wss://gamebox.zgwit.cn/api/box/' + this.id + '/bridge?token=' + this.token);
-			this.ws.binaryType = 'arraybuffer';
-
-			function ab2str(buf) {
-				return String.fromCharCode.apply(null, new Uint8Array(buf));
-			}
-
-			this.ws.onopen = () => {
-				console.log('open');
-				//this.ws.send("{}");
-				if (this.iceServers)
-					this.connect();
-				else
-					this.ws.send(JSON.stringify({
-						type: 'getIceServers'
-					}));
-				//connect();
-			};
-
-			this.ws.onmessage = e => {
-				//console.log('onmessage', e.data);
-				let str = e.data;
-				if (e.data instanceof Blob) {
-					str = ab2str(e.data.arrayBuffer());
-				} else if (e.data instanceof ArrayBuffer) {
-					str = ab2str(e.data);
-				}
-				console.log('onmessage', str);
-
-				let msg = JSON.parse(str);
-				switch (msg.type) {
-					case 'getIceServers':
-						this.iceServers = msg.data;
-						this.connect();
-						break;
-					case 'call':
-						var desc = new RTCSessionDescription(msg.data);
-						this.pc.setRemoteDescription(desc).then(() => {
-							while (this.earlyCandidates.length) {
-								var candidate = this.earlyCandidates.shift();
-								console.log('earlyCandidates', candidate);
-								//this.addIceCandidate(this.pc.peerid, candidate);
-								this.ws.send(
-									JSON.stringify({
-										type: 'addIceCandidate',
-										id: this.pc.peerid,
-										data: candidate
-									})
-								);
-							}
-
-							setTimeout(() => {
-								this.ws.send(
-									JSON.stringify({
-										type: 'getIceCandidate',
-										id: this.pc.peerid
-									})
-								);
-							}, 200);
-							// setTimeout(()=>{
-							//     this.ws.send(JSON.stringify({type: 'getIceCandidate', id: this.pc.peerid}))
-							// }, 5000)
-							//this.ws.send(JSON.stringify({type: 'getIceCandidate', id: this.pc.peerid}))
-						});
-						break;
-					case 'getIceCandidate':
-						for (var i = 0; i < msg.data.length; i++) {
-							var candidate = new RTCIceCandidate(msg.data[i]);
-							this.pc.addIceCandidate(candidate);
-						}
-						this.pc.addIceCandidate();
-
-						//可以关了
-						//this.ws.close()
-						break;
-				}
-			};
-			this.ws.onclose = e => {
-				console.log('close');
-
-				//断网 1s 重连
-				if (this.open)
-					setTimeout(() => {
-						this.onLoad(options);
-					}, 1000);
-			};
-			this.ws.onerror = function(e) {
-				console.log(e);
-			};
-
-			//this.peer.connect("test", {serialization: 'none'})
+			this.reload(options)
 		},
 		onUnload() {
+			clearTimeout(this.closeTimeout)
 			console.log('onUnload');
 
 			// #ifdef APP-PLUS
@@ -423,6 +315,140 @@
 			//this.peer.destroy();
 		},
 		methods: {
+			reload(options) {
+
+				console.log(options)
+				this.id = options.id
+				this.screenChange();
+				// #ifdef APP-PLUS
+				plus.screen.lockOrientation('default');
+				// #endif
+
+
+				this.getPos()
+
+				//用户加载
+				this.loadUser()
+
+				//控制连接
+				//this.sock = new WebSocket('ws://gamebox.zgwit.cn:9001/player');
+
+				this.name = options.name || 'demo';
+				this.pos = options.pos || 1;
+
+				//视频连接（后续统一）
+				//this.ws = new WebSocket('ws://gamebox.zgwit.cn:8989');
+				this.ws = new WebSocket('wss://gamebox.zgwit.cn/api/box/' + this.id + '/bridge?token=' + this.token);
+				this.ws.binaryType = 'arraybuffer';
+
+				function ab2str(buf) {
+					return String.fromCharCode.apply(null, new Uint8Array(buf));
+				}
+
+				this.ws.onopen = () => {
+					console.log('open');
+					//this.ws.send("{}");
+					if (this.iceServers)
+						this.connect();
+					else
+						this.ws.send(JSON.stringify({
+							type: 'getIceServers'
+						}));
+					//connect();
+				};
+
+				this.ws.onmessage = e => {
+					//console.log('onmessage', e.data);
+					let str = e.data;
+					if (e.data instanceof Blob) {
+						str = ab2str(e.data.arrayBuffer());
+					} else if (e.data instanceof ArrayBuffer) {
+						str = ab2str(e.data);
+					}
+					console.log('onmessage', str);
+
+					let msg = JSON.parse(str);
+					switch (msg.type) {
+						case 'getIceServers':
+							this.iceServers = msg.data;
+							this.connect();
+							break;
+						case 'call':
+							var desc = new RTCSessionDescription(msg.data);
+							this.pc.setRemoteDescription(desc).then(() => {
+								while (this.earlyCandidates.length) {
+									var candidate = this.earlyCandidates.shift();
+									console.log('earlyCandidates', candidate);
+									//this.addIceCandidate(this.pc.peerid, candidate);
+									this.ws.send(
+										JSON.stringify({
+											type: 'addIceCandidate',
+											id: this.pc.peerid,
+											data: candidate
+										})
+									);
+								}
+
+								setTimeout(() => {
+									this.ws.send(
+										JSON.stringify({
+											type: 'getIceCandidate',
+											id: this.pc.peerid
+										})
+									);
+								}, 200);
+								// setTimeout(()=>{
+								//     this.ws.send(JSON.stringify({type: 'getIceCandidate', id: this.pc.peerid}))
+								// }, 5000)
+								//this.ws.send(JSON.stringify({type: 'getIceCandidate', id: this.pc.peerid}))
+							});
+							break;
+						case 'getIceCandidate':
+							for (var i = 0; i < msg.data.length; i++) {
+								var candidate = new RTCIceCandidate(msg.data[i]);
+								this.pc.addIceCandidate(candidate);
+							}
+							this.pc.addIceCandidate();
+
+							//可以关了
+							//this.ws.close()
+							break;
+					}
+				};
+				this.ws.onclose = e => {
+					console.log('close');
+
+					//断网 1s 重连
+					if (this.open)
+						setTimeout(() => {
+							this.reload(options);
+						}, 1000);
+				};
+				this.ws.onerror = function(e) {
+					console.log(e);
+				};
+
+				//this.peer.connect("test", {serialization: 'none'})
+
+
+			},
+			tui() {
+
+				this.sock.send(JSON.stringify({
+					type: 'keydown',
+					seat: this.pos,
+					key: 'refund'
+				}));
+				setTimeout(() => {
+					this.sock.send(JSON.stringify({
+						type: 'keyup',
+						seat: this.pos,
+						key: 'refund'
+					}));
+
+				}, 2000)
+
+			},
 			deposit() {
 
 				this.sock.send(JSON.stringify({
@@ -477,6 +503,23 @@
 				}, 3000)
 			},
 
+			async backFund() {
+				await this.sock.send(JSON.stringify({
+					type: 'keydown',
+					seat: this.pos,
+					key: 'refund'
+				}));
+
+				setTimeout(() => {
+					this.sock.send(JSON.stringify({
+						type: 'keyup',
+						seat: this.pos,
+						key: 'refund'
+					}));
+
+				}, 2000)
+			},
+
 			exit(name) {
 				if (!this.seated) {
 
@@ -489,15 +532,11 @@
 					}, 1500)
 					return
 				}
-				this.sock.send(JSON.stringify({
-					type: 'click',
-					seat: this.pos,
-					key: 'refund'
-				}));
+				this.backFund()
 				this.coinStatus = true
 
 
-				this.text = "退币！"
+				this.text = "请确保退完之后再退出！"
 				this.toast = false
 				this.$refs.report.open('center');
 				this.time = setInterval(() => {

@@ -23,7 +23,8 @@
 <style lang="scss">
 	.msg {
 		width: 120px;
-		height: 100px;
+		padding: 10px 5px;
+
 		background: rgba(22, 22, 22, 0.7);
 		display: flex;
 		flex-direction: column;
@@ -45,6 +46,8 @@
 			margin-bottom: 5px;
 		}
 
-
+		text {
+			text-align: center;
+		}
 	}
 </style>
