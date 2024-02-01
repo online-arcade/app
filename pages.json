@@ -29,6 +29,21 @@
 
 
 
+		, {
+			"path": "pages/index/user",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/exchange",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
 	],
 	"globalStyle": {
 		"navigationStyle": "custom",

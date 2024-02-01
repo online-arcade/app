@@ -10,7 +10,7 @@
 					<image :src="url"></image>
 					<view class="infor">
 						<span>名称 :{{user.nickname}}</span>
-						<span>余额 :{{user.balance}}</span>
+						<span>积分 :{{user.balance}}</span>
 					</view>
 				</view>
 				<!-- <view style="display: flex;  ">

@@ -33,7 +33,7 @@
 		</view>
 
 
-		<view class="controls" v-if=" ready &&  seated">
+		<view class="controls" v-if="ready && seated">
 
 			<view class="direction">
 				<view class="btn up" @touchstart="keydown('up')" @touchend="keyup('up')"></view>
@@ -106,7 +106,7 @@
 			<view class="btn quit" @touchstart="emit('L')" @touchend="emit('l')">退</view> -->
 		</view>
 
-		<view class="seats" v-if=" ready && !seated">
+		<view class="seats" v-if="ready && !seated">
 			<view class="seat" @click="seat(0)">
 				<view>{{posStatus[0]?"已坐下": "1P"}}</view>
 				<image src="../../static/sit.png" mode="aspectFit"></image>
@@ -127,27 +127,45 @@
 
 		<!-- class="container" -->
 		<uni-popup ref="coinDialog" type="dialog" style="z-index: 99999;">
-			<uni-popup-dialog type="info" cancelText="关闭" confirmText="投币" title="投币信息" @confirm="insertCoins(0)"
+			<uni-popup-dialog type="info" cancelText="关闭" confirmText="投币" title="投币方式" @confirm="insertCoins(0)"
 				@close="dialogClose">
+
 				<view class="coinDialog">
-					<view>
-						<span style="width: 300px;">当前余额 ： </span>
-						<span>{{ user.balance}}</span>
+
+					<view class="tap">
+						<uni-tag @click="checkChange(0)" text="积分支付" :type=" checkType?'default':  'primary'" />
+						<uni-tag @click="checkChange(1)" text="微信支付" :type=" checkType?'primary':  'default'" />
 					</view>
-					<view class="custom">
+					<view v-if="!checkType">
+						<view>
+							<span style="width: 300px;">当前积分 ： </span>
+							<span>{{ user.balance}}</span>
+						</view>
+						<view class="custom">
+							<view>投币数量 ：</view>
+							<span>
+								<uni-number-box v-model="coinNum" :max="99999" />
+							</span>
+						</view>
+						<view class="coinSend">
+							<view class="text">选中投币 ：</view>
+							<view class="btn">
+								<view class="confirm" @click="insertCoins(50)">50</view>
+								<view class="confirm green" @click="insertCoins(100)">100</view>
+								<view class="confirm yellow" @click="insertCoins(200)">200</view>
+							</view>
+						</view>
+
+					</view>
+
+					<view v-else class="custom">
 						<view>投币数量 ：</view>
 						<span>
-							<uni-number-box v-model="coinNum" :max="99999" />
+							<uni-number-box v-model="weixinCoin" :max="99999" />
 						</span>
 					</view>
-					<view class="coinSend">
-						<view class="text">选中投币 ：</view>
-						<view class="btn">
-							<view class="confirm" @click="insertCoins(50)">50</view>
-							<view class="confirm green" @click="insertCoins(100)">100</view>
-							<view class="confirm yellow" @click="insertCoins(200)">200</view>
-						</view>
-					</view>
+
+
 				</view>
 			</uni-popup-dialog>
 		</uni-popup>
@@ -157,7 +175,7 @@
 				@close="rechargeClose">
 				<view style="display: flex;flex-direction: column;">
 					<view>
-						<span style="width: 300px;">当前余额：</span>
+						<span style="width: 300px;">当前积分：</span>
 						<span>{{ pay }}</span>
 					</view>
 					<view style="width: 200px;display: flex;justify-content: space-between;">
@@ -214,6 +232,8 @@
 	export default {
 		data() {
 			return {
+				weixinCoin: 0,
+				checkType: 0,
 				closeTimeout: null,
 				coinStatus: false,
 				tempPos: null,
@@ -232,7 +252,7 @@
 				showCanvas: true,
 				tabHide: false,
 				select: false,
-				pay: 99999, //当前余额
+				pay: 99999, //当前积分
 				coinNum: 1,
 				isLandScape: false, //横竖屏切换
 				toolbar: true,
@@ -315,6 +335,9 @@
 			//this.peer.destroy();
 		},
 		methods: {
+			checkChange(e) {
+				this.checkType = e
+			},
 			reload(options) {
 
 				console.log(options)
@@ -595,8 +618,51 @@
 				this.select = !this.select;
 				this.$refs.coinDialog.open()
 			},
-			insertCoins(num) {
+			async weixinTestPay(pay) {
 
+				const res = await this.$request({
+					method: 'GET',
+					url: `weixin/pre-pay`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + this.token
+					},
+					data: {
+						amount: pay * 10,
+						name: "充值"
+					}
+				})
+				if (res.data.data) {
+
+					console.log("微信支付：", res.data.data)
+					const order = res.data.data
+					console.log("getBrandWCPayRequest", order)
+					WeixinJSBridge.invoke(
+						'getBrandWCPayRequest', order, (res) => {
+							console.log("getBrandWCPayRequest", res)
+							if (res.err_msg == "get_brand_wcpay_request:ok") {
+								// 使用以上方式判断前端返回,微信团队郑重提示：
+								//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+
+								this.submit(pay)
+							}
+						});
+
+				} else {
+
+					uni.showToast({
+						icon: 'error',
+						title: '支付失败!',
+					});
+				}
+
+			},
+
+			insertCoins(num) {
+				if (this.checkType) {
+					this.weixinTestPay(this.weixinCoin)
+					return
+				}
 				let temmNum
 				if (!num) {
 					temmNum = this.coinNum
@@ -632,18 +698,20 @@
 						amount: e
 					}
 				})
-
-				this.user.balance -= e
-				const user = await this.$request({
-					method: 'POST',
-					url: `user/${uni.getStorageSync('id')}`,
-					header: {
-						'Content-Type': 'application/json;charset=UTF-8',
-						'Authorization': 'Bearer ' + this.token
-					},
-					data: this.user
-				})
-				if (user.data.data) {
+				let user
+				if (!this.checkType) {
+					this.user.balance -= e
+					user = await this.$request({
+						method: 'POST',
+						url: `user/${uni.getStorageSync('id')}`,
+						header: {
+							'Content-Type': 'application/json;charset=UTF-8',
+							'Authorization': 'Bearer ' + this.token
+						},
+						data: this.user
+					})
+				}
+				if (this.checkType || user.data.data) {
 					if ((!this.seated) && !(this.tempPos >= 0 && this.tempPos <= 3)) {
 						this.text = "请选择位置！"
 						this.toast = true
@@ -1226,6 +1294,13 @@
 		}
 
 		.coinDialog {
+			.tap {
+				display: flex;
+				justify-content: space-between;
+				position: relative;
+				top: -6px
+			}
+
 			.custom {
 				margin: 7px 0 5px 0;
 				width: 200px;

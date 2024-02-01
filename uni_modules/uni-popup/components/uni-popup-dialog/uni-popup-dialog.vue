@@ -10,7 +10,7 @@
 		</view>
 		<view v-else class="uni-dialog-content">
 			<slot>
-				<input class="uni-dialog-input" v-model="val" type="text" :placeholder="placeholderText" :focus="focus" >
+				<input class="uni-dialog-input" v-model="val" type="text" :placeholder="placeholderText" :focus="focus">
 			</slot>
 		</view>
 		<view class="uni-dialog-button-group">
@@ -28,10 +28,12 @@
 <script>
 	import popup from '../uni-popup/popup.js'
 	import {
-	initVueI18n
+		initVueI18n
 	} from '@dcloudio/uni-i18n'
 	import messages from '../uni-popup/i18n/index.js'
-	const {	t } = initVueI18n(messages)
+	const {
+		t
+	} = initVueI18n(messages)
 	/**
 	 * PopUp 弹出层-对话框样式
 	 * @description 弹出层-对话框样式
@@ -55,7 +57,7 @@
 	export default {
 		name: "uniPopupDialog",
 		mixins: [popup],
-		emits:['confirm','close'],
+		emits: ['confirm', 'close'],
 		props: {
 			value: {
 				type: [String, Number],
@@ -85,11 +87,11 @@
 				type: Boolean,
 				default: false
 			},
-			cancelText:{
+			cancelText: {
 				type: String,
 				default: ''
 			},
-			confirmText:{
+			confirmText: {
 				type: String,
 				default: ''
 			}
@@ -147,12 +149,12 @@
 			 * 点击确认按钮
 			 */
 			onOk() {
-				if (this.mode === 'input'){
+				if (this.mode === 'input') {
 					this.$emit('confirm', this.val)
-				}else{
+				} else {
 					this.$emit('confirm')
 				}
-				if(this.beforeClose) return
+				if (this.beforeClose) return
 				this.popup.close()
 			},
 			/**
@@ -160,22 +162,22 @@
 			 */
 			closeDialog() {
 				this.$emit('close')
-				if(this.beforeClose) return
+				if (this.beforeClose) return
 				this.popup.close()
 			},
-			close(){
+			close() {
 				this.popup.close()
 			}
 		}
 	}
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 	$uni-primary: #007aff !default;
 	$uni-success: #4cd964 !default;
 	$uni-warning: #f0ad4e !default;
 	$uni-error: #dd524d !default;
-	
+
 	.uni-popup-dialog {
 		width: 300px;
 		border-radius: 11px;
