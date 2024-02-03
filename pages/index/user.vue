@@ -27,7 +27,7 @@
 		</uni-section>
 
 		<uni-popup ref="coinDialog" type="dialog" style="z-index: 99999;">
-			<uni-popup-dialog type="info" cancelText="关闭" confirmText="充值" title="充值" @confirm="weixinTestPay(cost)"
+			<uni-popup-dialog type="info" cancelText="关闭" confirmText="充值" title="充值" @confirm="submit(cost)"
 				@close="dialogClose">
 
 				<view class="coinDialog">
