@@ -1,7 +1,7 @@
 <template>
 	<!-- :class="{container: !isLandScape, containera: isLandScape}" -->
 	<view :class="{ container: true, row: !isLandScape, column: isLandScape }">
-		<video id="video" :src="v" :autoplay="true" :controls="false" :play-strategy="2" :muted="true" object-fit="fill"
+		<video id="video" :src="v" :autoplay="true" :controls="false" :play-strategy="2" object-fit="fill"
 			poster="../../static/bk.jpg" :show-center-play-btn="false" x-webkit-airplay="true" webkit-playsinline="true"
 			playsinline="true" x5-playsinline="true" x5-video-player-type="h5-page" @play="onPlay"></video>
 		<!-- 	<canvas canvas-id="canvas" :hidpi='false'></canvas> -->
