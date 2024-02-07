@@ -98,6 +98,7 @@
 				if (res.data) {
 					this.users = this.users.concat(res.data.data)
 				}
+				uni.stopPullDownRefresh()
 			},
 			async weixinTestPay(pay) {
 
