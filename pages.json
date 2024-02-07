@@ -7,40 +7,30 @@
 				"navigationBarTitleText": ""
 			}
 
-		},
-		{
+		}, {
 			"path": "pages/login/index",
 			"style": {
 				"pageOrientation": "landscape",
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
-
-		},
-		{
+		}, {
 			"path": "pages/play/play",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
-
-		}
-
-
-
-
-		, {
+		}, {
 			"path": "pages/index/user",
 			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"navigationBarTitleText": "用户管理",
+				"enablePullDownRefresh": true
 			}
-
 		}, {
 			"path": "pages/index/exchange",
 			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"navigationBarTitleText": "兑换账单",
+				"enablePullDownRefresh": true
 			}
 
 		}

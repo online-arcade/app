@@ -67,6 +67,13 @@
 		mounted() {
 			this.load()
 		},
+		onPullDownRefresh() {
+			this.users = [];
+			this.load()
+		},
+		onReachBottom() {
+			this.load()
+		},
 		methods: {
 			showCost(e) {
 				this.user = e
@@ -82,11 +89,14 @@
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
 						'Authorization': 'Bearer ' + this.token
+					},
+					data: {
+						skip: this.users.length,
+						limit: 20,
 					}
 				})
 				if (res.data) {
-					this.users = res.data.data
-
+					this.users = this.users.concat(res.data.data)
 				}
 			},
 			async weixinTestPay(pay) {
