@@ -94,9 +94,9 @@
 			cost(mess) {
 				this.check = mess
 				if (mess) {
-					this.content = "是否消费1000积分兑换京东e卡"
+					this.content = "是否消费10000积分兑换京东e卡"
 				} else {
-					this.content = "是否消费1000积分兑换话费卡"
+					this.content = "是否消费10000积分兑换话费卡"
 				}
 
 				this.$refs.alertDialog.open()
@@ -137,7 +137,7 @@
 				}
 
 
-				if (!Number(this.user.integral) || this.user.integral < 1000) {
+				if (!Number(this.user.balance) || this.user.balance < 10000) {
 					uni.showToast({
 						icon: "error",
 						title: "积分不足！"
@@ -148,9 +148,23 @@
 				this.submit(e)
 				this.phone = ""
 			},
-			async submit(e) {
+			async submit(e) {				
+				const cost = await this.$request({
+					method: 'POST',
+					url: `exchange/create`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + this.token
+					},
+					data: {
+						user_id: this.user.id,
+						amount: 10000,
+						phone: this.phone,
+						type: this.check ? '京东卡': '话费'
+					}
+				})
 
-				this.user.integral -= 1000
+				this.user.balance -= 10000
 				const user = await this.$request({
 					method: 'POST',
 					url: `user/${uni.getStorageSync('id')}`,
