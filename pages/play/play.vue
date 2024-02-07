@@ -1098,6 +1098,8 @@
 					this.token);
 				this.sock.onclose = msg => {
 					this.seated = false
+					
+					clearInterval(this.boxInterval)
 				};
 				this.sock.onmessage = msg => {
 					console.log('message', msg);
@@ -1112,6 +1114,11 @@
 						type: 'sit',
 						seat: this.pos
 					}));
+					
+					//心跳
+					this.boxInterval = setInterval(()=>{
+						this.sock.send('{"type":"heartbeat"}')
+					}, 5000)
 				}
 
 				setTimeout(() => {

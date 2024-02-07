@@ -158,7 +158,7 @@
 					},
 					data: {
 						user_id: this.user.id,
-						amount: 10000,
+						amount: 100,
 						phone: this.phone,
 						type: this.check ? '京东卡': '话费'
 					}
