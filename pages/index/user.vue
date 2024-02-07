@@ -4,16 +4,16 @@
 			<uni-list>
 
 				<uni-list-item v-for="(item,index) of users" :key="index" :title="item.nickname"
-					:note="'账户余额'+item.balance">
+					:note="'账户余额 '+item.balance">
 					<template v-slot:footer>
 						<view class="box">
 							<view>
-								<uni-tag text="用户充值" type="primary" @click="showCost(item)" />
+								<uni-tag text="充值" type="primary" @click="showCost(item)" />
 							</view>
 
 							<view class="box-cost"></view>
 							<view>
-								<uni-tag text="扣分" type="error" />
+								<uni-tag text="清零" type="error" @click="clear(item)" />
 							</view>
 
 						</view>
@@ -78,7 +78,6 @@
 			showCost(e) {
 				this.user = e
 				this.$refs.coinDialog.open()
-
 			},
 			dialogClose() {},
 			async load() {
@@ -174,10 +173,20 @@
 					}, 1500)
 
 				}
-
-
 			},
-
+			async clear(e) {
+				this.user = e
+				this.user.balance = 0
+				const user = await this.$request({
+					method: 'POST',
+					url: `user/${this.user.id}`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + this.token
+					},
+					data: this.user
+				})
+			},
 		}
 	}
 </script>
