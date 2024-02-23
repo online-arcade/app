@@ -1,123 +1,127 @@
 <template>
-	<view class="content">
+	<view class="page">
+		<view class="content">
 
-		<view class="header">
-			<view class="group">
-				<view class="box">
-					<image class="photo" :src="url" @click="handleModel(1)"></image>
-					<text> {{user.nickname||'无名'}} </text>
-				</view>
-				<!-- 				<image class="" src="../../static/start.png" style="z-index: 2;">
+			<view class="header">
+				<view class="group">
+					<view class="box">
+						<image class="photo" :src="url" @click="handleModel(1)"></image>
+						<text> {{user.nickname||'无名'}} </text>
+					</view>
+					<!-- 				<image class="" src="../../static/start.png" style="z-index: 2;">
 				</image>
 				<span class="start-bar"> {{user.integral}}
 				</span> -->
+				</view>
+
+
+				<view class="group money">
+					<image src="../../static/coin.png" style="transform: translateX(25%);" @click="handlePay(1)">
+					</image>
+					<span> {{user.balance||0}} </span>
+
+					<image class="icon" src="../../static/add.png" style="transform: translateX(-25%);"
+						@click="handleRecharge(1)"></image>
+				</view>
+
+
 			</view>
 
-
-			<view class="group money">
-				<image src="../../static/coin.png" style="transform: translateX(25%);" @click="handlePay(1)"></image>
-				<span> {{user.balance||0}} </span>
-
-				<image class="icon" src="../../static/add.png" style="transform: translateX(-25%);"
-					@click="handleRecharge(1)"></image>
-			</view>
+			<view :class="{'main':true,'main-pad':!show}">
 
 
-		</view>
+				<swiper class="ad" :indicator-dots="true" :autoplay="true" :interval="5000" :duration="1000">
+					<swiper-item>
+						<image src="../../static/bydr.png" mode="aspectFill"></image>
+					</swiper-item>
+					<swiper-item>
+						<image src="../../static/act.png" mode="aspectFill"></image>
+					</swiper-item>
+				</swiper>
 
-		<view :class="{'main':true,'main-pad':!show}">
-
-
-			<swiper class="ad" :indicator-dots="true" :autoplay="true" :interval="5000" :duration="1000">
-				<swiper-item>
-					<image src="../../static/bydr.png" mode="aspectFill"></image>
-				</swiper-item>
-				<swiper-item>
-					<image src="../../static/act.png" mode="aspectFill"></image>
-				</swiper-item>
-			</swiper>
-
-			<uni-transition custom-class="transition" :mode-class="modeClass" :show="show" :class="{'row':!series }">
-				<view :class="{'col':true,'col-wid1':true}" v-for="(item,index) of game">
-					<view class="box">
-						<view class="box-content" @click="toggle('center',item.id)">
-							<image :src="'../../static/'+item.icon" style=" height: 100%;">
-							</image>
-							<span class="num">{{onlineNum}}人在线</span>
-							<span class="font">{{item.name}}</span>
+				<uni-transition custom-class="transition" :mode-class="modeClass" :show="show"
+					:class="{'row':!series }">
+					<view :class="{'col':true,'col-wid1':true}" v-for="(item,index) of game">
+						<view class="box">
+							<view class="box-content" @click="toggle('center',item.id)">
+								<image :src="'../../static/'+item.icon" style=" height: 100%;">
+								</image>
+								<span class="num">{{onlineNum}}人在线</span>
+								<span class="font">{{item.name}}</span>
+							</view>
 						</view>
 					</view>
-				</view>
+
+				</uni-transition>
+				<uni-popup ref="popup" :mask-click="false">
+					<view class="modal">
+						<view class="modal-title">{{modal.title }}</view>
+						<view class="modal-content">
+							<view v-for="(item,index) of modal.content">
+								({{index+1}}) {{item}}
+							</view>
+
+						</view>
+						<view class="modal-foot">
+
+
+							<uni-load-more iconType="snow" status="loading"></uni-load-more>
+
+
+						</view>
+					</view>
+				</uni-popup>
+
+				<uni-popup ref="report" :mask-click="false">
+
+					<view class="report">
+						<view class="report-title">{{report.title}}</view>
+						<view class="report-content">
+							<view>
+								{{report.msg}}
+							</view>
+
+							<view v-for="(item,index) of report.content">
+								{{index+1}}. {{item}}
+							</view>
+							<view v-for="(item,index) of report.contact">
+								{{item}}
+							</view>
+
+						</view>
+						<view class="report-foot">
+							<view class="report-foot-btn " @click="handleReportOk()">
+								确认
+							</view>
+
+
+
+						</view>
+					</view>
+				</uni-popup>
+
+
+
+
+			</view>
+
+			<showToast class="showToast" :msg="msg" v-show="showToast"></showToast>
+
+
+
+			<uni-transition custom-class="transition" :mode-class="modeClass" :show="mask" class="showModel">
+				<!-- <chat class="chat" v-show="chatShow" @receiveData="handleGetData(0)"></chat> -->
+				<setting class="chat" v-show="setShow" @receiveData="handleSet(0)"></setting>
+				<userInfo class="chat" v-show="modelShow" :user="user" @receiveData="handleModel(0)"></userInfo>
+				<recharge class="chat" v-show="rechargeShow" :user="user" @receiveData="handleRecharge(0)"></recharge>
+				<conversion class="chat" v-show="payShow" :user="user" @receiveData="handlePay(0)"></conversion>
 
 			</uni-transition>
-			<uni-popup ref="popup" :mask-click="false">
-				<view class="modal">
-					<view class="modal-title">{{modal.title }}</view>
-					<view class="modal-content">
-						<view v-for="(item,index) of modal.content">
-							({{index+1}}) {{item}}
-						</view>
-
-					</view>
-					<view class="modal-foot">
-
-
-						<uni-load-more iconType="snow" status="loading"></uni-load-more>
-
-
-					</view>
-				</view>
-			</uni-popup>
-
-			<uni-popup ref="report" :mask-click="false">
-
-				<view class="report">
-					<view class="report-title">{{report.title}}</view>
-					<view class="report-content">
-						<view>
-							{{report.msg}}
-						</view>
-
-						<view v-for="(item,index) of report.content">
-							{{index+1}}. {{item}}
-						</view>
-						<view v-for="(item,index) of report.contact">
-							{{item}}
-						</view>
-
-					</view>
-					<view class="report-foot">
-						<view class="report-foot-btn " @click="handleReportOk()">
-							确认
-						</view>
-
-
-
-					</view>
-				</view>
-			</uni-popup>
 
 
 
 
 		</view>
-
-		<showToast class="showToast" :msg="msg" v-show="showToast"></showToast>
-
-
-
-		<uni-transition custom-class="transition" :mode-class="modeClass" :show="mask" class="showModel">
-			<!-- <chat class="chat" v-show="chatShow" @receiveData="handleGetData(0)"></chat> -->
-			<setting class="chat" v-show="setShow" @receiveData="handleSet(0)"></setting>
-			<userInfo class="chat" v-show="modelShow" :user="user" @receiveData="handleModel(0)"></userInfo>
-			<recharge class="chat" v-show="rechargeShow" :user="user" @receiveData="handleRecharge(0)"></recharge>
-			<conversion class="chat" v-show="payShow" :user="user" @receiveData="handlePay(0)"></conversion>
-
-		</uni-transition>
-
-
-
-
 	</view>
 </template>
 
@@ -294,6 +298,8 @@
 			}
 		},
 		onShow() {
+			if (this.token) this.load()
+
 			this.$refs.report.open('center');
 			// this.load()
 
@@ -334,14 +340,9 @@
 			}
 
 
-			// this.$refs.report.open('center');
-			//this.token = uni.getStorageSync('token')
 			this.resourcesLoaded();
-			//this.login()
 			this.load()
 			this.loadNum = 1
-			// this.row1 = this.data.slice(0, (this.data.length + 1) / 2)
-			// this.row2 = this.data.slice((this.data.length + 1) / 2)
 
 
 			//window.addEventListener('resize', this.handleResize);
@@ -656,577 +657,585 @@
 </script>
 
 <style lang="scss">
-	.content {
-		font-family: font;
-		// width: 100vh;
-		// height: 100vw;
-		display: flex;
-		flex-direction: column;
-		position: relative;
+	.page {
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
 
-		background-image: url('../../static/index.jpg');
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-position: center center;
-
-		//width: 100vh;
-		//height: 100vw;
-		//margin-left: 100vw;
-		//transform: rotate(90deg);
-		//transform-origin: left top;
-		height: 100vh;
-
-
-		.showModel {
-			background-color: rgba(0, 0, 0, 0.3);
-			position: absolute;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-		}
-
-		.header {
-			width: 100%;
-			height: 50px;
-			color: white;
-			//border: 1px solid gray;
-			//background-color: transparent;
-			//background-image: linear-gradient(to bottom, rgb(234, 56, 202), rgb(62, 0, 72));
-			//border-bottom: 2px solid rgb(99, 14, 78);
-			background-color: rgba(255, 255, 255, 0.8);
-			box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
-			position: fixed;
-			top: 0;
+		.content {
+			font-family: font;
+			// width: 100vh;
+			// height: 100vw;
 			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			box-sizing: border-box;
-			padding: 0 10px;
-			font-size: 13px;
+			flex-direction: column;
+			position: relative;
 
-			.money {
-				//margin: 0 20px;
+			background-image: url('../../static/index.jpg');
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-position: center center;
 
-				//box-shadow: 0 0 0 transparent, 0 0 8px whitesmoke inset, 0 0 0 transparent, 0 0 10px rgb(143, 0, 125);
-				color: white;
-				border-radius: 20px;
-				background-color: seagreen;
-				box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3) inset;
-
-				span {
-					padding: 10px 15px;
-				}
-
-				image {
-					width: 26px;
-					height: 26px;
-					box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
-					border-radius: 50%;
-					position: relative;
-					box-sizing: border-box;
-					padding: -1px;
-				}
-			}
-
-			.start-bar {
-				box-shadow: 0 0 3px white;
-				width: 120px;
-				background-color: rgb(43, 0, 39);
-				text-align: center;
-				color: white;
-				border-radius: 10px;
-				position: relative;
-				left: -20px;
-				//z-index: 1;
-				box-sizing: border-box;
-				text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
-				//padding: 1px 0;
-				position: relative;
-
-				&::before {
-					content: ''
-					;
-					border-radius: 10px;
-					position: absolute;
-					width: 40%;
-					height: 100%;
-					left: 0;
-					top: 0;
-					background-color: rebeccapurple;
-					background-image: linear-gradient(to bottom, rgb(10, 247, 251), rgb(1, 125, 173), rgb(10, 247, 251));
-				}
-			}
-
-			.group {
-				display: flex;
-				align-items: center;
-
-				.group-flex {
-					//min-width: 56px;
-					overflow: hidden;
-					display: flex;
-					align-items: center;
-
-					.chat-icon {
-
-						width: 28px;
-						height: 28px;
-						margin-right: 3px;
-					}
-
-					span {
-						min-width: 26px;
-					}
-				}
-
-				.box {
-					padding: 3px;
-					box-sizing: border-box;
-					border-radius: 6px;
-					//background: linear-gradient(to bottom, rgb(146, 27, 135), rgb(193, 43, 117));
-					//background-color: rgba(255, 255, 255, 0.3);
-					background-color: seagreen;
-					//box-shadow: 2px 2px 2px rgba(0,0,0,0.3) inset;
-					//padding: 5px;
-					display: flex;
-					justify-content: center;
-					align-items: center;
-
-					.photo {
-						width: 30px;
-						height: 30px;
-						border-radius: 5px;
-					}
-
-					text {
-						padding: 4px;
-						margin: 0 5px;
-						font-size: 18px;
-					}
-				}
-			}
-
-			image {
-				width: 30px;
-				height: 30px;
-			}
-		}
-
-		.mess {}
+			//width: 100vh;
+			//height: 100vw;
+			//margin-left: 100vw;
+			//transform: rotate(90deg);
+			//transform-origin: left top;
+			height: 100vh;
+			width: 100vw;
 
 
-
-		.main {
-
-			//z-index: -1;
-			//margin: 50px 0;
-			box-sizing: border-box;
-			padding: 52px 10px 0px;
-			// padding-top: 52px;
-			// padding-bottom: 52px;
-			//background-color: red;
-			//background-image: linear-gradient(to bottom, rgb(39, 15, 32), rgb(150, 59, 71));
-
-			flex: 1;
-			width: 100%;
-			height: 100%;
-
-			.ad {
-				margin: 10px 0 20px;
-
-				width: 100%;
-
-				image {
-					width: 100%;
-				}
-			}
-
-			.returnIcon {
-				position: fixed;
-				left: 12px;
-				//top: 55px;
-				top: 50%;
-				transform: translateY(-50%);
-				width: 25px;
-				height: 25px;
-				background-color: pink;
-				border-radius: 50%;
-				box-sizing: border-box;
-				padding: 5px;
-			}
-
-			.row {
-
-				//background-color: red;
+			.showModel {
+				background-color: rgba(0, 0, 0, 0.3);
+				position: absolute;
+				left: 0;
+				top: 0;
 				width: 100%;
 				height: 100%;
-				box-sizing: border-box;
-				// display: grid;
-				// grid-template-rows: repeat(2, 1fr);
-				// padding: 3px 0 7px;
-				// grid-template-columns: repeat(3, 1fr);
-				// grid-auto-flow: row;
-				// grid-gap: 10px 0px;
-				//overflow: scroll; 
-				overflow-y: auto;
+			}
+
+			.header {
+				width: 100%;
+				height: 50px;
+				color: white;
+				//border: 1px solid gray;
+				//background-color: transparent;
+				//background-image: linear-gradient(to bottom, rgb(234, 56, 202), rgb(62, 0, 72));
+				//border-bottom: 2px solid rgb(99, 14, 78);
+				background-color: rgba(255, 255, 255, 0.8);
+				box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+				position: fixed;
+				top: 0;
 				display: flex;
-				flex-flow: row wrap;
-				//box-shadow: inset 4px 0px 5px rgba(172, 36, 155, 0.2);
-				//padding-right: 10px;
-				position: relative;
-				border-radius: 5px;
+				align-items: center;
+				justify-content: space-between;
+				box-sizing: border-box;
+				padding: 0 10px;
+				font-size: 13px;
 
-				&::after {
-					content: '';
-					position: absolute;
-					width: 5px;
-					height: 96%;
-					top: 50%;
-					transform: translateY(-50%);
+				.money {
+					//margin: 0 20px;
 
-				}
+					//box-shadow: 0 0 0 transparent, 0 0 8px whitesmoke inset, 0 0 0 transparent, 0 0 10px rgb(143, 0, 125);
+					color: white;
+					border-radius: 20px;
+					background-color: seagreen;
+					box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3) inset;
 
-				.col-wid1 {
-					//width: 33%;
-					width: 40vw;
-					height: 40vw;
-					padding: 5px 0px 8px;
-				}
+					span {
+						padding: 10px 15px;
+					}
 
-				.col-wid2 {
-					width: 24%;
-					//margin-right: 10px;
-					padding: 15px 5px;
-
-				}
-
-				.col {
-
-					box-sizing: border-box;
-
-					display: flex;
-					justify-content: center;
-					justify-items: center;
-					//width: 22%;
-					//height: 50%;
-					//flex-direction: row;
-					//flex-wrap: nowrap;
-					//overflow: hidden;
-
-
-					.box {
-						display: flex;
-						justify-content: center;
-						align-items: center;
-						width: 90%;
+					image {
+						width: 26px;
+						height: 26px;
+						box-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
+						border-radius: 50%;
+						position: relative;
 						box-sizing: border-box;
+						padding: -1px;
+					}
+				}
 
-						.box-content {
-							box-sizing: border-box;
-							width: 100%;
-							height: 100%;
-							position: relative;
+				.start-bar {
+					box-shadow: 0 0 3px white;
+					width: 120px;
+					background-color: rgb(43, 0, 39);
+					text-align: center;
+					color: white;
+					border-radius: 10px;
+					position: relative;
+					left: -20px;
+					//z-index: 1;
+					box-sizing: border-box;
+					text-shadow: 1px 1px rgba(0, 0, 0, 0.3), 2px 2px rgba(0, 0, 0, 0.3);
+					//padding: 1px 0;
+					position: relative;
 
-							.num {
+					&::before {
+						content: ''
+						;
+						border-radius: 10px;
+						position: absolute;
+						width: 40%;
+						height: 100%;
+						left: 0;
+						top: 0;
+						background-color: rebeccapurple;
+						background-image: linear-gradient(to bottom, rgb(10, 247, 251), rgb(1, 125, 173), rgb(10, 247, 251));
+					}
+				}
 
-								position: absolute;
-								top: 4px;
-								right: 4px;
-								color: white;
-								font-size: 14px;
-								//text-shadow: 1px 1px rgb(39, 15, 32), 2px 2px rgb(39, 15, 32);
-								//font-size: 20px;
-							}
+				.group {
+					display: flex;
+					align-items: center;
 
-							image {
-								width: 100%;
-								height: 100%;
+					.group-flex {
+						//min-width: 56px;
+						overflow: hidden;
+						display: flex;
+						align-items: center;
 
-								//border: 3px solid rgb(255, 244, 38);
-								//border: 3px solid rgb(0, 170, 0);
-								box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);
-								border-radius: 7px;
-								position: relative;
-							}
+						.chat-icon {
 
-							.font {
-								width: 100%;
-								text-align: center;
-								color: white;
-								position: absolute;
-								//bottom: 10px;
-								left: 50%;
-								bottom: 0;
-								transform: translateX(-50%);
-								font-size: 22px;
-								//text-shadow: 0px 0px 5px black;
-								text-shadow: 1px 1px rgb(39, 15, 32), 2px 2px rgb(39, 15, 32);
-							}
+							width: 28px;
+							height: 28px;
+							margin-right: 3px;
+						}
+
+						span {
+							min-width: 26px;
 						}
 					}
 
+					.box {
+						padding: 3px;
+						box-sizing: border-box;
+						border-radius: 6px;
+						//background: linear-gradient(to bottom, rgb(146, 27, 135), rgb(193, 43, 117));
+						//background-color: rgba(255, 255, 255, 0.3);
+						background-color: seagreen;
+						//box-shadow: 2px 2px 2px rgba(0,0,0,0.3) inset;
+						//padding: 5px;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+
+						.photo {
+							width: 30px;
+							height: 30px;
+							border-radius: 5px;
+						}
+
+						text {
+							padding: 4px;
+							margin: 0 5px;
+							font-size: 18px;
+						}
+					}
+				}
+
+				image {
+					width: 30px;
+					height: 30px;
 				}
 			}
 
-			.report {
+			.mess {}
+
+
+
+			.main {
+
+				//z-index: -1;
+				//margin: 50px 0;
 				box-sizing: border-box;
-				padding: 10px;
-				//改
-				//width: 70vh;
-				width: 90vw;
-				border-radius: 5px;
-				background: white;
+				padding: 52px 10px 0px;
+				// padding-top: 52px;
+				// padding-bottom: 52px;
+				//background-color: red;
+				//background-image: linear-gradient(to bottom, rgb(39, 15, 32), rgb(150, 59, 71));
 
-				.report-title {
-					font-weight: bold;
-					font-size: 20px;
+				flex: 1;
+				width: 100%;
+				height: 100%;
+
+				.ad {
+					margin: 10px 0 20px;
+
+					width: 100%;
+
+					image {
+						width: 100%;
+					}
+				}
+
+				.returnIcon {
+					position: fixed;
+					left: 12px;
+					//top: 55px;
+					top: 50%;
+					transform: translateY(-50%);
+					width: 25px;
+					height: 25px;
+					background-color: pink;
+					border-radius: 50%;
+					box-sizing: border-box;
 					padding: 5px;
-					text-align: center
 				}
 
-				.report-content {
-					background: rgba(0, 0, 0, 0.1);
-					font-size: 16px;
+				.row {
 
-					margin-bottom: 10px;
-					//padding: 5px 5px 20px;
-					//border-radius: 5px;
-					padding: 10px;
-				}
-
-				.report-foot {
+					//background-color: red;
+					width: 100%;
+					height: 100%;
+					box-sizing: border-box;
+					// display: grid;
+					// grid-template-rows: repeat(2, 1fr);
+					// padding: 3px 0 7px;
+					// grid-template-columns: repeat(3, 1fr);
+					// grid-auto-flow: row;
+					// grid-gap: 10px 0px;
+					//overflow: scroll; 
+					overflow-y: auto;
 					display: flex;
-					justify-content: center;
-					color: white;
+					flex-flow: row wrap;
+					//box-shadow: inset 4px 0px 5px rgba(172, 36, 155, 0.2);
+					//padding-right: 10px;
+					position: relative;
+					border-radius: 5px;
 
-					.report-foot-btn {
+					&::after {
+						content: '';
+						position: absolute;
+						width: 5px;
+						height: 96%;
+						top: 50%;
+						transform: translateY(-50%);
+
+					}
+
+					.col-wid1 {
+						//width: 33%;
+						width: 40vw;
+						height: 40vw;
+						padding: 5px 0px 8px;
+					}
+
+					.col-wid2 {
+						width: 24%;
+						//margin-right: 10px;
+						padding: 15px 5px;
+
+					}
+
+					.col {
+
+						box-sizing: border-box;
 
 						display: flex;
 						justify-content: center;
-						border-radius: 6px;
-						box-sizing: border-box;
-						padding: 5px 40px;
-						background: seagreen;
-						box-shadow: 1px 1px rgba(0, 0, 0, 0.6), 0 2px rgba(0, 0, 0, 0.6);
+						justify-items: center;
+						//width: 22%;
+						//height: 50%;
+						//flex-direction: row;
+						//flex-wrap: nowrap;
+						//overflow: hidden;
+
+
+						.box {
+							display: flex;
+							justify-content: center;
+							align-items: center;
+							width: 90%;
+							box-sizing: border-box;
+
+							.box-content {
+								box-sizing: border-box;
+								width: 100%;
+								height: 100%;
+								position: relative;
+
+								.num {
+
+									position: absolute;
+									top: 4px;
+									right: 4px;
+									color: white;
+									font-size: 14px;
+									//text-shadow: 1px 1px rgb(39, 15, 32), 2px 2px rgb(39, 15, 32);
+									//font-size: 20px;
+								}
+
+								image {
+									width: 100%;
+									height: 100%;
+
+									//border: 3px solid rgb(255, 244, 38);
+									//border: 3px solid rgb(0, 170, 0);
+									box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);
+									border-radius: 7px;
+									position: relative;
+								}
+
+								.font {
+									width: 100%;
+									text-align: center;
+									color: white;
+									position: absolute;
+									//bottom: 10px;
+									left: 50%;
+									bottom: 0;
+									transform: translateX(-50%);
+									font-size: 22px;
+									//text-shadow: 0px 0px 5px black;
+									text-shadow: 1px 1px rgb(39, 15, 32), 2px 2px rgb(39, 15, 32);
+								}
+							}
+						}
 
 					}
 				}
+
+				.report {
+					box-sizing: border-box;
+					padding: 10px;
+					//改
+					//width: 70vh;
+					width: 90vw;
+					border-radius: 5px;
+					background: white;
+
+					.report-title {
+						font-weight: bold;
+						font-size: 20px;
+						padding: 5px;
+						text-align: center
+					}
+
+					.report-content {
+						background: rgba(0, 0, 0, 0.1);
+						font-size: 16px;
+
+						margin-bottom: 10px;
+						//padding: 5px 5px 20px;
+						//border-radius: 5px;
+						padding: 10px;
+					}
+
+					.report-foot {
+						display: flex;
+						justify-content: center;
+						color: white;
+
+						.report-foot-btn {
+
+							display: flex;
+							justify-content: center;
+							border-radius: 6px;
+							box-sizing: border-box;
+							padding: 5px 40px;
+							background: seagreen;
+							box-shadow: 1px 1px rgba(0, 0, 0, 0.6), 0 2px rgba(0, 0, 0, 0.6);
+
+						}
+					}
+				}
+
+				.modal {
+					box-sizing: border-box;
+					padding: 10px;
+					//改
+					//width: 50vh;
+					width: 90vw;
+
+					border-radius: 5px;
+					background: white;
+
+					.modal-title {
+						font-weight: bold;
+						font-size: 18px;
+						padding: 5px;
+						text-align: center
+					}
+
+					.modal-content {
+						background: rgb(242, 242, 242);
+
+						margin-bottom: 10px;
+						padding: 5px 5px 20px
+					}
+
+					.modal-foot {
+						display: flex;
+						justify-content: space-around;
+						color: white;
+						align-items: center;
+
+						.progress {
+							width: 25px;
+							height: 25px;
+							animation: spin 2s linear infinite;
+						}
+
+
+						.modal-foot-btn {
+
+							display: flex;
+							justify-content: center;
+							align-items: center;
+
+							// text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5), -2px -2px 2px rgba(0, 0, 0, 0.5);
+							// ;
+
+							border-radius: 6px;
+							box-sizing: border-box;
+							padding: 5px 20px;
+							background-image: linear-gradient(to bottom, rgb(40, 175, 255), rgb(29, 111, 255));
+							box-shadow: 1px 1px rgba(0, 0, 0, 0.6), 0 2px rgba(0, 0, 0, 0.6);
+
+						}
+
+						.red {
+							color: rgb(173, 52, 77)
+						}
+					}
+				}
+
 			}
 
-			.modal {
+			.main-pad {
+				padding-left: 40px
+			}
+
+			.foot {
+				position: fixed;
+				bottom: 0;
+				width: 100vh;
+				height: 50px;
+				line-height: 50px;
+				//background-color: transparent;
+				background-image: linear-gradient(to bottom, rgb(252, 44, 213), rgb(67, 0, 71));
+				display: flex;
+				align-items: center;
 				box-sizing: border-box;
-				padding: 10px;
-				//改
-				//width: 50vh;
-				width: 90vw;
+				padding: 0 20px;
+				color: white;
+				font-size: 15px;
+				// /justify-content: space-between;
+				margin-right: 20px;
 
-				border-radius: 5px;
-				background: white;
-
-				.modal-title {
-					font-weight: bold;
-					font-size: 18px;
-					padding: 5px;
-					text-align: center
-				}
-
-				.modal-content {
-					background: rgb(242, 242, 242);
-
-					margin-bottom: 10px;
-					padding: 5px 5px 20px
-				}
-
-				.modal-foot {
+				.tag {
+					min-width: 83px;
+					height: 100%;
 					display: flex;
-					justify-content: space-around;
-					color: white;
+					justify-content: center;
 					align-items: center;
+					box-sizing: border-box;
+					padding: 10px 0px;
+					overflow: hidden;
 
-					.progress {
-						width: 25px;
-						height: 25px;
-						animation: spin 2s linear infinite;
-					}
-
-
-					.modal-foot-btn {
+					.image-border {
+						box-sizing: border-box;
+						padding: 1px;
+						border-radius: 50%;
+						margin-right: 3px;
+						background-image: linear-gradient(to bottom, rgb(146, 27, 135), rgb(193, 43, 117));
+						;
 
 						display: flex;
 						justify-content: center;
 						align-items: center;
 
-						// text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5), -2px -2px 2px rgba(0, 0, 0, 0.5);
-						// ;
+						image {
+							width: 30px;
+							height: 30px;
+							border-radius: 50%;
+							//box-shadow: 0 0 10px white;
 
-						border-radius: 6px;
-						box-sizing: border-box;
-						padding: 5px 20px;
-						background-image: linear-gradient(to bottom, rgb(40, 175, 255), rgb(29, 111, 255));
-						box-shadow: 1px 1px rgba(0, 0, 0, 0.6), 0 2px rgba(0, 0, 0, 0.6);
-
-					}
-
-					.red {
-						color: rgb(173, 52, 77)
-					}
-				}
-			}
-
-		}
-
-		.main-pad {
-			padding-left: 40px
-		}
-
-		.foot {
-			position: fixed;
-			bottom: 0;
-			width: 100vh;
-			height: 50px;
-			line-height: 50px;
-			//background-color: transparent;
-			background-image: linear-gradient(to bottom, rgb(252, 44, 213), rgb(67, 0, 71));
-			display: flex;
-			align-items: center;
-			box-sizing: border-box;
-			padding: 0 20px;
-			color: white;
-			font-size: 15px;
-			// /justify-content: space-between;
-			margin-right: 20px;
-
-			.tag {
-				min-width: 83px;
-				height: 100%;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-				box-sizing: border-box;
-				padding: 10px 0px;
-				overflow: hidden;
-
-				.image-border {
-					box-sizing: border-box;
-					padding: 1px;
-					border-radius: 50%;
-					margin-right: 3px;
-					background-image: linear-gradient(to bottom, rgb(146, 27, 135), rgb(193, 43, 117));
-					;
-
-					display: flex;
-					justify-content: center;
-					align-items: center;
-
-					image {
-						width: 30px;
-						height: 30px;
-						border-radius: 50%;
-						//box-shadow: 0 0 10px white;
+						}
 
 					}
+
 
 				}
 
 
 			}
 
+			.showToast {
 
-		}
-
-		.showToast {
-
-			position: absolute;
-			transform: rotate(0deg);
-			//改
-			width: 90vw;
-			height: 100px;
-			border-radius: 5px;
-			left: 50%;
-			top: 50%;
-			// background-color: rgb(57, 6, 15);
-			margin-left: 0vw;
-			transform: translate(-50%, -49%);
-		}
-
-		.chat {
-
-			position: absolute;
-			transform: rotate(0deg);
-			//改
-			width: 90vw;
-			height: 90vh;
-
-			left: 50%;
-			top: 50%;
-			background-color: rgb(57, 6, 15);
-			margin-left: 0vw;
-			transform: translate(-50%, -49%);
-		}
-
-		.model {
-
-			position: absolute;
-			//transform: rotate(0deg);
-			//改 
-			//width: 60vh;
-			//height: 90vw;
-			width: 90vw;
-			height: 80vh;
-			//left: 50%;
-			//top: 50%;
-			background-color: rgb(57, 6, 15);
-			//margin-left: 0vw;
-			//transform: translate(-50%, -49%);
-		}
-
-		@keyframes spin {
-			0% {
+				position: absolute;
 				transform: rotate(0deg);
+				//改
+				width: 90vw;
+				height: 100px;
+				border-radius: 5px;
+				left: 50%;
+				top: 50%;
+				// background-color: rgb(57, 6, 15);
+				margin-left: 0vw;
+				transform: translate(-50%, -49%);
 			}
 
-			100% {
-				transform: rotate(360deg);
+			.chat {
+
+				position: absolute;
+				transform: rotate(0deg);
+				//改
+				width: 90vw;
+				height: 90vh;
+
+				left: 50%;
+				top: 50%;
+				background-color: rgb(57, 6, 15);
+				margin-left: 0vw;
+				transform: translate(-50%, -49%);
 			}
-		}
+
+			.model {
+
+				position: absolute;
+				//transform: rotate(0deg);
+				//改 
+				//width: 60vh;
+				//height: 90vw;
+				width: 90vw;
+				height: 80vh;
+				//left: 50%;
+				//top: 50%;
+				background-color: rgb(57, 6, 15);
+				//margin-left: 0vw;
+				//transform: translate(-50%, -49%);
+			}
+
+			@keyframes spin {
+				0% {
+					transform: rotate(0deg);
+				}
+
+				100% {
+					transform: rotate(360deg);
+				}
+			}
 
 
-		.loading {
+			.loading {
 
-			width: 100%;
-			height: 100%;
-			//background-color: rgba(0, 0, 0, 0.3);
-			position: absolute;
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-
-			&::before {
-				content: '';
 				width: 100%;
 				height: 100%;
-				background-image: linear-gradient(to right, rgb(44, 13, 23), rgb(74, 21, 39), rgb(44, 13, 23));
+				//background-color: rgba(0, 0, 0, 0.3);
 				position: absolute;
-				left: 0;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+
+				&::before {
+					content: '';
+					width: 100%;
+					height: 100%;
+					background-image: linear-gradient(to right, rgb(44, 13, 23), rgb(74, 21, 39), rgb(44, 13, 23));
+					position: absolute;
+					left: 0;
+				}
+
+
+
+				.progress {
+					width: 30px;
+					height: 30px;
+					animation: spin 2s linear infinite;
+					margin: 20px 0;
+				}
+
+				span {
+					text-align: center;
+					color: white;
+					width: 70%;
+					z-index: 1
+				}
 			}
 
-
-
-			.progress {
-				width: 30px;
-				height: 30px;
-				animation: spin 2s linear infinite;
-				margin: 20px 0;
-			}
-
-			span {
-				text-align: center;
-				color: white;
-				width: 70%;
-				z-index: 1
-			}
 		}
 
 	}

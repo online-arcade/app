@@ -207,6 +207,18 @@
 				}
 
 			},
+
+			async getUser() {
+				const res = await this.$request({
+					method: 'GET',
+					url: `user/${uni.getStorageSync('id')}`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + this.token
+					}
+				})
+				if (res.data.data) this.user = res.data.data
+			},
 			async submit(e) {
 				const cost = await this.$request({
 					method: 'POST',
@@ -220,23 +232,13 @@
 						amount: e
 					}
 				})
-				if (this.check) this.user.Integral += e * 10
-				else this.user.balance += e
-				const user = await this.$request({
-					method: 'POST',
-					url: `user/${uni.getStorageSync('id')}`,
-					header: {
-						'Content-Type': 'application/json;charset=UTF-8',
-						'Authorization': 'Bearer ' + this.token
-					},
-					data: this.user
-				})
-				if (user.data.data) {
-					uni.showToast({
-						title: "充值成功!",
-					});
-				}
+				// if (this.check) this.user.Integral += e * 10
+				// else this.user.balance += e
 
+				this.getUser()
+				uni.showToast({
+					title: "充值成功!",
+				});
 
 			}
 		}

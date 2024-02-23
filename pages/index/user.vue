@@ -1,6 +1,7 @@
 <template>
 	<view>
 		<uni-section title="用户列表" type="line">
+
 			<uni-list>
 
 				<uni-list-item v-for="(item,index) of users" :key="index" :title="item.nickname"
@@ -32,8 +33,6 @@
 
 				<view class="coinDialog">
 
-
-
 					<view class="custom">
 						<view>充值金额 ：</view>
 						<span>
@@ -42,14 +41,13 @@
 					</view>
 
 
-
-
-
 				</view>
 			</uni-popup-dialog>
 		</uni-popup>
 
-
+		<view class="none" v-if="!users.length">
+			<view>数据为空</view>
+		</view>
 
 	</view>
 </template>
@@ -152,20 +150,11 @@
 					}
 				})
 
-				this.user.balance += e
-				const user = await this.$request({
-					method: 'POST',
-					url: `user/${this.user.id}`,
-					header: {
-						'Content-Type': 'application/json;charset=UTF-8',
-						'Authorization': 'Bearer ' + this.token
-					},
-					data: this.user
-				})
-
-				if (user.data.data) {
+				if (cost.data) {
 					this.text = "充值成功！"
 					this.toast = false
+					this.users = [];
+					this.load()
 					this.$refs.report.open('center');
 					this.time = setInterval(() => {
 						this.$refs.report.close()
@@ -186,6 +175,8 @@
 					},
 					data: this.user
 				})
+				this.users = [];
+				this.load()
 			},
 		}
 	}
@@ -198,6 +189,16 @@
 		.box-cost {
 			width: 10px
 		}
+	}
+
+	.none {
+		color: gray;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 30px;
+		box-sizing: border-box;
 	}
 
 	.coinDialog {

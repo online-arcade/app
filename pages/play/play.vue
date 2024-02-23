@@ -685,68 +685,65 @@
 				}
 				this.$refs.coinDialog.close();
 			},
-			async submit(e) {
-				const cost = await this.$request({
-					method: 'POST',
-					url: `recharge/create`,
+			async getUser() {
+				const res = await this.$request({
+					method: 'GET',
+					url: `user/${uni.getStorageSync('id')}`,
 					header: {
 						'Content-Type': 'application/json;charset=UTF-8',
 						'Authorization': 'Bearer ' + this.token
-					},
-					data: {
-						user_id: this.user.id,
-						amount: e
 					}
 				})
-				let user
+				if (res.data.data) this.user = res.data.data
+			},
+			async submit(e) {
 				if (!this.checkType) {
-					this.user.balance -= e
-					user = await this.$request({
+					const cost = await this.$request({
 						method: 'POST',
-						url: `user/${uni.getStorageSync('id')}`,
+						url: `recharge/create`,
 						header: {
 							'Content-Type': 'application/json;charset=UTF-8',
 							'Authorization': 'Bearer ' + this.token
 						},
-						data: this.user
+						data: {
+							user_id: this.user.id,
+							amount: e
+						}
 					})
 				}
-				if (this.checkType || user.data.data) {
-					if ((!this.seated) && !(this.tempPos >= 0 && this.tempPos <= 3)) {
-						this.text = "请选择位置！"
-						this.toast = true
-						this.$refs.report.open('center');
-						this.time = setInterval(() => {
-							this.$refs.report.close()
-							clearInterval(this.time)
-						}, 1500)
-						return
-					}
-					if (!this.seated)
-						this.connectSeat()
+				this.getUser()
 
-					setTimeout(() => {
-						this.sock.send(JSON.stringify({
-							type: 'coin',
-							seat: this.pos,
-							coin: e
-						}));
-						this.coinStatus = false
-					}, 200)
 
-					this.text = "投币成功！"
-					this.toast = false
+				if ((!this.seated) && !(this.tempPos >= 0 && this.tempPos <= 3)) {
+					this.text = "请选择位置！"
+					this.toast = true
 					this.$refs.report.open('center');
 					this.time = setInterval(() => {
 						this.$refs.report.close()
 						clearInterval(this.time)
 					}, 1500)
-
-
-
-
-
+					return
 				}
+				if (!this.seated)
+					this.connectSeat()
+
+				setTimeout(() => {
+					this.sock.send(JSON.stringify({
+						type: 'coin',
+						seat: this.pos,
+						coin: e
+					}));
+					this.coinStatus = false
+				}, 200)
+
+				this.text = "投币成功！"
+				this.toast = false
+				this.$refs.report.open('center');
+				this.time = setInterval(() => {
+					this.$refs.report.close()
+					clearInterval(this.time)
+				}, 1500)
+
 
 
 			},
@@ -1098,7 +1095,7 @@
 					this.token);
 				this.sock.onclose = msg => {
 					this.seated = false
-					
+
 					clearInterval(this.boxInterval)
 				};
 				this.sock.onmessage = msg => {
@@ -1114,9 +1111,9 @@
 						type: 'sit',
 						seat: this.pos
 					}));
-					
+
 					//心跳
-					this.boxInterval = setInterval(()=>{
+					this.boxInterval = setInterval(() => {
 						this.sock.send('{"type":"heartbeat"}')
 					}, 5000)
 				}

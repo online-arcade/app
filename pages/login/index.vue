@@ -160,15 +160,10 @@
 
 	.content {
 		font-family: font;
-		// height: 100vh;
-		// width: 100vw;
 
 		width: 100vw;
 		height: 100vh;
-		// margin-left: 100vw;
-		// transform: rotate(90deg);
-		// transform-origin: left top;
-
+		overflow: hidden;
 		background-image: url('../../static/login.png');
 		background-repeat: no-repeat;
 		background-size: cover;

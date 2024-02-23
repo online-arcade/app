@@ -145,10 +145,22 @@
 					this.phone = ""
 					return
 				}
+
 				this.submit(e)
 				this.phone = ""
 			},
-			async submit(e) {				
+			async getUser() {
+				const res = await this.$request({
+					method: 'GET',
+					url: `user/${uni.getStorageSync('id')}`,
+					header: {
+						'Content-Type': 'application/json;charset=UTF-8',
+						'Authorization': 'Bearer ' + this.token
+					}
+				})
+				if (res.data.data) this.user = res.data.data
+			},
+			async submit(e) {
 				const cost = await this.$request({
 					method: 'POST',
 					url: `exchange/create`,
@@ -160,25 +172,15 @@
 						user_id: this.user.id,
 						amount: 100,
 						phone: this.phone,
-						type: this.check ? '京东卡': '话费'
+						type: this.check ? '京东卡' : '话费'
 					}
 				})
 
-				this.user.balance -= 10000
-				const user = await this.$request({
-					method: 'POST',
-					url: `user/${uni.getStorageSync('id')}`,
-					header: {
-						'Content-Type': 'application/json;charset=UTF-8',
-						'Authorization': 'Bearer ' + this.token
-					},
-					data: this.user
-				})
-				if (user.data.data) {
-					uni.showToast({
-						title: "消费成功!",
-					});
-				}
+				// this.user.balance -= 10000
+				this.getUser()
+				uni.showToast({
+					title: "消费成功!",
+				});
 
 
 			}

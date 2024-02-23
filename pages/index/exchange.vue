@@ -6,6 +6,9 @@
 					:note="item.type + '  '+item.amount" />
 			</uni-list>
 		</uni-section>
+		<view class="none" v-if="!exchanges.length">
+			<view>数据为空</view>
+		</view>
 	</view>
 </template>
 
@@ -21,7 +24,7 @@
 			this.load()
 		},
 		onPullDownRefresh() {
-			this.users = [];
+			this.exchanges = [];
 			this.load()
 		},
 		onReachBottom() {
@@ -53,5 +56,13 @@
 </script>
 
 <style lang="scss">
-
+	.none {
+		color: gray;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 30px;
+		box-sizing: border-box;
+	}
 </style>
