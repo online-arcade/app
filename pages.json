@@ -27,7 +27,7 @@
 				"enablePullDownRefresh": true
 			}
 		}, {
-			"path": "pages/index/exchange",
+			"path": "pages/play/index/exchange",
 			"style": {
 				"navigationBarTitleText": "兑换账单",
 				"onReachBottomDistance": 0,
