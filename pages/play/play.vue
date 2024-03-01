@@ -707,7 +707,7 @@
 						},
 						data: {
 							user_id: this.user.id,
-							amount: e
+							amount: -e
 						}
 					})
 				}
